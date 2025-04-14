@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Bloquer définitivement les messages de licence */
+/* Solution nucléaire - Garantie sans message */
+body > div[style*="position"],
+.e-trial-reminder,
+.e-watermark,
+.e-license-notification,
+div[style*="Syncfusion"],
+div[style*="trial version"],
+div[onclick*="Syncfusion"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}

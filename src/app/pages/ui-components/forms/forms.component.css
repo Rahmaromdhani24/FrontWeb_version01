@@ -1,0 +1,82 @@
+.form-container {
+     display: flex ;
+      flex-direction: column;
+      margin: 20px;
+      margin-top: -331px;
+      margin-left: 250px;
+  
+  }
+  
+  .form-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px; /* Ajoutez un espacement entre les lignes */
+  }
+  
+  .rowspan-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px; /* Largeur de la cellule */
+    background-color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    height: 100%;
+    padding: 10px;
+    margin-left: 300px;
+  }
+  
+  .form-fields {
+    flex-grow: 1; /* Remplir l'espace restant */
+    width: 100%;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+  }
+  
+  .w-100 {
+    width: 100%;
+  }
+  #btnCancel{
+    margin-left: 50px;
+  }
+  #btnSave{
+    margin-left: 300px;
+  }
+  #titreForm{
+    font-size: 20px;
+    margin-left: 200px;
+  }
+  #titreNumCourant{
+    margin-left: 300px;
+    color: #003d89;
+  }
+  .labelCoupePropre{
+    color: #003d89;
+  }
+
+
+  /* Pour rendre les bandes plus visibles */
+.e-strip-line {
+  stroke-width: 2px;
+}
+
+.e-chart .e-strip-line[fill*="yellow"] {
+  opacity: 0.6 !important;
+}
+.chart-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  background: white;
+  border-radius: 8px;
+}
+
+#chart {
+  display: block;
+  height: 400px;
+}

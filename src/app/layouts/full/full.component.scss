@@ -1,0 +1,20 @@
+.mat-drawer-container {
+    position: relative;
+    z-index: 1;
+    color: var(--mat-sidenav-content-text-color, var(--mat-sys-on-background));
+    background-color: #F0F5F9;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+    overflow: hidden;
+    margin-top: 0px;
+}
+
+#hauteurNav{
+    height: 570px;
+    position: fixed;
+}
+.pageWrapper.maxWidth {
+    max-width: 1200px;
+    margin-left: -16px;
+}

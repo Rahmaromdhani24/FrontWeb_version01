@@ -1,0 +1,159 @@
+<mat-card class="cardWithShadow theme-card">
+  <mat-card-header>
+    <mat-card-title class="m-b-0" id="titreNumCourant">Numéro Courant : </mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="b-t-1">
+    <div  style="width: 100%; height: 400px;">
+      <ejs-chart 
+        [title]="title" 
+        [titleStyle]="titleStyle"
+        [primaryXAxis]="primaryXAxis" 
+        [primaryYAxis]="primaryYAxis"
+        [tooltip]="tooltip"
+        [annotations]="annotations"
+        [legendSettings]="{visible: false}"
+        background="transparent">
+        <e-series-collection>
+          <e-series 
+            [dataSource]="seriesMoyenne" 
+            type="Line" 
+            xName="x" 
+            yName="y" 
+            width="2"
+            [marker]="{
+              visible: true, 
+              width: 10, 
+              height: 10,
+              dataLabel: { visible: false }
+            }"
+            [animation]="{ enable: true }">
+          </e-series>
+        </e-series-collection>
+      </ejs-chart>
+    </div>
+    <div style="width: 100%; height: 250px;">
+      <ejs-chart 
+        [title]="titleEtendue" 
+        [titleStyle]="titleStyleEtendue"
+        [primaryXAxis]="primaryXAxisEtendue" 
+        [primaryYAxis]="primaryYAxisEtendue"
+        [tooltip]="tooltipEtendue"
+        [annotations]="annotationsEtendue"
+        [legendSettings]="{visible: false}">
+        <e-series-collection>
+          <e-series 
+            [dataSource]="seriesEtendue" 
+            type="Line" 
+            xName="x" 
+            yName="y" 
+            width="2"
+            [marker]="markerEtendue">
+          </e-series>
+        </e-series-collection>
+      </ejs-chart>
+    </div>
+    <br> <br>
+    <form>
+      <div class="row">
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-30 d-block">Type de pistolet : &nbsp;
+            <span class="labelCoupePropre">Pistolet Vert </span>
+          </mat-label>         
+          <mat-label class="f-w-600 m-b-30 d-block">Numéro de pistolet  :&nbsp;
+            <span class="labelCoupePropre"> 212 </span>
+          </mat-label>
+          <mat-label class="f-w-600 m-b-30 d-block">Coupe Propre  :&nbsp;
+            <span class="labelCoupePropre">N-OK </span>
+          </mat-label>
+          <mat-label class="f-w-600 m-b-30 d-block">Nombre de collier tester : &nbsp;
+            <span class="labelCoupePropre"> p0001 </span>
+          </mat-label>
+          <mat-label class="f-w-600 m-b-30 d-block">Axe de serrage : &nbsp;
+            <span class="labelCoupePropre"> 2374 </span>
+          </mat-label>  
+          <mat-label class="f-w-600 m-b-30 d-block">Semaine :&nbsp;
+            <span class="labelCoupePropre">4</span>
+          </mat-label>
+ 
+        </div>
+      </div>
+       <br>
+
+
+      <div class="form-container">
+        <div class="form-row">
+          <div class="rowspan-cell">
+            <span></span>
+          </div>
+          <div class="col-lg-6">
+            <mat-label class="f-w-600 m-b-20 d-block">échantillon 1: &nbsp;
+              <span class="labelCoupePropre">12 </span>
+            </mat-label>         
+          </div>
+       
+        </div>
+        <div class="form-row">
+          <div class="rowspan-cell">
+            <span></span>
+          </div>
+          <div class="col-lg-6">
+            <mat-label class="f-w-600 m-b-20 d-block">échantillon 2: &nbsp;
+              <span class="labelCoupePropre">20 </span>
+            </mat-label>         
+          </div>
+       
+        </div>
+      
+        <div class="form-row">
+          <div class="rowspan-cell">
+            <span></span>
+          </div>
+          <div class="col-lg-6">
+            <mat-label class="f-w-600 m-b-20 d-block">échantillon 3: &nbsp;
+              <span class="labelCoupePropre">12 </span>
+            </mat-label>         
+          </div>
+       
+        </div>
+      
+        <div class="form-row">
+          <div class="rowspan-cell">
+            <span></span>
+          </div>
+          <div class="col-lg-6">
+            <mat-label class="f-w-600 m-b-20 d-block">échantillon 4: &nbsp;
+              <span class="labelCoupePropre">15 </span>
+            </mat-label>         
+          </div>
+       
+        </div>
+   
+        <div class="form-row">
+          <div class="rowspan-cell">
+            <span></span>
+          </div>
+          <div class="col-lg-6">
+            <mat-label class="f-w-600 m-b-20 d-block">échantillon 5: &nbsp;
+              <span class="labelCoupePropre">20 </span>
+            </mat-label>         
+          </div>
+       
+        </div>
+        <div class="form-row">
+          <div class="rowspan-cell">
+            <span></span>
+          </div>
+          <div class="col-lg-6">
+            <mat-label class="f-w-600 m-b-20 d-inline-block me-3">
+              Moyenne X̄ : <span class="labelCoupePropre">20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </mat-label>
+            <mat-label class="f-w-600 m-b-20 d-inline-block">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Etendu R : <span class="labelCoupePropre">20</span>
+            </mat-label>
+          </div>
+        </div>
+      </div>
+    </form>
+   
+  </mat-card-content>
+</mat-card>

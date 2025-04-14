@@ -1,0 +1,184 @@
+<div class="loading" *ngIf="showLoader">
+  <span id="loader" class="loader"></span>
+</div>
+<div class="pdf-scroll-wrapper" *ngIf="!showLoader">
+  <div class="pdf-container">
+    <!-- En-tête -->
+  <div class="header">
+    <!-- Titre principal -->
+    <div class="main-title" style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">
+      Carte d'enregistrement des données du processus "Pistolet collier de serrage"
+    </div>
+  </div>
+    <!-- Tableau -->
+     <div id="idBorderTableau">
+      <table border="2" id="tableTitre">
+        <tr>
+          <td>Type opération Mesure de <br> valeur de force de serrage</td>
+          <td>Instrument de mesure :<br>Machine de traction MAV<br>Outil KBP-GS2B</td>
+          <td>Spécification de mesure : 80 - 120 N<br>
+            <strong class="styleSpecidication">OGW = 120/OEW - 20%T </strong><br>
+            <strong class="styleSpecidication">UGW = 80/UEG + 20%T </strong><br></td>
+            <td>Fréquence de contrôle :<br>Selon PDS</td>
+          <td>Réglage 3 :<br>Interval de diamétre <br>de seraage <br>
+            <strong class="styleSpecidication">de 1.5 mm à 50mm</strong></td>
+          <td>Numéro de pistolet :<br><strong>{{numeroPistolet}}</strong></td>
+          <td>
+            Segment / année<br>
+            {{segmentUser}} / {{ getAnnee() }}<br>
+            <div style="background-color: rgb(255, 0, 0); display: inline-block; padding: 4px 8px; font-weight: bold;">
+              &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            </div>
+          </td>
+        </tr>
+      </table>
+    <div id="idBorderRemarque">
+      <span id="spanRemarque">Remarque<br></span>
+    </div>
+  </div>
+    <div id="idBorderMoyenne">
+      <div class="vertical-text-moyenne">La moyenne X̄</div>
+      <apx-chart 
+        [series]="chartOptionsMoyenne.series"
+        [chart]="chartOptionsMoyenne.chart"
+        [xaxis]="chartOptionsMoyenne.xaxis"
+        [yaxis]="chartOptionsMoyenne.yaxis"
+        [stroke]="chartOptionsMoyenne.stroke"
+        [dataLabels]="chartOptionsMoyenne.dataLabels"
+        [markers]="chartOptionsMoyenne.markers"
+        [tooltip]="chartOptionsMoyenne.tooltip"
+        [annotations]="chartOptionsMoyenne.annotations"
+        [fill]="chartOptionsMoyenne.fill"
+        [legend]="chartOptionsMoyenne.legend"
+        style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -244px;"
+
+      ></apx-chart>
+    </div>
+    
+    <div  id="idBorderEtendu">
+      <div class="vertical-text-etendu">L'étendu R</div>
+      <apx-chart 
+        [series]="chartOptionsEtendue.series"
+        [chart]="chartOptionsEtendue.chart"
+        [xaxis]="chartOptionsEtendue.xaxis"
+        [yaxis]="chartOptionsEtendue.yaxis"
+        [stroke]="chartOptionsEtendue.stroke"
+        [dataLabels]="chartOptionsEtendue.dataLabels"
+        [markers]="chartOptionsEtendue.markers"
+        [tooltip]="chartOptionsEtendue.tooltip"
+        [annotations]="chartOptionsEtendue.annotations"
+        style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -240px;"
+      ></apx-chart>
+      </div>
+
+    <div class="tables-wrapper">
+      <!-- Tableau principal -->
+      <table class="main-table">
+        <tr>
+          <th>Code de répartition</th>
+          <td *ngFor="let i of twentyFive">
+            {{ getCodeRepartition(i) ?? '' }}
+          </td>
+        </tr>
+        <tr>
+          <th>Date</th>
+          <td *ngFor="let i of twentyFive">
+            {{ getDateSansAnnee(i) ?? '' }}
+          </td>
+        </tr>
+        <tr>
+          <th>Coupe Propre <br> 'OK' &nbsp;'N-OK'</th>
+          <td *ngFor="let i of twentyFive">
+            {{ getCoupePropre(i) ?? '' }}
+          </td>
+        </tr>
+        <tr>
+          <th>Nom</th>
+          <td *ngFor="let i of twentyFive">
+            {{ getNom(i) ?? '' }}
+          </td>
+        </tr>
+
+        <!-- 5 lignes X -->
+        <tr>
+          <th rowspan="5">X</th>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(0, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(1, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(2, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(3, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(4, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <th>X̄</th>
+          <td *ngFor="let i of twentyFive">
+            {{ getMoyenne(i) ?? '' }}
+          </td>
+        </tr>
+        
+        <!-- Ligne de l'étendue -->
+        <tr>
+          <th>R</th>
+          <td *ngFor="let i of twentyFive">
+            {{ getEtendu(i) ?? '' }}
+          </td>
+        </tr>
+
+        <tr>
+          <th>Nr courant</th>
+          <td *ngFor="let i of numCourants">{{i}}</td>
+        </tr>
+      </table>
+
+      <!-- Tableau de droite -->
+      <table class="side-table">
+        <thead>
+          <tr>
+            <th>Nr.</th>
+            <th>Nr. De collier</th>
+            <th>Axe de serrage</th>
+            <th>Semaine</th>
+            <th>Décision</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let i of rows" >
+            <td style="height: 30px">{{ i }}</td>
+            <ng-container *ngIf="getPistoletParNumCourant(i) as pistolet">
+              <td style="height: 30px">{{ pistolet.nbrCollierTester }}</td>
+              <td style="height: 30px" >{{ pistolet.axeSerrage }}</td>
+              <td style="height: 30px">{{ pistolet.semaine }}</td>
+              <td style="height: 30px">
+        <button (click)="onValiderPistolet(pistolet.id)" 
+                *ngIf="pistolet.decision === 0 && !pistoletsValides.has(pistolet.id)" 
+                class="custom-check-button">
+          <i class="fa fa-check"></i>
+        </button>
+      
+        <span *ngIf="pistolet.decision === 1 || pistoletsValides.has(pistolet.id)">Confirmé</span>
+      </td>
+      
+              
+           </ng-container>
+            <ng-container *ngIf="!getPistoletParNumCourant(i)">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </ng-container>
+          </tr>
+         
+          
+        </tbody>
+      </table>
+    </div>
+     </div>
+     <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" (click)="naviger()">Page d'accueil</button>
+  </div>

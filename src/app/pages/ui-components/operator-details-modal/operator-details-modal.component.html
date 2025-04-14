@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>
+    Opérateurs du PDEK 
+  </h2>
+  
+  <mat-dialog-content>
+    <mat-list>
+      <mat-list-item *ngFor="let operator of data.operators" class="operator-item">
+        <div matLine>
+          <span class="label">Matricule:</span> {{operator.matricule}}
+        </div>
+        <div matLine>
+          <span class="label">Nom:</span> {{operator.nom}}
+        </div>
+        <div matLine>
+          <span class="label">Plant:</span> {{operator.plant}}
+        </div>
+        <div matLine>
+          <span class="label">Segments:</span> {{operator.segments.join(', ')}}
+        </div>
+        <mat-divider></mat-divider>
+      </mat-list-item>
+    </mat-list>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Fermer</button>
+  </mat-dialog-actions>

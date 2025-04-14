@@ -1,0 +1,105 @@
+<mat-card class="cardWithShadow theme-card" style="margin-top: -16px;margin-left: 0px;
+                                                   position: sticky;min-width: 994px;">
+    <!-- Filtres alignés sur une seule ligne -->
+    <div class="filter-container">
+      <!-- Barre de recherche -->
+      <mat-form-field appearance="outline" class="search-box">
+        <mat-label>Rechercher</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="🔍 Tout champ">
+      </mat-form-field>
+  
+      <!-- Filtre Type de Process -->
+      <mat-form-field appearance="outline" class="filter-box">
+        <mat-label>Type de Process</mat-label>
+        <mat-select (selectionChange)="applyProcessFilter($event.value)" multiple>
+          <mat-option *ngFor="let process of processTypes" [value]="process">{{process}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Filtre Segment -->
+      <mat-form-field appearance="outline" class="filter-box">
+        <mat-label>Segment</mat-label>
+        <mat-select (selectionChange)="applySegmentFilter($event.value)" multiple>
+          <mat-option *ngFor="let segment of segments" [value]="segment">{{segment}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Filtre Statut -->
+      <mat-form-field appearance="outline" class="filter-box">
+        <mat-label>Statut</mat-label>
+        <mat-select (selectionChange)="applyStatusFilter($event.value)" multiple>
+          <mat-option *ngFor="let status of statuses" [value]="status">{{status}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <img src="assets/resources pdek/images/icone add.jpg"  *ngIf="isChefDeLigne()" 
+      alt="Add" class="add-icon" id="imageAddPlanAction"(click)="navigateToAddPlanActionPage()">
+    </div>
+  
+    <mat-divider></mat-divider>
+  
+    <!-- Tableau -->
+    <div class="table-responsive">
+      <mat-table [dataSource]="dataSource" matSort>
+        <!-- Colonnes -->
+        <ng-container matColumnDef="referencePlanAction">
+          <mat-header-cell *matHeaderCellDef mat-sort-header style="margin-left: -25px;">
+                 Référence Plan d'action</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.reference}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="referencePdek">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Référence PDEK</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.reference}}</mat-cell>
+        </ng-container>
+  
+        <ng-container matColumnDef="process">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Process</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.process}}</mat-cell>
+        </ng-container>
+  
+        <ng-container matColumnDef="segment">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Segment</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.segment}}</mat-cell>
+        </ng-container>
+  
+        <ng-container matColumnDef="dateCreation">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            date création</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.segment}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Statut</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <span class="status-badge" [class]="getStatusClass(row.status)">
+                {{row.status}}
+              </span>
+            </mat-cell>
+          </ng-container>
+          
+<ng-container matColumnDef="action">
+    <mat-header-cell *matHeaderCellDef>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        Actions</mat-header-cell>
+    <mat-cell *matCellDef="let row">
+      <!-- Icône Eye (visualisation) - couleur primaire -->
+      <button mat-icon-button (click)="viewDetails(row)" matTooltip="Voir détails">
+        <mat-icon class="icon-eye">visibility</mat-icon>
+      </button>
+      
+      <!-- Icône Print (impression) - couleur accent -->
+      <button mat-icon-button (click)="printRow(row)" matTooltip="Imprimer">
+        <mat-icon class="icon-print">print</mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
+  
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </mat-card>

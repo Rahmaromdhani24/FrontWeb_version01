@@ -1,0 +1,217 @@
+/* Conteneur principal */
+.cardWithShadow {
+    margin: 16px;
+    overflow: hidden;
+  }
+  
+  /* Conteneur des filtres */
+  .filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+    align-items: center;
+  }
+  
+  /* Style des champs de filtre */
+  .search-box, .filter-box {
+    flex: 1 1 200px;
+    min-width: 150px;
+  }
+  
+  /* Conteneur du tableau responsive */
+  .table-responsive {
+    overflow-x: auto;
+    padding: 0 10px;
+  }
+  
+  /* Fixer la largeur du tableau */
+  mat-table {
+    min-width: 100%;
+    width: max-content;
+  }
+  
+  /* Styles des cellules et en-têtes */
+  mat-header-cell, mat-cell {
+    padding: 0 8px;
+    white-space: nowrap;
+  }
+  
+  /* Colonnes avec largeurs fixes */
+  .mat-column-referencePlanAction {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+  }
+  .mat-column-referencePdek {
+    width: 130px;
+    min-width: 130px;
+    max-width: 130px;
+  }
+  
+  .mat-column-operateurs {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+  }
+  
+  .mat-column-process {
+    width: 130px;
+    min-width: 130px;
+    max-width: 130px;
+  } 
+  .mat-column-segment {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+  }
+  
+  .mat-column-status {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+  }
+  
+  .mat-column-planAction {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+  }
+  
+  .mat-column-action {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+  }
+  
+  /* Styles des badges de statut */
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    display: inline-block;
+  }
+  
+  /* Styles des badges de plan d'action */
+  .plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    color: var(--primary-color);
+  }
+  
+
+  
+  /* Paginator */
+  mat-paginator {
+    margin-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Pour les petits écrans */
+  @media (max-width: 768px) {
+    .filter-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .search-box, .filter-box {
+      width: 100%;
+    }
+  }
+#imageAddPlanAction{
+  width: 50px;
+    height: 50px;
+    margin-top: -20px;
+    cursor: pointer;
+}
+#imageAddPlanAction:hover {
+  transform: scale(1.02); /* Légère mise en avant au survol */
+  opacity: 0.9; /* Légère transparence */
+}
+
+
+  /**************** Styles plus *********************/
+   /* Styles pour les icônes d'action */
+.icon-eye {
+    color: #003d89; /* Couleur primaire (bleu Material) */
+    &:hover {
+      color: #003d89; /* Version plus foncée au survol */
+    }
+  }
+  
+  .icon-print {
+    color: #0dd872d5; /* Couleur accent (rose Material) */
+    &:hover {
+      color: #0dd872d5; /* Version plus foncée au survol */
+    }
+  }
+  
+  .plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    background-color: #e1f5fe;  // Bleu ciel clair
+    color: #0288d1;             // Bleu ciel plus foncé
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+  
+    &.status-en-cours {
+      background-color: #FFF3CD; /* Jaune clair */
+      color: #856404; /* Jaune foncé */
+      border: 1px solid #FFEEBA;
+      border-radius: 15px;
+    }
+    
+    &.status-valider {
+      background-color: #D4EDDA; /* Vert clair */
+      color: #155724; /* Vert foncé */
+      border: 1px solid #C3E6CB;
+      border-radius: 15px;
+    }
+    
+    &.status-rejeter {
+      background-color: #F8D7DA; /* Rouge clair */
+      color: #721C24; /* Rouge foncé */
+      border: 1px solid #F5C6CB;
+      border-radius: 15px;
+    }
+  }
+  /********************* icone operateurs ****************/
+  .user-cell {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    &:hover {
+      color: var(--primary-color);
+    }
+    
+    mat-icon {
+      transition: transform 0.2s;
+      
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }

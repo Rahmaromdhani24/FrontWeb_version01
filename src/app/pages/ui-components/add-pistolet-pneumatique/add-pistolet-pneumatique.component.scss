@@ -1,0 +1,79 @@
+.form-container {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+  }
+  
+  .form-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px; /* Ajoutez un espacement entre les lignes */
+  }
+  
+  .rowspan-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px; /* Largeur de la cellule */
+    background-color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    height: 100%;
+    padding: 10px;
+  }
+  
+  .form-fields {
+    flex-grow: 1; /* Remplir l'espace restant */
+    width: 100%;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+  }
+  
+  .w-100 {
+    width: 100%;
+  }
+  #btnCancel{
+    margin-left: 50px;
+  }
+  #btnSave{
+    margin-left: 300px;
+  }
+  #titreForm{
+    font-size: 20px;
+    margin-left: 200px;
+    margin-top: 20px;
+  }
+  #titreNumCourant{
+    margin-left: 300px;
+    color: #003d89;
+  }
+  /*************** Alert de succees ************/
+  .custom-popup {
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+    color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .custom-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .custom-confirm-button {
+    background-color: #4caf50 !important;
+    color: white !important;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+  }
+  
+  .custom-confirm-button:hover {
+    background-color: #45a049 !important;
+  }
+///*************************************************************************************///  

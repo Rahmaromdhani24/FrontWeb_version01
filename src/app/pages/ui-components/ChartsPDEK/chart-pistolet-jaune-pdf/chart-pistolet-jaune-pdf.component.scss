@@ -1,0 +1,58 @@
+ /* Pour rendre les bandes plus visibles */
+ .e-strip-line {
+    stroke-width: 2px;
+   }
+   
+   .e-chart .e-strip-line[fill*="yellow"] {
+    opacity: 0.6 !important;
+   }
+   .chart-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background: white;
+    border-radius: 8px;
+   }
+   
+   #chart {
+    display: block;
+    height: 400px;
+   }
+   #label40{
+     position: relative;
+     top: -230px;
+     font-family: auto;
+     left: -46px;
+     font-size: 15px;
+     font-weight: bold;
+   }
+   #label34{
+     position: relative;
+     top: -144px;
+     font-family: auto;
+     left: 9px;
+     font-size: 15px;
+   }
+   #label35{
+     position: relative;
+     top: -159px;
+     font-family: auto;
+     left: -18px;
+     font-size: 15px;
+   }
+   #label45{
+     position: relative;
+     top: -299px;
+     font-family: auto;
+     left: -73px;
+     font-size: 15px;
+   }
+   #label46{
+     position: relative;
+     top: -315px;
+     font-family: auto;
+     left: -101px;
+     font-size: 15px;
+   }
