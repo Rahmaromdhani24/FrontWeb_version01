@@ -22,6 +22,7 @@ import { PdekPistoletJauneComponent } from '../../Agent qualité/Pdeks Pistolet/
 import { PdekPistoletRougeComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-rouge/pdek-pistolet-rouge.component';
 import { PdekPistoletBleuComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-bleu/pdek-pistolet-bleu.component';
 import { PdekPistoletVertComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-vert/pdek-pistolet-vert.component';
+import { PageNotificationsPistoletComponent } from './page-notifications-pistolet/page-notifications-pistolet.component';
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -71,11 +72,12 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'addPlanAction',
         component: AddPlanActionComponent,
-      }/*
-      {
-        path: 'menu',
-        component: AppMenuComponent,
       },
+      {
+        path: 'pageNotificationsPistolet',
+        component: PageNotificationsPistoletComponent,
+      } ,
+     /*
       {
         path: 'tooltips',
         component: AppTooltipsComponent,

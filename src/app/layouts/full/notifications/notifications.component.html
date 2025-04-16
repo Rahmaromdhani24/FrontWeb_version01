@@ -1,0 +1,24 @@
+<body>
+<mat-card class="cardWithShadow theme-card">
+  <mat-card-content class="b-t-1">
+    <main>
+    <header id="headerPage">
+      <p>Notifications <span class="alert"> 3</span></p>
+      <!--p class="toogle">Mark all as read</p-->
+    </header>
+
+    <div *ngFor="let p of pistolets" class="notification" id="test">    
+      <div>
+        <p id="styleeMessage">
+          Le PDEK du pistolet <span id="couleurSpan"> {{ p.categorie }}</span>  de couleur {{formatPistolet(p.type)}}, numéro {{ p.numeroPistolet }}, dans le segment {{ p.segment }} attend votre validation immédiate
+           <!--span class="event">My first tournament today!
+            <span class="dot"></span>
+           </span-->
+        </p>
+        <small>1m ago</small>
+      </div>
+    </div>
+</main>
+</mat-card-content>
+</mat-card>
+</body>

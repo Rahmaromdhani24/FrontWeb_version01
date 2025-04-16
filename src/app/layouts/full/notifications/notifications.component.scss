@@ -1,0 +1,92 @@
+
+body{
+    height: 459px;
+    min-height: 459px; 
+    max-height: 100%;
+    //margin-left: 270px;
+}
+main{
+    gap: 10px;
+    background-color: var(--White);
+    width: 60%;
+    padding: 1rem 3rem;
+    display: flex;
+    border-radius: 10px;
+    flex-direction: column;
+    margin: 5%;
+    position: relative;
+    top: -65px;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+}
+
+header p:first-child{font-size: 20px ; font-weight: 800;}
+
+.alert{
+    padding: 0 10px; color: var(--White);
+    background-color: var(--Blue);
+    border-radius: 5px;
+}
+
+main div{border-radius: 5px;}
+
+small{color:  var(--Grayish_blue);}
+
+
+main div div{line-height: 1rem;}
+
+/*fieldset{border-radius:  5px; margin: 1rem; padding: 1rem 2rem;}
+
+fieldset:hover{background-color: var(--Light_grayish_blue1);}
+
+.club{color: var(--Blue);}
+.event{color:  var(--Dark_grayish_blue);}
+.chess{float: right;}
+
+.kim{
+    display: flex;
+    justify-content: space-between;
+}*/
+
+.kim div img{width: 20%;}
+
+.kim p{width: 160%;}
+
+
+.jacob,
+.angela,
+.mark{background-color: var(--Light_grayish_blue1);}
+
+.span:hover:not(.alert){color: var(--Blue);}
+
+.dot{
+    margin-left: 10px;
+    height: 10px;
+    width: 10px;
+    background-color: var(--Red);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+main div{
+    cursor: pointer;
+}
+
+.toogle:hover{cursor: pointer; color: var(--Blue);}
+
+/******************************************************************************************/
+#headerPage{
+    position: relative;
+    top: -20px;
+}
+#styleeMessage{
+    width: 630px;
+    line-height: 2;
+}
+.notification{
+    position: relative;
+    top: -30px;
+}

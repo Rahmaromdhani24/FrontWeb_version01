@@ -1,0 +1,34 @@
+<div class="stylePage">
+<mat-card class="cardWithShadow theme-card" id="styleCard">
+    <mat-card-header>
+      <mat-card-title class="m-b-0" id="titrePageNotifications"> Notifications : {{notificationsCount}}  </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="b-t-1">
+      <div *ngFor="let p of pistoletsNonValides; let last = last">
+
+        <div>
+          <p id="styleeMessage">
+            Le PDEK du pistolet <span id="styleSpan">{{ p.categorie }}</span> 
+            de couleur <span [style]="getCouleurPistoletStyle(p.type)">
+              {{ formatPistolet(p.type) }}
+            </span>, 
+            numéro <span id="styleSpan">{{ p.numeroPistolet }}</span>, 
+            dans le segment <span id="styleSpan">{{ p.segment }}</span> 
+            attend votre validation immédiate
+          </p>
+          <small id="timeNotification">{{ getDifferenceFromNow(p) }}</small>
+        </div>
+        <hr *ngIf="!last" />
+        <div class="actions">
+          <button mat-flat-button color="primary" class="m-r-8" (click)="voirPistolet(p)">
+            Voir PDEK
+          </button>
+          <button mat-flat-button class="bg-success text-white m-l-8" 
+            (click)="validerPdekPistolet(p.id)">
+            Valider PDEK
+          </button>
+        </div>      
+      </div>
+    </mat-card-content>    
+  </mat-card>
+  </div>

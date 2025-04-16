@@ -36,6 +36,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class PdekPistoletVertComponent implements OnInit ,AfterViewInit  {
 
    constructor(private pistoletGeneralService: PistoletGeneralService  , private router : Router ){}
+   matriculeAgentQualite : number ;
    seriesDataEtendue: { x: number, y: number }[] = [];
    seriesDataMoyenne: { x: number, y: number }[] = [];
    rows = Array.from({ length: 25 }, (_, i) => i + 1);
@@ -66,7 +67,7 @@ export class PdekPistoletVertComponent implements OnInit ,AfterViewInit  {
   
     this.plantUser = localStorage.getItem('plant')!;
     this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
-  
+    this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
    
     this.recupererDonneesDeFichierPdekDePageParticulier().subscribe(); // Ajoutez un délai pour tester
   }; 
@@ -173,8 +174,13 @@ public chartOptionsMoyenne: {
       {
         y: 88,
         borderColor: 'yellow',
-        strokeDashArray: 0
-      } ,
+        strokeDashArray: 0,
+        label: {
+          text: '88',
+          position: 'left',
+          style: { color: '#000', background: 'yellow' }
+        }
+      },
       {
         y: 100,
         borderColor: 'gray',
@@ -183,7 +189,12 @@ public chartOptionsMoyenne: {
       {
         y: 112,
         borderColor: 'yellow',
-        strokeDashArray: 0
+        strokeDashArray: 0,
+        label: {
+          text: '112',
+          position: 'left',
+          style: { color: '#000', background: 'yellow' }
+        }
       } ,
       {
         y: 120,
@@ -395,37 +406,38 @@ recuepererDernierNumeroDeCycle(){
     return date.getFullYear();
   }
   onValiderPistoletVert(id: number) {
-    console.log('bouton cliquéééé');
-    this.pistoletGeneralService.validerPistolet(id).subscribe({
-      next: () => {
-        console.log('Pistolet validé avec succès');
-        this.pistoletsValides.add(id); // Marquer ce pistolet comme validé
-  
-        Swal.fire({
-          title: 'Confirmation !',
-          text: 'Pistolet validé avec succès.',
-          icon: 'success',
-          confirmButtonText: 'OK',
-          customClass: {
-            popup: 'custom-popup',
-            title: 'custom-title',
-            confirmButton: 'custom-confirm-button'
-          }
-        });
-      },
-      error: (err) => {
-        console.error('Erreur lors de la validation :', err);
-        Swal.fire({
-          title: 'Erreur',
-          text: 'Erreur lors de la validation',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      }
-    });
+      this.pistoletGeneralService.validerPistolet(id, this.matriculeAgentQualite).subscribe({
+               next: () => {
+                 console.log('Pistolet validé avec succès');
+                 this.pistoletsValides.add(id); // Marquer ce pistolet comme validé
+           
+                 Swal.fire({
+                   title: 'Confirmation !',
+                   text: 'Pistolet validé avec succès.',
+                   icon: 'success',
+                   confirmButtonText: 'OK',
+                   customClass: {
+                     popup: 'custom-popup',
+                     title: 'custom-title',
+                     confirmButton: 'custom-confirm-button'
+                   }
+                 });
+               },
+               error: (err) => {
+                 console.error('Erreur lors de la validation :', err);
+                 Swal.fire({
+                   title: 'Erreur',
+                   text: 'Erreur lors de la validation',
+                   icon: 'error',
+                   confirmButtonText: 'OK'
+                 });
+               }
+             });
   }
-   
+
+
   naviger(){
+    localStorage.removeItem('reponseApi')
     this.router.navigate(['/dashboard']);
   }
  }

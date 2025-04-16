@@ -49,15 +49,24 @@ export class PistoletGeneralService {
     );
   }
   
-  validerPistolet(id: number) {
-    const token = localStorage.getItem('token'); // récupère le token depuis le localStorage
+  validerPistolet(id: number, matriculeAgent: number) {
+    const token = localStorage.getItem('token');
   
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    const params = new HttpParams().set('id', id);
-    return this.http.put(`http://localhost:8281/operations/pistolet/validerPistolet`, {}, {headers, params });
+  
+    const params = new HttpParams()
+      .set('id', id)
+      .set('matriculeAgentDeQualite', matriculeAgent);
+  
+    return this.http.put(
+      `http://localhost:8281/operations/pistolet/validerPistolet`,
+      {}, // corps vide
+      { headers, params }
+    );
   }
+  
 
   getPdekByTypeOperation(typeOperation: string): Observable<PdekResultat[]> {
     const token = localStorage.getItem('token');

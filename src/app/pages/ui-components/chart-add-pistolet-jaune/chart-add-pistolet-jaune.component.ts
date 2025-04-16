@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { catchError, tap } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 import { 
   LineSeriesService,
   CategoryService,
@@ -55,6 +56,7 @@ export class ChartAddPistoletJauneComponent  implements OnInit {
    pistolets: Pistolet[] = [];
    pistolet : Pistolet ; 
    reponseApi : any ; 
+   matriculeAgentQualite : number ; 
    ngOnInit(): void {
    
     this.pistolet = JSON.parse(localStorage.getItem("pistolet") !)  ;   
@@ -71,6 +73,7 @@ export class ChartAddPistoletJauneComponent  implements OnInit {
     console.log('Type de pistolet:',  this.typePistolet);
     console.log('id de pdek :',  this.idPdek);
     console.log('numero de page de pdek :',  this.numPage);
+    this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
 
     // Utilise les valeurs ici pour charger les graphiques ou autre logique
   this.recuepererDernierNumeroDeCycle() ; 
@@ -318,14 +321,30 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Pistolet[]> {
   );
 }
 onValiderPistolet(id: number) {
-  this.pistoletGeneralService.validerPistolet(id).subscribe({
-    next: () => {
-      console.log('Pistolet validé avec succès');
-      // tu peux faire un refresh ici si besoin
-    },
-    error: (err) => {
-      console.error('Erreur lors de la validation :', err);
-    }
+ this.pistoletGeneralService.validerPistolet(id, this.matriculeAgentQualite).subscribe({
+                  next: () => {
+                    console.log('Pistolet validé avec succès');
+                    Swal.fire({
+                      title: 'Confirmation !',
+                      text: 'Pistolet validé avec succès.',
+                      icon: 'success',
+                      confirmButtonText: 'OK',
+                      customClass: {
+                        popup: 'custom-popup',
+                        title: 'custom-title',
+                        confirmButton: 'custom-confirm-button'
+                      }
+                    });
+                  },
+                  error: (err) => {
+                    console.error('Erreur lors de la validation :', err);
+                    Swal.fire({
+                      title: 'Erreur',
+                      text: 'Erreur lors de la validation',
+                      icon: 'error',
+                      confirmButtonText: 'OK'
+                    });
+                  }
   });
 }
 naviger(){

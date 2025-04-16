@@ -104,6 +104,9 @@ export class HeaderComponent  implements OnInit{
     validerPistolet(pistoletId: number) {
       console.log(`Valider PDEK pour le pistolet avec ID ${pistoletId}`);
     }
+    voirTousNotifications(){
+      this.router.navigate(['/ui-components/pageNotificationsPistolet']) 
+    }
     logout(){
       localStorage.clear() ;
       this.router.navigate(['/login'])

@@ -71,6 +71,10 @@ export class AddPistoletMecaniqueComponent implements OnInit{
    
   }
   submitForm() {
+    const now = new Date();
+    const heures = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+
     if (this.myForm.invalid) {
       Swal.fire({
         title: 'Champs manquants',
@@ -171,8 +175,9 @@ export class AddPistoletMecaniqueComponent implements OnInit{
         pistolet.coupePropre =this.myForm.get('selectedValue')?.value;
         pistolet.nbrCollierTester =this.myForm.get('nombreCollier')?.value;
         pistolet.semaine =this.myForm.get('semaine')?.value;
+        pistolet.heureCreation = `${heures}:${minutes}`;
         const matriculeUser: number = Number(localStorage.getItem('matricule'));
-      
+       
         // Appeler le service pour ajouter le pistolet
         this.pistoletMecaniqueService.ajouterPistolet(matriculeUser, pistolet).subscribe(
         (response: AjoutPistoletResponse) => {
@@ -372,6 +377,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
     pistolet.coupePropre =this.myForm.get('selectedValue')?.value;
     pistolet.nbrCollierTester =this.myForm.get('nombreCollier')?.value;
     pistolet.semaine =this.myForm.get('semaine')?.value;
+    pistolet.heureCreation = `${heures}:${minutes}`;
     const matriculeUser: number = Number(localStorage.getItem('matricule'));
   
     // Appeler le service pour ajouter le pistolet
@@ -577,6 +583,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
     pistolet.coupePropre =this.myForm.get('selectedValue')?.value;
     pistolet.nbrCollierTester =this.myForm.get('nombreCollier')?.value;
     pistolet.semaine =this.myForm.get('semaine')?.value;
+    pistolet.heureCreation = `${heures}:${minutes}`;
     const matriculeUser: number = Number(localStorage.getItem('matricule'));
   
     // Appeler le service pour ajouter le pistolet
@@ -781,6 +788,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
     pistolet.coupePropre =this.myForm.get('selectedValue')?.value ;
     pistolet.nbrCollierTester =this.myForm.get('nombreCollier')?.value ;
     pistolet.semaine =this.myForm.get('semaine')?.value ;
+    pistolet.heureCreation = `${heures}:${minutes}`;
     pistolet.decision=0 ; 
     const matriculeUser: number = Number(localStorage.getItem('matricule'));
   

@@ -8,6 +8,7 @@ export class Pistolet {
     limiteInterventionMax!: string;
     limiteInterventionMin!: string;
     dateCreation!: string;
+    heureCreation : string ; 
     type!: string; // Remplace par l'Enum TypePistolet si tu en as un
     categorie!: string; // Remplace par l'Enum CategoriePistolet si tu en as un
     coupePropre!: string;
@@ -24,6 +25,7 @@ export class Pistolet {
     matricule : number ; 
     plant : string ; 
     segment : number ; 
-
+    pdekId : number ;
+    numPage : number ; 
   }
   
