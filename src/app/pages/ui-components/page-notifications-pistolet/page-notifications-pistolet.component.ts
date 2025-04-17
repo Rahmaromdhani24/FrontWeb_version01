@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { AjoutPistoletResponse } from 'src/app/Modeles/AjoutPistoletResponse';
 import { PistoletGeneralService } from 'src/app/services/Agent Qualité Montage Pistolet/pistolet-general.service';
+import { GeneralService } from 'src/app/services/Géneral/general.service';
 
 interface CoupePropre {
   value: string;
@@ -39,10 +40,9 @@ interface CoupePropre {
 export class PageNotificationsPistoletComponent implements OnInit {
 
 constructor(private router : Router , private servicePistolet : PistoletGeneralService ,
-  private pistoletGeneralService: PistoletGeneralService){}
+  private pistoletGeneralService: PistoletGeneralService ,  public  serviceGeneral : GeneralService ){}
 
   matriculeAgentQualite : number ; 
-  notificationsCount: number = 0;
   pistolets: Pistolet[] = [];
   role : string | null ; 
   notification : Notification ; 
@@ -69,8 +69,7 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
   recupererNombreNotificationsPistolet(){
     this.servicePistolet.getNombreNotifications().subscribe({
       next: (count) => {
-        this.notificationsCount = count;
-        console.error('nombre notifications est  :', this.notificationsCount);
+        this.serviceGeneral.nbrNotifications = count;
 
       },
       error: (err) => {
@@ -83,8 +82,12 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
     this.servicePistolet.getPistoletsNonValidees().subscribe({
       next: (data) => {
         this.pistolets = data;
-        console.error('pistolets non valides :', this.pistolets);
-      },
+        this.pistolets.forEach(p => {
+          const etat = this.servicePistolet.etatPistolet(p.etendu, p.moyenne, p.type);
+          p.activationValider = etat === "vert";
+          p.messageEtat = this.genererMessageEtat(etat); 
+        });  
+     },
       error: (err) => {
         console.error('Erreur lors de la récupération des pistolets :', err);
       }
@@ -136,7 +139,7 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
               this.recupererNombreNotificationsPistolet();
               console.log('Pistolet validé avec succès');
               this.pistoletsValides.add(pistoletId); // Marquer ce pistolet comme validé
-        
+            
               Swal.fire({
                 title: 'Confirmation !',
                 text: 'Pistolet validé avec succès.',
@@ -212,7 +215,20 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
       return `Il y a ${totalDays}j ${remainingHours}h`;
     }
     
-      
+    genererMessageEtat(etat: string): string {
+      switch (etat) {
+        case 'vert':
+          return 'attente de votre validation immédiate.';
+        case 'jaune':
+          return 'zone jaune détectée : une vérification peut être nécessaire.';
+        case 'rouge':
+          return 'zone rouge détectée : intervention immédiate requise.';
+        default:
+          return 'État inconnu.';
+      }
+    }
+    
+ 
     logout(){
       localStorage.clear() ;
       this.router.navigate(['/login'])

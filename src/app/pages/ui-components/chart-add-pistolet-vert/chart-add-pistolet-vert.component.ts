@@ -18,6 +18,7 @@ import { PistoletGeneralService } from 'src/app/services/Agent Qualité Montage 
 import { ActivatedRoute , Router } from '@angular/router';
 import { Observable, of, tap } from 'rxjs';
 import { Pistolet } from 'src/app/Modeles/Pistolet';
+import { GeneralService } from 'src/app/services/Géneral/general.service';
 
 @Component({
   selector: 'app-chart-add-pistolet-vert',
@@ -42,7 +43,7 @@ import { Pistolet } from 'src/app/Modeles/Pistolet';
 })
 export class ChartAddPistoletVertComponent  implements OnInit {
   constructor(private pistoletGeneralService: PistoletGeneralService , private router: Router ,
-              private route: ActivatedRoute){}
+              private route: ActivatedRoute , private general : GeneralService){}
        numeroCourant : number ; 
        numeroPistolet : number ; 
        typePistolet : string ; 
@@ -75,6 +76,8 @@ export class ChartAddPistoletVertComponent  implements OnInit {
           // Utilise les valeurs ici pour charger les graphiques ou autre logique
         this.recuepererDernierNumeroDeCycle() ; 
         this.recupererDonneesDeFichierPdekDePageParticulier().subscribe();
+        this.general.nbrNotifications++ ;  
+
           }
   /***************************** Chart moyenne X *******************************************/
     // Titre et style

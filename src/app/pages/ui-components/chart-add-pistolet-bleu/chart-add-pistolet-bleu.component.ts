@@ -17,6 +17,10 @@ import { PistoletGeneralService } from 'src/app/services/Agent Qualité Montage 
 import { ActivatedRoute  , Router} from '@angular/router';
 import { Pistolet } from 'src/app/Modeles/Pistolet';
 import { Observable, of } from 'rxjs';
+import { GeneralService } from 'src/app/services/Géneral/general.service';
+import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-chart-add-pistolet-bleu',
@@ -25,7 +29,9 @@ import { Observable, of } from 'rxjs';
     ChartModule,
     MatCardModule,
     MatFormFieldModule ,
-    MatButtonModule
+    MatButtonModule ,
+    CommonModule 
+
   ],
   providers: [
     LineSeriesService,
@@ -41,7 +47,7 @@ import { Observable, of } from 'rxjs';
 })
 export class ChartAddPistoletBleuComponent implements OnInit {
   constructor(private pistoletGeneralService: PistoletGeneralService , private router : Router ,
-              private route: ActivatedRoute , private cdr: ChangeDetectorRef) {}
+              private route: ActivatedRoute , private cdr: ChangeDetectorRef , private general : GeneralService) {}
 
   numeroCourant : number; 
   numeroPistolet : number; 
@@ -54,25 +60,30 @@ export class ChartAddPistoletBleuComponent implements OnInit {
   pistolets: Pistolet[] = [];
   pistolet : Pistolet ;
   reponseApi : any ; 
-
+  matriculeAgentQualite :  number ; 
+  idPistolet : number ; 
   ngOnInit(): void {
 
-       this.pistolet = JSON.parse(localStorage.getItem("pistolet") !)  ;   
-       this.reponseApi = JSON.parse(localStorage.getItem("reponseApi") !)  ;       
-       this.numeroPistolet =  this.pistolet.numeroPistolet ; 
-       this.typePistolet = this.pistolet.type ;
-       this.categorie =  this.pistolet.categorie ; 
-       this.idPdek = this.reponseApi.pdekId ; 
-       this.numPage = this.reponseApi.pageNumber ; 
+    this.pistolet = JSON.parse(localStorage.getItem("pistolet") !)  ;   
+    this.reponseApi = JSON.parse(localStorage.getItem("reponseApi") !)  ;       
+    this.numeroPistolet =  this.pistolet.numeroPistolet ; 
+    this.typePistolet = this.pistolet.type ;
+    this.categorie =  this.pistolet.categorie ; 
+    this.idPdek = this.reponseApi.pdekId ; 
+    this.numPage = this.reponseApi.pageNumber ; 
   
-       this.plantUser = localStorage.getItem('plant')!;
-       this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
-      console.log('Numéro de pistolet:',  this.numeroPistolet);
-      console.log('Type de pistolet:',  this.typePistolet);
-      console.log('id de pdek :',  this.idPdek);
-      console.log('numero de page de pdek :',  this.numPage);
+    this.plantUser = localStorage.getItem('plant')!;
+    this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+    console.log('Numéro de pistolet:',  this.numeroPistolet);
+    console.log('Type de pistolet:',  this.typePistolet);
+    console.log('id de pdek :',  this.idPdek);
+    console.log('numero de page de pdek :',  this.numPage);
     this.recuepererDernierNumeroDeCycle(); 
     this.recupererDonneesDeFichierPdekDePageParticulier().subscribe();
+    this.general.nbrNotifications++ ;  
+    this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
+    this.recupererPistoletByNumeroEtEtat();
+
   }
   /***************************** Chart moyenne X *******************************************/
     // Titre et style
@@ -315,6 +326,76 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Pistolet[]> {
     })
   );
 }
+
+recupererPistoletByNumeroEtEtat(): void {
+  this.pistoletGeneralService.getPistoletByNumero(this.numeroPistolet).subscribe({
+    next: (data) => {
+      console.log('Pistolet récupéré :', data);
+      this.pistolet = data;
+
+      // Appel de la méthode qui détermine l'état du pistolet
+      const etat = this.recupererEtatPistolet(this.pistolet);
+      console.log('État du pistolet :', etat);
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération du pistolet :', err);
+    }
+  });
+}
+
+validerPdekPistolet(): void {
+
+  this.pistoletGeneralService.getPistoletByNumero(this.numeroPistolet).subscribe({
+    next: (data) => {
+      this.pistolet = data;
+      this.idPistolet = data.id;
+
+      this.pistoletGeneralService.validerPistolet(this.idPistolet, this.matriculeAgentQualite).subscribe({
+        next: () => {
+          this.general.recupererNombreNotificationsPistolet();
+          this.general.nbrNotifications--;
+
+          console.log('Pistolet validé avec succès.');
+
+          Swal.fire({
+            title: 'Confirmation !',
+            text: 'Pistolet validé avec succès.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            customClass: {
+              popup: 'custom-popup',
+              title: 'custom-title',
+              confirmButton: 'custom-confirm-button'
+            }
+          });
+        },
+        error: (err) => {
+          console.error(' Erreur lors de la validation du pistolet :', err);
+
+          Swal.fire({
+            title: 'Erreur',
+            text: 'Erreur lors de la validation du pistolet.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
+    },
+    error: (err) => {
+      console.error(' Erreur lors de la récupération du pistolet :', err);
+    }
+  });
+}
+recupererEtatPistolet(p: Pistolet): string {
+  const etat = this.pistoletGeneralService.etatPistolet(p.etendu, p.moyenne, p.type);
+  p.activationValider = etat === "vert";
+  return etat;
+}
+creerPlanAction() {
+  console.log('Création d’un plan d’action pour le pistolet ');
+  // Logique ici
+}
+
 naviger(){
   this.router.navigate(['/pdekPistoletBleu']);
 }

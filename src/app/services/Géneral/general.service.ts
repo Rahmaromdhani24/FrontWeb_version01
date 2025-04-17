@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class GeneralService {
 
   constructor(private http: HttpClient) { }
- 
+  nbrNotifications: number ; 
 
   private urlLogin = 'http://localhost:8281/auth/login';
   login(matricule: number): Observable<any> {
@@ -37,6 +37,27 @@ saveToken(token: string) {
 getToken(): string | null {
   return localStorage.getItem('token');
 }
+getNombreNotifications(): Observable<number> {
+    const token = localStorage.getItem('token');
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<number>('http://localhost:8281/operations/pistolet/nbrNotifications',
+      { headers }
+    );
+  }
 
+recupererNombreNotificationsPistolet(){
+  this.getNombreNotifications().subscribe({
+    next: (count : any) => {
+      this.nbrNotifications = count;
+
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des notifications :', err);
+    }
+  });
+}
 
 }

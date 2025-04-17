@@ -11,7 +11,6 @@ export class PistoletGeneralService {
 
   constructor(private http: HttpClient) {}
 
-  etat : string ; 
   getDernierNumeroCycle(typePistolet: string, numPistolet: number, categorie: string, segment: number, nomPlant: string): Observable<number> {
     const token = localStorage.getItem('token');
   
@@ -58,7 +57,7 @@ export class PistoletGeneralService {
   
     const params = new HttpParams()
       .set('id', id)
-      .set('matriculeAgentDeQualite', matriculeAgent);
+      .set('matriculeAgentQualite', matriculeAgent);
   
     return this.http.put(
       `http://localhost:8281/operations/pistolet/validerPistolet`,
@@ -99,57 +98,41 @@ export class PistoletGeneralService {
 
     return this.http.get<Pistolet[]>('http://localhost:8281/operations/pistolet/pistolets-non-validees', { headers });
   }
+  apiUrl='http://localhost:8281/operations/pistolet' ; 
+  getPistoletByNumero(numeroPistolet: number): Observable<Pistolet> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
 
-  etatPistolet( etendu : number ,  moyenne :number,  typePistolet : string):any{
-    /* Pistolet Rouge */
-    if(typePistolet==="PISTOLET_ROUGE"){
-      if(etendu< 12 && (moyenne>131 && moyenne< 149)){
-        this.etat="vert" ; 
-      } if(etendu< 12 && ((moyenne> 125 && moyenne<= 131) || (moyenne>= 149 && moyenne< 166))){
-        this.etat="jaune" ; 
-      } if(etendu< 12 && ((moyenne<= 125 ) || (moyenne>= 166))){
-        this.etat="rouge" ; 
-      }
-      if(etendu>=12){
-        this.etat="rouge" ;      }
-      }
-
-       /* Pistolet Vert  */
-   if(typePistolet==="PISTOLET_VERT"){
-    
-    if(etendu< 12 && (moyenne>88 && moyenne< 112)){
-      this.etat="vert" ; 
-    } if(etendu< 12 && ((moyenne> 80 && moyenne<= 88) || (moyenne>= 112 && moyenne< 120))){
-      this.etat="jaune" ; 
-    } if(etendu< 12 && ((moyenne<= 80 ) || (moyenne>= 120))){
-      this.etat="rouge" ; 
-    }
-    if(etendu>=12){
-      this.etat="rouge" ;      }
-    } 
-     /* Pistolet Jaune */
-    if(typePistolet==="PISTOLET_JAUNE"){
-      if(etendu< 3 && (moyenne>35 && moyenne< 45)){
-        this.etat="vert" ; 
-      } if(etendu< 3 && ((moyenne> 34 && moyenne<= 35) || (moyenne>= 45 && moyenne< 46))){
-        this.etat="jaune" ; 
-      } if(etendu< 3 && ((moyenne<= 34 ) || (moyenne>= 46))){
-        this.etat="rouge" ; 
-      }
-      if(etendu>=3){
-        this.etat="rouge" ;      }
-    } 
-      /* Pistolet Bleu  */
-    if(typePistolet==="PISTOLET_BLEU"){
-      if(etendu< 6 && (moyenne>56 && moyenne< 74)){
-        this.etat="vert" ; 
-      } if(etendu< 6 && ((moyenne> 50 && moyenne<= 56) || (moyenne>= 74 && moyenne< 80))){
-        this.etat="jaune" ; 
-      } if(etendu< 6 && ((moyenne<= 50 ) || (moyenne>= 80))){
-        this.etat="rouge" ; 
-      }
-      if(etendu>=6){
-        this.etat="rouge" ;      }
-    }
+    return this.http.get<Pistolet>(`${this.apiUrl}/pistolet/${numeroPistolet}`, { headers });
   }
+  etatPistolet(etendu: number, moyenne: number, typePistolet: string): string {
+    if (typePistolet === "PISTOLET_ROUGE") {
+      if (etendu < 12 && (moyenne > 131 && moyenne < 149)) return "vert";
+      if (etendu < 12 && ((moyenne > 125 && moyenne <= 131) || (moyenne >= 149 && moyenne < 166))) return "jaune";
+      return "rouge";
+    }
+  
+    if (typePistolet === "PISTOLET_VERT") {
+      if (etendu < 12 && (moyenne > 88 && moyenne < 112)) return "vert";
+      if (etendu < 12 && ((moyenne > 80 && moyenne <= 88) || (moyenne >= 112 && moyenne < 120))) return "jaune";
+      return "rouge";
+    }
+  
+    if (typePistolet === "PISTOLET_JAUNE") {
+      if (etendu < 3 && (moyenne > 35 && moyenne < 45)) return "vert";
+      if (etendu < 3 && ((moyenne > 34 && moyenne <= 35) || (moyenne >= 45 && moyenne < 46))) return "jaune";
+      return "rouge";
+    }
+  
+    if (typePistolet === "PISTOLET_BLEU") {
+      if (etendu < 6 && (moyenne > 56 && moyenne < 74)) return "vert";
+      if (etendu < 6 && ((moyenne > 50 && moyenne <= 56) || (moyenne >= 74 && moyenne < 80))) return "jaune";
+      return "rouge";
+    }
+  
+    return "inconnu";
+  }
+  
 } 

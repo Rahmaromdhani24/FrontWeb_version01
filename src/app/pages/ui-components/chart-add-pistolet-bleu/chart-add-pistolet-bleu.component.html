@@ -113,8 +113,23 @@
             </mat-label>
           </div>
         </div>
-        <button mat-flat-button color="primary" class="m-r-8" type="submit" id="btnSave" (click)="naviger()">Valider PDEK</button>
-
+        <div class="actions">
+          <!-- Toujours affiché -->
+          <button mat-flat-button color="primary" class="m-r-8" type="submit" id="btnSave" (click)="naviger()">
+            Voir PDEK
+          </button>
+        <ng-container *ngIf="pistolet.activationValider; else templateCreerPlanAction">
+          <button mat-flat-button class="bg-success text-white" (click)="validerPdekPistolet()">
+            Valider PDEK
+          </button>
+        </ng-container>
+        
+        <ng-template #templateCreerPlanAction>
+          <button mat-flat-button class="bg-success text-white" (click)="creerPlanAction()">
+            Créer Plan d'action
+          </button>
+        </ng-template>
+        </div>
       </form>
      
     </mat-card-content>
