@@ -4,7 +4,7 @@
     </mat-card-header>
     <mat-card-content class="b-t-1">
      
-      <div  style="width: 100%; height: 400px;">
+      <div  *ngIf="donneesMoyenne.length > 0" style="width: 100%; height: 400px;" >
         <ejs-chart 
           [title]="title" 
           [titleStyle]="titleStyle"
@@ -39,7 +39,7 @@
         <span id="label120"> 120 -</span>
       
       </div>
-      <div style="width: 100%; height: 250px;">
+      <div *ngIf="donneesEtendu.length > 0" style="width: 100%; height: 250px;">
         <ejs-chart 
           [title]="titleEtendue" 
           [titleStyle]="titleStyleEtendue"
@@ -68,7 +68,6 @@
         </ejs-chart>
       </div>
       <br> <br>
-      <form>
         <div class="form-container">
           <!-- Première colonne (gauche) -->
           <div class="form-column">
@@ -115,8 +114,37 @@
             </mat-label>
           </div>
         </div>
-        <button mat-flat-button color="primary" class="m-r-8" type="submit" id="btnSave" (click)="naviger()">Valider PDEK</button>
-      </form>
-     
+        <div class="actions">
+          <button mat-flat-button color="primary" class="m-r-8" id="btnSave" type="button" (click)="naviger()">
+            Voir PDEK
+          </button>
+        
+          <!-- ✅ Cas 1 : Pistolet validé => bouton désactivé en rouge -->
+          <ng-container *ngIf="valide; else verifierActivation">
+            <button mat-flat-button class="bg-danger text-black" disabled>
+              PDEK déjà validé
+            </button>
+          </ng-container>
+        
+          <!-- ✅ Cas 2 ou 3 : on vérifie activationValider -->
+          <ng-template #verifierActivation>
+            <ng-container *ngIf="pistolet.activationValider;">
+              <button
+                mat-flat-button
+                class="bg-success text-white"
+                (click)="validerPdekPistolet()"
+              >
+                Valider PDEK
+              </button>
+            </ng-container>
+          </ng-template>
+        
+          <!-- ✅ Cas 3 : Pistolet non conforme -->
+          <ng-template #templateCreerPlanAction>
+            <button mat-flat-button class="bg-warning text-white" (click)="creerPlanAction()">
+              Créer Plan d'action
+            </button>
+          </ng-template>
+        </div>         
     </mat-card-content>
   </mat-card>

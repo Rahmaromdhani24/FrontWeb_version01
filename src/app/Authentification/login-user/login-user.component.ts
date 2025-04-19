@@ -74,28 +74,33 @@ export class LoginUserComponent implements OnInit {
         this.authService.getUser(matricule).subscribe({
           next: (user) => {
             this.admin = user;
-            if((user.role="AGENT_QUALITE" ) && (user.operation="Montage_Pistolet")){
-              localStorage.setItem('role', "AGENT_QUALITE_PISTOLET");    
+            localStorage.setItem('user', JSON.stringify(user));
+    
+            if (user.role === "AGENT_QUALITE" && user.operation === "Montage_Pistolet") {
+              localStorage.setItem('role', "AGENT_QUALITE_PISTOLET");
             }
-            if((user.role="AGENT_QUALITE" ) && (user.operation=null)){
-              localStorage.setItem('role', user.role);    
+            else if (user.role === "AGENT_QUALITE" && (user.operation === null || user.operation === undefined)) {
+              localStorage.setItem('role', user.role);
             }
-            localStorage.setItem('user', JSON.stringify(user)); 
-          
+            else if (user.role === "TECHNICIEN") {
+              localStorage.setItem('role', "TECHNICIEN");
+            }
+            else if (user.role === "ADMIN") {
+              localStorage.setItem('role', "Administrateur");
+            }
             localStorage.setItem('matricule', user.matricule);
-
             localStorage.setItem('plant', user.plant);
-
             localStorage.setItem('segment', user.segment);
             resolve();
           },
           error: (err) => {
-            console.error('S7i7aaaa   !!!!! ');
+            console.error('S7i7aaaa !!!!!');
             reject(err);
           }
         });
       });
-    }  
+    }
+    
 }
 
 

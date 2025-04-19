@@ -28,6 +28,7 @@ export class Pistolet {
     pdekId : number ;
     numPage : number ; 
     activationValider?: boolean;
-    messageEtat : any ; 
+    messageEtat : any ;
+    rempliePlanAction : number ; 
   }
   

@@ -264,12 +264,12 @@ export const navItems: NavItem[] = [
   {
     navCap: 'Plan d actions',
   },
-  {
+ {
     displayName: 'Ajout Plan d action',
     iconName: 'file-text',
     route: '/ui-components/addPlanAction',
     bgcolor: 'success',
-    roles: ['ADMIN', 'AGENT_QUALITE'], 	
+    roles: ['TECHNICIEN'], 	
 
   }, 
   {
@@ -277,7 +277,7 @@ export const navItems: NavItem[] = [
     iconName: 'file-text',
     route: '/ui-components/listePlanAction',
     bgcolor: 'error',
-    roles: ['ADMIN', 'AGENT_QUALITE'], 	
+    roles: ['AGENT_QUALITE_PISTOLET' ,'TECHNICIEN'], 	
 
   }, 
   

@@ -19,15 +19,13 @@
 
   <!-- Menu déroulant notifications -->
   <mat-menu #menu="matMenu" panelClass="custom-notif-menu">
-    <ng-container *ngIf="pistolets && pistolets.length > 0; else noNotif">
-  <!-- Menu déroulant notifications -->
+   <!-- Pour l'AGENT_QUALITE_PISTOLET -->
+<ng-container *ngIf="role === 'AGENT_QUALITE_PISTOLET'">
   <mat-menu-item *ngFor="let p of pistolets.slice(0, 3); let last = last">
     <div style="width: 100%;">
       <p style="margin-left: 10px;">
         <strong>
-           <span [style]="getCouleurPistoletStyle(p.type)">
-            Pistolet
-          </span> ({{ p.categorie }}) 
+          <span [style]="getCouleurPistoletStyle(p.type)">Pistolet</span> ({{ p.categorie }})
         </strong>
         - Segment : {{ p.segment }}
         <span>{{ p.messageEtat }}</span>
@@ -35,33 +33,56 @@
       <small class="time">{{ getDifferenceFromNow(p) }}</small>
       <div>
         <button mat-button color="primary" (click)="voirPistolet(p)">Voir le PDEK</button>
-        <button mat-button color="accent" (click)="validerPdekPistolet(p.id)" 
-        [disabled]="!p.activationValider"> Valider PDEK</button>
-
+        <button mat-button color="accent" (click)="validerPdekPistolet(p.id)"
+                [disabled]="!p.activationValider">Valider PDEK</button>
       </div>
     </div>
     <hr *ngIf="!last" />
   </mat-menu-item>
-  
+    <!-- Bouton voir plus -->
+    <div style="width: 100%; display: flex; justify-content: center; padding-top: 8px;">
+      <button mat-flat-button class="bg-success text-white" (click)="voirTousNotifications()">Voir plus</button>
+    </div>
+</ng-container>
 
-      <!-- Bouton voir plus -->
-      <div style="width: 100%; display: flex; justify-content: center; padding-top: 8px;">
-        <button mat-flat-button class="bg-success text-white" (click)="voirTousNotifications()">Voir plus</button>
+<!-- Pour le Technicien -->
+<ng-container *ngIf="role === 'TECHNICIEN'">
+  <mat-menu-item *ngFor="let p of pistolets.slice(0, 3); let last = last">
+    <div style="width: 100%;">
+      <p style="margin-left: 10px;">
+        <strong>
+          <span [style]="getCouleurPistoletStyle(p.type)">Pistolet</span> ({{ p.categorie }})
+        </strong>
+        - Segment : {{ p.segment }}
+        <span>{{ p.messageEtat }}</span>
+      </p>
+      <small class="time">{{ getDifferenceFromNow(p) }}</small>
+    <div>
+      <button mat-button color="primary" (click)="voirPistolet(p)">Voir le PDEK</button>
+      <button mat-button color="accent" (click)="creerPlanAction(p)"> Ajout Plan d'action</button>
+               
       </div>
+    </div>
+    <hr *ngIf="!last" />
+  </mat-menu-item>
+    <!-- Bouton voir plus -->
+    <div style="width: 100%; display: flex; justify-content: center; padding-top: 8px;">
+      <button mat-flat-button class="bg-success text-white" (click)="voirTousNotifications()">Voir plus</button>
+    </div>
+</ng-container>
 
-    </ng-container>
-      <!-- Cas où il n'y a aucune notification -->
-  <ng-template #noNotif>
-    <mat-menu-item>
-      <div style="width: 100%; text-align: center;">
-        <p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          Pas de notifications
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-        </strong></p>
-      </div>
-    </mat-menu-item>
-  </ng-template>
-  </mat-menu>
+          <!-- Cas où il n'y a aucune notification -->
+      <ng-template #noNotif>
+        <mat-menu-item>
+          <div style="width: 100%; text-align: center;">
+            <p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              Pas de notifications
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            </strong></p>
+          </div>
+        </mat-menu-item>
+      </ng-template>
+      </mat-menu>
 
   <!-- Espace vide entre icônes et profil -->
   <span class="flex-1-auto" style="margin-left: -575px;"></span>

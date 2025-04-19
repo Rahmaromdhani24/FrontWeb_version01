@@ -1,4 +1,4 @@
-<div class="stylePage">
+<div class="stylePage" *ngIf="role === 'AGENT_QUALITE_PISTOLET'">
   <mat-card class="cardWithShadow theme-card" id="styleCard">
     <mat-card-header>
       <mat-card-title id="titrePageNotifications">
@@ -35,6 +35,43 @@
             (click)="validerPdekPistolet(p.id)" [disabled]="!p.activationValider"> Valider PDEK </button>
            
           
+        </div>
+
+        <hr *ngIf="!last" />
+      </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<!------------------ Technicien -------------------------------->
+<div class="stylePage" *ngIf="role === 'TECHNICIEN'">
+  <mat-card class="cardWithShadow theme-card" id="styleCard">
+    <mat-card-header>
+      <mat-card-title id="titrePageNotifications">
+        Notifications : {{ serviceGeneral.nbrNotifications }}
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="b-t-1">
+      <div *ngFor="let p of pistoletsNonValides; let last = last" >
+        <div class="notification-row">
+          <div class="message">
+            <p>
+              Le PDEK du pistolet <span id="styleSpan">{{ p.categorie }}</span>
+              de couleur
+              <span [style]="getCouleurPistoletStyle(p.type)">
+                {{ formatPistolet(p.type) }}
+              </span>,
+              numéro <span id="styleSpan">{{ p.numeroPistolet }}</span><br>
+              dans le segment <span id="styleSpan">{{ p.segment }}</span>
+              <span> ,{{ p.messageEtat }}</span>
+            </p>
+            <small class="time">{{ getDifferenceFromNow(p) }}</small>
+          </div>
+
+          <div class="actions">
+            <button mat-flat-button color="primary" (click)="voirPistolet(p)">  Voir PDEK </button>
+            <button mat-flat-button class="bg-success text-white" (click)="creerPlanAction(p)">Remplie Plan d'action</button>
         </div>
 
         <hr *ngIf="!last" />

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { catchError, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { 
@@ -46,9 +46,13 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./chart-add-pistolet-bleu.component.scss']
 })
 export class ChartAddPistoletBleuComponent implements OnInit {
+  @ViewChild('chartElement') chartElement: ElementRef;
+  @ViewChild('chartElementEtendue') chartElementEtendue: ElementRef;
   constructor(private pistoletGeneralService: PistoletGeneralService , private router : Router ,
               private route: ActivatedRoute , private cdr: ChangeDetectorRef , private general : GeneralService) {}
-
+  
+  donneesMoyenne: any[] = []; 
+  donneesEtendu: any[] = []; 
   numeroCourant : number; 
   numeroPistolet : number; 
   typePistolet : string; 
@@ -62,6 +66,8 @@ export class ChartAddPistoletBleuComponent implements OnInit {
   reponseApi : any ; 
   matriculeAgentQualite :  number ; 
   idPistolet : number ; 
+  valide: boolean = false;
+
   ngOnInit(): void {
 
     this.pistolet = JSON.parse(localStorage.getItem("pistolet") !)  ;   
@@ -304,13 +310,14 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Pistolet[]> {
         x: p.numCourant,
         y: p.moyenne
       }));
-
+      this.donneesMoyenne = this.seriesMoyenne;
 
       this.seriesEtendue = data.map(p => ({
         x: p.numCourant,
         y: p.etendu
       }));
 
+      this.donneesEtendu = this.seriesEtendue;
       if (data.length > 0) {
         this.numeroCourant = data[data.length - 1].numCourant;
       }
@@ -328,7 +335,7 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Pistolet[]> {
 }
 
 recupererPistoletByNumeroEtEtat(): void {
-  this.pistoletGeneralService.getPistoletByNumero(this.numeroPistolet).subscribe({
+  this.pistoletGeneralService.getPistoletInformations(this.numeroPistolet , this.typePistolet , this.categorie).subscribe({
     next: (data) => {
       console.log('Pistolet récupéré :', data);
       this.pistolet = data;
@@ -342,18 +349,18 @@ recupererPistoletByNumeroEtEtat(): void {
     }
   });
 }
-
 validerPdekPistolet(): void {
-
-  this.pistoletGeneralService.getPistoletByNumero(this.numeroPistolet).subscribe({
+  this.pistoletGeneralService.getPistoletInformations(this.numeroPistolet , this.typePistolet , this.categorie).subscribe({
     next: (data) => {
       this.pistolet = data;
       this.idPistolet = data.id;
-
+      console.log('id de pistolet validé :', this.idPistolet);
       this.pistoletGeneralService.validerPistolet(this.idPistolet, this.matriculeAgentQualite).subscribe({
         next: () => {
           this.general.recupererNombreNotificationsPistolet();
           this.general.nbrNotifications--;
+
+          this.valide = true; // ✅ le bouton est maintenant validé
 
           console.log('Pistolet validé avec succès.');
 
@@ -370,7 +377,7 @@ validerPdekPistolet(): void {
           });
         },
         error: (err) => {
-          console.error(' Erreur lors de la validation du pistolet :', err);
+          console.error('Erreur lors de la validation du pistolet :', err);
 
           Swal.fire({
             title: 'Erreur',
@@ -382,10 +389,12 @@ validerPdekPistolet(): void {
       });
     },
     error: (err) => {
-      console.error(' Erreur lors de la récupération du pistolet :', err);
+      console.error('Erreur lors de la récupération du pistolet :', err);
     }
   });
 }
+
+
 recupererEtatPistolet(p: Pistolet): string {
   const etat = this.pistoletGeneralService.etatPistolet(p.etendu, p.moyenne, p.type);
   p.activationValider = etat === "vert";
@@ -393,7 +402,7 @@ recupererEtatPistolet(p: Pistolet): string {
 }
 creerPlanAction() {
   console.log('Création d’un plan d’action pour le pistolet ');
-  // Logique ici
+  this.router.navigate(['/ui-components/addPlanAction']) ; 
 }
 
 naviger(){

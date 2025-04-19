@@ -14,6 +14,9 @@ import Swal from 'sweetalert2';
 import { PistoletPneumatiqueService } from 'src/app/services/Agent Qualité Montage Pistolet/Ajout PDEK Pistolet/pistolet-pneumatique.service';
 import { Router } from '@angular/router';
 import { AjoutPistoletResponse } from 'src/app/Modeles/AjoutPistoletResponse';
+import { EmailPistoletRequest } from 'src/app/Modeles/EmailPistoletRequest';
+import { PistoletGeneralService } from 'src/app/services/Agent Qualité Montage Pistolet/pistolet-general.service';
+import { User } from 'src/app/Modeles/User';
 
 interface CoupePropre {
   value: string;
@@ -36,7 +39,10 @@ imports: [ MatFormFieldModule,
   styleUrl: './add-pistolet-pneumatique.component.scss'
 })
 export class AddPistoletPneumatiqueComponent implements OnInit{
-  
+    plantUser : string ; 
+    segmentUser : number  ;
+    nomOperation : string ='Montage_Pistolet' ;  
+    techniciens: User[] = [];
   country: CoupePropre[] = [
     { value: 'Ok', viewValue: 'OK' },
     { value: 'N-OK', viewValue: 'N-Ok' },
@@ -51,7 +57,9 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
   selectedValue: any; 
   myForm: FormGroup;
 
-  constructor(private pistoletPneumatiqueService: PistoletPneumatiqueService  , private router : Router) {}
+  constructor(private pistoletPneumatiqueService: PistoletPneumatiqueService  , private router : Router ,
+              private servicePistoletGeneral : PistoletGeneralService ) {}
+
   pistolet: Pistolet = new Pistolet();
   ngOnInit(): void {
     this.myForm = new FormGroup({
@@ -80,58 +88,252 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
         return;
       }
       if (this.myForm.valid) {
-        /*******************     Pistolet Bleu    *******************************************/
-        if (this.myForm.get('typePistolet')?.value === "PISTOLET_BLEU") {
+/*******************     Pistolet Bleu    *******************************************/
+  if (this.myForm.get('typePistolet')?.value === "PISTOLET_BLEU") {
+
+    // Créer un nouvel objet Pistolet avec les valeurs du FormGroup
+    const pistolet: Pistolet = new Pistolet();
   
-          // Créer un nouvel objet Pistolet avec les valeurs du FormGroup
-          const pistolet: Pistolet = new Pistolet();
-        
-          // Liste des champs obligatoires à vérifier
-          const requiredFields = [
-            'echantillon1', 'echantillon2', 'echantillon3', 'echantillon4', 'echantillon5', 
-            'nombreCollier', 'axeSerrage', 'semaine', 'numeroPistolet', 'selectedValue'
-          ];
-        
-          let allFieldsFilled = true;
-        
-          // Vérifier si chaque champ obligatoire est rempli
-          requiredFields.forEach(field => {
-            const control = this.myForm.get(field);
-            if (!control?.value) {
-              // Appliquer une bordure rouge si le champ est vide
-              control?.markAsTouched(); // Marquer comme touché pour activer les erreurs de validation
-              control?.setErrors({ required: true });
-              const inputElement = document.getElementById(field);
-              if (inputElement) {
-                inputElement.style.borderColor = 'red'; // Appliquer la couleur rouge au bord
-              }
-              allFieldsFilled = false;
-            } else {
-              const inputElement = document.getElementById(field);
-              if (inputElement) {
-                inputElement.style.borderColor = ''; // Réinitialiser la couleur du bord si le champ est rempli
-              }
-            }
-          });
-        
-          // Convertir les valeurs en nombre et filtrer les valeurs non définies
-          const echantillons = [
-            Number(this.myForm.get('echantillon1')?.value),
-            Number(this.myForm.get('echantillon2')?.value),
-            Number(this.myForm.get('echantillon3')?.value),
-            Number(this.myForm.get('echantillon4')?.value),
-            Number(this.myForm.get('echantillon5')?.value)
-          ].filter(val => !isNaN(val)); // Filtrer les valeurs NaN
-        
-          // Vérification si tous les échantillons sont identiques
-          const allIdentical = echantillons.every(val => val === echantillons[0]);
-        
-          if (allIdentical) {
-            // Afficher une alerte d'erreur si tous les échantillons sont identiques
+    // Liste des champs obligatoires à vérifier
+    const requiredFields = [
+      'echantillon1', 'echantillon2', 'echantillon3', 'echantillon4', 'echantillon5', 
+      'nombreCollier', 'axeSerrage', 'semaine', 'numeroPistolet', 'selectedValue'
+    ];
+  
+    let allFieldsFilled = true;
+  
+    // Vérifier si chaque champ obligatoire est rempli
+    requiredFields.forEach(field => {
+      const control = this.myForm.get(field);
+      if (!control?.value) {
+        // Appliquer une bordure rouge si le champ est vide
+        control?.markAsTouched(); // Marquer comme touché pour activer les erreurs de validation
+        control?.setErrors({ required: true });
+        const inputElement = document.getElementById(field);
+        if (inputElement) {
+          inputElement.style.borderColor = 'red'; // Appliquer la couleur rouge au bord
+        }
+        allFieldsFilled = false;
+      } else {
+        const inputElement = document.getElementById(field);
+        if (inputElement) {
+          inputElement.style.borderColor = ''; // Réinitialiser la couleur du bord si le champ est rempli
+        }
+      }
+    });
+
+    // Convertir les valeurs en nombre et filtrer les valeurs non définies
+    const echantillons = [
+      Number(this.myForm.get('echantillon1')?.value),
+      Number(this.myForm.get('echantillon2')?.value),
+      Number(this.myForm.get('echantillon3')?.value),
+      Number(this.myForm.get('echantillon4')?.value),
+      Number(this.myForm.get('echantillon5')?.value)
+    ].filter(val => !isNaN(val)); // Filtrer les valeurs NaN
+  
+    // Vérification si tous les échantillons sont identiques
+    const allIdentical = echantillons.every(val => val === echantillons[0]);
+  
+    if (allIdentical) {
+      // Afficher une alerte d'erreur si tous les échantillons sont identiques
+      Swal.fire({
+        title: 'Erreur',
+        text: 'Tous les échantillons ne peuvent pas être identiques.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        customClass: {
+          popup: 'custom-popup',
+          title: 'custom-title',
+          confirmButton: 'custom-confirm-button'
+        }
+      });
+      return; // Empêche l'appel à la méthode ajouterPistolet si les valeurs sont identiques
+    }
+  
+    const valeurMax = Math.max(...echantillons);
+    const valeurMin = Math.min(...echantillons);
+  
+    // Calculer la moyenne correctement
+    const somme = echantillons.reduce((acc, val) => acc + val, 0);
+    const moyenne = somme / echantillons.length;
+    const ettendu =  valeurMax - valeurMin;
+  
+    // Affecter les valeurs à l'objet pistolet
+    pistolet.ech1 = echantillons[0] || 0;
+    pistolet.ech2 = echantillons[1] || 0;
+    pistolet.ech3 = echantillons[2] || 0;
+    pistolet.ech4 = echantillons[3] || 0;
+    pistolet.ech5 = echantillons[4] || 0;
+    pistolet.moyenne = moyenne;
+    pistolet.etendu = valeurMax - valeurMin;
+  
+    pistolet.type = "PISTOLET_BLEU";
+    pistolet.categorie = "Pneumatique";
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().split('T')[0];
+    pistolet.dateCreation = formattedDate;
+    pistolet.limiteInterventionMin = "50 N";
+    pistolet.limiteInterventionMax = "80 N";
+    pistolet.numeroPistolet = this.myForm.get('numeroPistolet')?.value;
+    pistolet.specificationMesure = "65 N";
+    pistolet.axeSerrage = this.myForm.get('axeSerrage')?.value ;
+    pistolet.coupePropre =this.myForm.get('selectedValue')?.value;
+    pistolet.nbrCollierTester =this.myForm.get('nombreCollier')?.value;
+    pistolet.semaine =this.myForm.get('semaine')?.value;
+    const matriculeUser: number = Number(localStorage.getItem('matricule'));
+    const etat = this.recupererEtatPistolet(pistolet);
+
+    if (etat === 'jaune' || etat === 'rouge') {
+      pistolet.rempliePlanAction = 1;
+    }
+    // Appeler le service pour ajouter le pistolet
+    this.pistoletPneumatiqueService.ajouterPistolet(matriculeUser, pistolet).subscribe(
+      (response: AjoutPistoletResponse) => {
+        // Réinitialiser le formulaire entier
+        this.myForm.reset();        
+        // Optionnel : Vous pouvez aussi définir les valeurs par défaut pour chaque champ ici si nécessaire
+        this.myForm.patchValue({
+          echantillon1: '',
+          echantillon2: '',
+          echantillon3: '',
+          echantillon4: '',
+          echantillon5: '',
+          nombreCollier: '',
+          axeSerrage: '',
+          semaine: '',
+          numeroPistolet: '',
+          typePistolet: '',
+          coupePropre: '',
+          selectedValue : ''
+        });
+  
+        // Mettre à jour la validité du formulaire après réinitialisation
+        this.myForm.updateValueAndValidity();
+  
+        // Réinitialiser les erreurs de validation pour chaque champ
+        this.myForm.get('echantillon1')?.setErrors(null);
+        this.myForm.get('echantillon2')?.setErrors(null);
+        this.myForm.get('echantillon3')?.setErrors(null);
+        this.myForm.get('echantillon4')?.setErrors(null);
+        this.myForm.get('echantillon5')?.setErrors(null);
+        this.myForm.get('nombreCollier')?.setErrors(null);
+        this.myForm.get('axeSerrage')?.setErrors(null);
+        this.myForm.get('semaine')?.setErrors(null);
+        this.myForm.get('numeroPistolet')?.setErrors(null);
+        this.myForm.get('typePistolet')?.setErrors(null);
+        this.myForm.get('selectedValue')?.setErrors(null);
+  
+  // Affichage de l'alerte de succès
+      if (ettendu >= 6) {
             Swal.fire({
-              title: 'Erreur',
-              text: 'Tous les échantillons ne peuvent pas être identiques.',
-              icon: 'error',
+              title: 'Attention !',
+              text: `Le pistolet a été ajouté mais avec des valeurs critiques${ettendu >= 6 ? ' (Étendue ≥ 6)' : ''}`,
+              icon: 'warning',
+              confirmButtonText: 'OK',
+              customClass: {
+                popup: 'custom-popup-warning',
+                title: 'custom-title-warning',
+                confirmButton: 'custom-confirm-button-warning'
+              }
+            }).then(() => {
+              // Après fermeture du popup : on récupère les techniciens
+              this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+                next: (techniciens) => {
+                  this.techniciens = techniciens;
+          
+                  techniciens.forEach(tech => {
+                    const emailData: EmailPistoletRequest = {
+                      toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                      nomResponsable : tech.nom +"  " +tech.prenom , 
+                      numPistolet : pistolet.numeroPistolet+"",
+                      typePistolet : pistolet.categorie ,
+                      couleurPistolet : "Bleu" ,
+                      localisation : this.plantUser,
+                      valeurMesuree : pistolet.etendu+"",          
+                      limitesAcceptables : "6"  };
+          
+                    this.envoyerEmailErreurTechniciens(emailData);
+                  });
+                },
+                error: (err) => {
+                  console.error('Erreur récupération techniciens pour envoi email :', err);
+                  Swal.fire('Erreur', 'Impossible de récupérer la liste des techniciens pour envoyer l’email.', 'error');
+                }
+              });
+            });
+          }
+          
+          else  if((moyenne >= 50 && moyenne <= 56) || (moyenne >= 74 && moyenne <= 80)){
+                  Swal.fire({
+                    title: 'Attention !' ,
+                    text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Jaune' ,
+                    icon: 'warning' ,
+                    confirmButtonText: 'OK',
+                    customClass: {
+                      popup: 'custom-popup-warning',
+                      title: 'custom-title-warning' ,
+                      confirmButton :'custom-confirm-button-warning' 
+                    }
+              }).then(() => {
+                        this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+                          next: (techniciens) => {
+                            this.techniciens = techniciens;
+                    
+                            techniciens.forEach(tech => {
+                              const emailData: EmailPistoletRequest = {
+                                toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                                nomResponsable : tech.nom +"  " +tech.prenom , 
+                                numPistolet : pistolet.numeroPistolet+"",
+                                typePistolet : pistolet.categorie ,
+                                couleurPistolet : "Bleu" ,
+                                localisation : this.plantUser,
+                                valeurMesuree : pistolet.etendu+"",          
+                                limitesAcceptables : "Supérieur à 56 et infernieur à 74"  };
+                    
+                              this.envoyerEmailWarningTechniciens(emailData);
+                            });
+                          }
+                        });
+                    }) ;
+            }
+  else  if((moyenne >= 40 && moyenne <= 50) || (moyenne >= 80 && moyenne <= 90)){
+    Swal.fire({
+      title: 'Attention !' ,
+      text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Rouge',
+      icon: 'error' ,
+      confirmButtonText: 'OK',
+      customClass: {
+        popup: 'custom-popup-warning',
+        title: 'custom-title-warning' ,
+        confirmButton :'custom-confirm-button-warning' 
+      }
+      }).then(() => {
+        this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+          next: (techniciens) => {
+            this.techniciens = techniciens;
+    
+            techniciens.forEach(tech => {
+              const emailData: EmailPistoletRequest = {
+                toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                nomResponsable : tech.nom +"  " +tech.prenom , 
+                numPistolet : pistolet.numeroPistolet+"",
+                typePistolet : pistolet.categorie ,
+                couleurPistolet : "Bleu" ,
+                localisation : this.plantUser,
+                valeurMesuree : pistolet.etendu+"",          
+                limitesAcceptables : "Supérieur à 56 et infernieur à 74"  };
+    
+              this.envoyerEmailErreurTechniciens(emailData);
+            });
+          }
+        });
+    }) ;
+  }
+          else  if(ettendu < 6 || ( moyenne >= 56 && moyenne <= 74) ){
+            Swal.fire({
+              title: 'Ajout réussi !',
+              text: 'Le pistolet a été ajouté avec succès.',
+              icon: 'success',
               confirmButtonText: 'OK',
               customClass: {
                 popup: 'custom-popup',
@@ -139,149 +341,22 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
                 confirmButton: 'custom-confirm-button'
               }
             });
-            return; // Empêche l'appel à la méthode ajouterPistolet si les valeurs sont identiques
           }
-        
-          const valeurMax = Math.max(...echantillons);
-          const valeurMin = Math.min(...echantillons);
-        
-          // Calculer la moyenne correctement
-          const somme = echantillons.reduce((acc, val) => acc + val, 0);
-          const moyenne = somme / echantillons.length;
-          const ettendu =  valeurMax - valeurMin;
-        
-          // Affecter les valeurs à l'objet pistolet
-          pistolet.ech1 = echantillons[0] || 0;
-          pistolet.ech2 = echantillons[1] || 0;
-          pistolet.ech3 = echantillons[2] || 0;
-          pistolet.ech4 = echantillons[3] || 0;
-          pistolet.ech5 = echantillons[4] || 0;
-          pistolet.moyenne = moyenne;
-          pistolet.etendu = valeurMax - valeurMin;
-        
-          pistolet.type = "PISTOLET_BLEU";
-          pistolet.categorie = "Pneumatique";
-          const currentDate = new Date();
-          const formattedDate = currentDate.toISOString().split('T')[0];
-          pistolet.dateCreation = formattedDate;
-          pistolet.limiteInterventionMin = "50 N";
-          pistolet.limiteInterventionMax = "80 N";
-          pistolet.numeroPistolet = this.myForm.get('numeroPistolet')?.value;
-          pistolet.specificationMesure = "65 N";
-          pistolet.axeSerrage = this.myForm.get('axeSerrage')?.value ;
-          pistolet.coupePropre =this.myForm.get('selectedValue')?.value;
-          pistolet.nbrCollierTester =this.myForm.get('nombreCollier')?.value;
-          pistolet.semaine =this.myForm.get('semaine')?.value;
-          const matriculeUser: number = Number(localStorage.getItem('matricule'));
-        
-          // Appeler le service pour ajouter le pistolet
-          this.pistoletPneumatiqueService.ajouterPistolet(matriculeUser, pistolet).subscribe(
-            (response: AjoutPistoletResponse) => {
-              // Réinitialiser le formulaire entier
-              this.myForm.reset();        
-              // Optionnel : Vous pouvez aussi définir les valeurs par défaut pour chaque champ ici si nécessaire
-              this.myForm.patchValue({
-                echantillon1: '',
-                echantillon2: '',
-                echantillon3: '',
-                echantillon4: '',
-                echantillon5: '',
-                nombreCollier: '',
-                axeSerrage: '',
-                semaine: '',
-                numeroPistolet: '',
-                typePistolet: '',
-                coupePropre: '',
-                selectedValue : ''
-              });
-        
-              // Mettre à jour la validité du formulaire après réinitialisation
-              this.myForm.updateValueAndValidity();
-        
-              // Réinitialiser les erreurs de validation pour chaque champ
-              this.myForm.get('echantillon1')?.setErrors(null);
-              this.myForm.get('echantillon2')?.setErrors(null);
-              this.myForm.get('echantillon3')?.setErrors(null);
-              this.myForm.get('echantillon4')?.setErrors(null);
-              this.myForm.get('echantillon5')?.setErrors(null);
-              this.myForm.get('nombreCollier')?.setErrors(null);
-              this.myForm.get('axeSerrage')?.setErrors(null);
-              this.myForm.get('semaine')?.setErrors(null);
-              this.myForm.get('numeroPistolet')?.setErrors(null);
-              this.myForm.get('typePistolet')?.setErrors(null);
-              this.myForm.get('selectedValue')?.setErrors(null);
-        
-              // Affichage de l'alerte de succès
-              if(ettendu >= 6){
-                       Swal.fire({
-                         title: 'Attention !' ,
-                         text:  `Le pistolet a été ajouté mais avec des valeurs critiques${
-                               ettendu >= 6 ? ' (Étendue ≥ 6)' : ''
-                             }` ,
-                         icon: 'warning' ,
-                         confirmButtonText: 'OK',
-                         customClass: {
-                           popup: 'custom-popup-warning',
-                           title: 'custom-title-warning' ,
-                           confirmButton :'custom-confirm-button-warning' 
-                         }
-                         
-                       });
-                     }
-                     else  if((moyenne >= 50 && moyenne <= 56) || (moyenne >= 74 && moyenne <= 80)){
-                       Swal.fire({
-                         title: 'Attention !' ,
-                         text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Jaune' ,
-                         icon: 'warning' ,
-                         confirmButtonText: 'OK',
-                         customClass: {
-                           popup: 'custom-popup-warning',
-                           title: 'custom-title-warning' ,
-                           confirmButton :'custom-confirm-button-warning' 
-                         }
-                       });
-                     }
-                     else  if((moyenne >= 40 && moyenne <= 50) || (moyenne >= 80 && moyenne <= 90)){
-                       Swal.fire({
-                         title: 'Attention !' ,
-                         text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Rouge',
-                         icon: 'error' ,
-                         confirmButtonText: 'OK',
-                         customClass: {
-                           popup: 'custom-popup-warning',
-                           title: 'custom-title-warning' ,
-                           confirmButton :'custom-confirm-button-warning' 
-                         }
-                       });
-                     }
-                     else  if(ettendu < 6 || ( moyenne >= 56 && moyenne <= 74) ){
-                       Swal.fire({
-                         title: 'Ajout réussi !',
-                         text: 'Le pistolet a été ajouté avec succès.',
-                         icon: 'success',
-                         confirmButtonText: 'OK',
-                         customClass: {
-                           popup: 'custom-popup',
-                           title: 'custom-title',
-                           confirmButton: 'custom-confirm-button'
-                         }
-                       });
-                     }
-                         this.router.navigate(['/ui-components/chartAddPistoletBleu']);
-                         localStorage.setItem("reponseApi", JSON.stringify(response));
+              this.router.navigate(['/ui-components/chartAddPistoletBleu']);
+              localStorage.setItem("reponseApi", JSON.stringify(response));
 
-                       console.log('Pistolet ajouté avec succès', response);
-                     },
-                     (error: any) => {
-                       console.error('Erreur lors de l’ajout du pistolet', error);
-                     }
-                   );
+            console.log('Pistolet ajouté avec succès', response);
+          },
+          (error: any) => {
+            console.error('Erreur lors de l’ajout du pistolet', error);
+          }
+        );
                  
-                   // Afficher les variables max et min et l'objet Pistolet pour débogage
-                   console.log('Objet Pistolet envoyé:', pistolet);
-                   localStorage.setItem("pistolet", JSON.stringify(pistolet));
+        // Afficher les variables max et min et l'objet Pistolet pour débogage
+        console.log('Objet Pistolet envoyé:', pistolet);
+        localStorage.setItem("pistolet", JSON.stringify(pistolet));
 
-                 }
+      }
     /*********************************** Rouge ***********************************/
     else if (this.myForm.get('typePistolet')?.value === "PISTOLET_ROUGE") {
   
@@ -373,9 +448,12 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
       pistolet.coupePropre =this.myForm.get('selectedValue')?.value;
       pistolet.nbrCollierTester =this.myForm.get('nombreCollier')?.value;
       pistolet.semaine =this.myForm.get('semaine')?.value;
-
       const matriculeUser: number = Number(localStorage.getItem('matricule'));
-    
+      const etat = this.recupererEtatPistolet(pistolet);
+
+      if (etat === 'jaune' || etat === 'rouge') {
+       pistolet.rempliePlanAction = 1;
+      }
       // Appeler le service pour ajouter le pistolet
       this.pistoletPneumatiqueService.ajouterPistolet(matriculeUser, pistolet).subscribe(
         (response: AjoutPistoletResponse) => {
@@ -414,53 +492,113 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
           this.myForm.get('typePistolet')?.setErrors(null);
           this.myForm.get('selectedValue')?.setErrors(null);
     
-             const ettendu =  valeurMax - valeurMin;
-                 console.log("ettendu est :"+ ettendu)
-                     if(ettendu >= 12){
-                     Swal.fire({
-                       title: 'Attention !' ,
-                       text:  `Le pistolet a été ajouté mais avec des valeurs critiques${
-                             ettendu >= 12 ? ' (Étendue ≥ 12)' : ''
-                           }` ,
-                       icon: 'warning' ,
-                       confirmButtonText: 'OK',
-                       customClass: {
-                         popup: 'custom-popup-warning',
-                         title: 'custom-title-warning' ,
-                         confirmButton :'custom-confirm-button-warning' 
-                       }
-                       
-                     });
-                   }
-                   ///  zone jaune en bas 
-                   else  if((moyenne >= 126 && moyenne <= 131) || (moyenne >= 149 && moyenne <= 155)){
-                     Swal.fire({
-                       title: 'Attention !' ,
-                       text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Jaune' ,
-                       icon: 'warning' ,
-                       confirmButtonText: 'OK',
-                       customClass: {
-                         popup: 'custom-popup-warning',
-                         title: 'custom-title-warning' ,
-                         confirmButton :'custom-confirm-button-warning' 
-                       }
-                     });
-                   }
-                   else  if((moyenne >= 110 && moyenne <= 126) || (moyenne >= 155 && moyenne <= 160)){
-                     Swal.fire({
-                       title: 'Attention !' ,
-                       text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Rouge',
-                       icon: 'error' ,
-                       confirmButtonText: 'OK',
-                       customClass: {
-                         popup: 'custom-popup-warning',
-                         title: 'custom-title-warning' ,
-                         confirmButton :'custom-confirm-button-warning' 
-                       }
-                     });
-                   }
-                   else  if(ettendu < 12 || ( moyenne >= 130.1 && moyenne <= 148.9) ){
-                     Swal.fire({
+  const ettendu =  valeurMax - valeurMin;
+      console.log("ettendu est :"+ ettendu)
+          if(ettendu >= 12){
+          Swal.fire({
+            title: 'Attention !' ,
+            text:  `Le pistolet a été ajouté mais avec des valeurs critiques${
+                  ettendu >= 12 ? ' (Étendue ≥ 12)' : ''
+                }` ,
+            icon: 'warning' ,
+            confirmButtonText: 'OK',
+            customClass: {
+              popup: 'custom-popup-warning',
+              title: 'custom-title-warning' ,
+              confirmButton :'custom-confirm-button-warning' 
+            }
+            
+          }).then(() => {
+          this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+            next: (techniciens) => {
+              this.techniciens = techniciens;
+      
+              techniciens.forEach(tech => {
+                const emailData: EmailPistoletRequest = {
+                  toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                  nomResponsable : tech.nom +"  " +tech.prenom , 
+                  numPistolet : pistolet.numeroPistolet+"",
+                  typePistolet : pistolet.categorie ,
+                  couleurPistolet : "Rouge" ,
+                  localisation : this.plantUser,
+                  valeurMesuree : pistolet.etendu+"",          
+                  limitesAcceptables : "12"  };
+      
+                this.envoyerEmailErreurTechniciens(emailData);
+              });
+            }
+          });
+        });
+        }
+    ///  zone jaune en bas 
+    else  if(((moyenne > 125 && moyenne <= 131) || (moyenne >= 149 && moyenne < 166))){
+      Swal.fire({
+        title: 'Attention !' ,
+        text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Jaune' ,
+        icon: 'warning' ,
+        confirmButtonText: 'OK',
+        customClass: {
+          popup: 'custom-popup-warning',
+          title: 'custom-title-warning' ,
+          confirmButton :'custom-confirm-button-warning' 
+        }
+      }).then(() => {
+                  this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+                    next: (techniciens) => {
+                      this.techniciens = techniciens;
+              
+                      techniciens.forEach(tech => {
+                        const emailData: EmailPistoletRequest = {
+                          toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                          nomResponsable : tech.nom +"  " +tech.prenom , 
+                          numPistolet : pistolet.numeroPistolet+"",
+                          typePistolet : pistolet.categorie ,
+                          couleurPistolet : "Rouge" ,
+                          localisation : this.plantUser,
+                          valeurMesuree : pistolet.etendu+"",          
+                          limitesAcceptables : "Supérieur à 131 et inférieur à 149"  };
+              
+                        this.envoyerEmailWarningTechniciens(emailData);
+                      });
+                    }
+                  });
+              }) ;
+    }
+else  if((moyenne >= 110 && moyenne <= 125) || (moyenne >= 166 && moyenne <= 180)){
+    Swal.fire({
+        title: 'Attention !' ,
+        text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Rouge',
+        icon: 'error' ,
+        confirmButtonText: 'OK',
+        customClass: {
+          popup: 'custom-popup-warning',
+          title: 'custom-title-warning' ,
+          confirmButton :'custom-confirm-button-warning' 
+        }
+        }).then(() => {
+                  this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+                    next: (techniciens) => {
+                      this.techniciens = techniciens;
+              
+                      techniciens.forEach(tech => {
+                        const emailData: EmailPistoletRequest = {
+                          toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                          nomResponsable : tech.nom +"  " +tech.prenom , 
+                          numPistolet : pistolet.numeroPistolet+"",
+                          typePistolet : pistolet.categorie ,
+                          couleurPistolet : "Rouge" ,
+                          localisation : this.plantUser,
+                          valeurMesuree : pistolet.etendu+"",          
+                          limitesAcceptables : "Supérieur à 131 et inférieur à 149"  };
+              
+                        this.envoyerEmailErreurTechniciens(emailData);
+                      });
+                    }
+                  });
+              }) ;
+    }
+                   else  if(ettendu < 12 || ( moyenne >= 131.1 && moyenne <= 148.9) ){
+                    Swal.fire({
                        title: 'Ajout réussi !',
                        text: 'Le pistolet a été ajouté avec succès.',
                        icon: 'success',
@@ -579,7 +717,11 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
       pistolet.nbrCollierTester =this.myForm.get('nombreCollier')?.value;
       pistolet.semaine =this.myForm.get('semaine')?.value;
       const matriculeUser: number = Number(localStorage.getItem('matricule'));
-    
+      const etat = this.recupererEtatPistolet(pistolet);
+
+      if (etat === 'jaune' || etat === 'rouge') {
+        pistolet.rempliePlanAction = 1;
+      }
       // Appeler le service pour ajouter le pistolet
       this.pistoletPneumatiqueService.ajouterPistolet(matriculeUser, pistolet).subscribe(
         (response: AjoutPistoletResponse) => {
@@ -619,50 +761,110 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
           this.myForm.get('selectedValue')?.setErrors(null);
     
           const ettendu =  valeurMax - valeurMin;
-               console.log("ettendu est :"+ ettendu)
-                   if(ettendu >= 12){
-                   Swal.fire({
-                     title: 'Attention !' ,
-                     text:  `Le pistolet a été ajouté mais avec des valeurs critiques${
-                           ettendu >= 12 ? ' (Étendue ≥ 12)' : ''
-                         }` ,
-                     icon: 'warning' ,
-                     confirmButtonText: 'OK',
-                     customClass: {
-                       popup: 'custom-popup-warning',
-                       title: 'custom-title-warning' ,
-                       confirmButton :'custom-confirm-button-warning' 
-                     }
-                     
-                   });
+          console.log("ettendu est :"+ ettendu)
+          if(ettendu >= 12){
+          Swal.fire({
+          title: 'Attention !' ,
+          text:  `Le pistolet a été ajouté mais avec des valeurs critiques${
+                ettendu >= 12 ? ' (Étendue ≥ 12)' : ''
+              }` ,
+          icon: 'warning' ,
+          confirmButtonText: 'OK',
+          customClass: {
+          popup: 'custom-popup-warning',
+          title: 'custom-title-warning' ,
+          confirmButton :'custom-confirm-button-warning' 
+        }
+        
+      }).then(() => {
+                  this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+                    next: (techniciens) => {
+                      this.techniciens = techniciens;
+              
+                      techniciens.forEach(tech => {
+                        const emailData: EmailPistoletRequest = {
+                          toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                          nomResponsable : tech.nom +"  " +tech.prenom , 
+                          numPistolet : pistolet.numeroPistolet+"",
+                          typePistolet : pistolet.categorie ,
+                          couleurPistolet : "Vert" ,
+                          localisation : this.plantUser,
+                          valeurMesuree : pistolet.etendu+"",          
+                          limitesAcceptables : "12" };
+              
+                        this.envoyerEmailErreurTechniciens(emailData);
+                      });
+                    }
+                  });
+              }) ;
                  }
                  ///  zone jaune en bas 
-                 else  if((moyenne >= 80 && moyenne <= 88) || (moyenne >= 112 && moyenne <= 120)){
-                   Swal.fire({
-                     title: 'Attention !' ,
-                     text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Jaune' ,
-                     icon: 'warning' ,
-                     confirmButtonText: 'OK',
-                     customClass: {
-                       popup: 'custom-popup-warning',
-                       title: 'custom-title-warning' ,
-                       confirmButton :'custom-confirm-button-warning' 
-                     }
-                   });
-                 }
-                 else  if((moyenne >= 70 && moyenne <= 80) || (moyenne >= 120 && moyenne <= 130)){
-                   Swal.fire({
-                     title: 'Attention !' ,
-                     text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Rouge',
-                     icon: 'error' ,
-                     confirmButtonText: 'OK',
-                     customClass: {
-                       popup: 'custom-popup-warning',
-                       title: 'custom-title-warning' ,
-                       confirmButton :'custom-confirm-button-warning' 
-                     }
-                   });
-                 }
+      else  if(((moyenne > 80 && moyenne <= 88) || (moyenne >= 112 && moyenne < 120))){
+        Swal.fire({
+          title: 'Attention !' ,
+          text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Jaune' ,
+          icon: 'warning' ,
+          confirmButtonText: 'OK',
+          customClass: {
+            popup: 'custom-popup-warning',
+            title: 'custom-title-warning' ,
+            confirmButton :'custom-confirm-button-warning' 
+          }
+          }).then(() => {
+          this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+            next: (techniciens) => {
+              this.techniciens = techniciens;
+      
+              techniciens.forEach(tech => {
+                const emailData: EmailPistoletRequest = {
+                  toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                  nomResponsable : tech.nom +"  " +tech.prenom , 
+                  numPistolet : pistolet.numeroPistolet+"",
+                  typePistolet : pistolet.categorie ,
+                  couleurPistolet : "Vert" ,
+                  localisation : this.plantUser,
+                  valeurMesuree : pistolet.etendu+"",          
+                  limitesAcceptables : "Supérieur à 88 et inférieur à 112"  };
+      
+                this.envoyerEmailWarningTechniciens(emailData);
+              });
+            }
+          });
+      }) ;
+      }
+  else  if((moyenne >= 70 && moyenne <= 80) || (moyenne >= 120 && moyenne <= 130)){
+    Swal.fire({
+      title: 'Attention !' ,
+      text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Rouge',
+      icon: 'error' ,
+      confirmButtonText: 'OK',
+      customClass: {
+        popup: 'custom-popup-warning',
+        title: 'custom-title-warning' ,
+        confirmButton :'custom-confirm-button-warning' 
+      }
+      }).then(() => {
+                this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+                  next: (techniciens) => {
+                    this.techniciens = techniciens;
+            
+                    techniciens.forEach(tech => {
+                      const emailData: EmailPistoletRequest = {
+                        toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                        nomResponsable : tech.nom +"  " +tech.prenom , 
+                        numPistolet : pistolet.numeroPistolet+"",
+                        typePistolet : pistolet.categorie ,
+                        couleurPistolet : "Vert" ,
+                        localisation : this.plantUser,
+                        valeurMesuree : pistolet.etendu+"",          
+                        limitesAcceptables :"Supérieur à 88 et inférieur à 112"  };
+            
+                      this.envoyerEmailErreurTechniciens(emailData);
+                    });
+                  }
+                });
+            }) ;
+  }
                  else  if(ettendu < 12 || ( moyenne >= 88.1 && moyenne <= 111.9) ){
                    Swal.fire({
                      title: 'Ajout réussi !',
@@ -783,7 +985,11 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
       pistolet.nbrCollierTester =this.myForm.get('nombreCollier')?.value;
       pistolet.semaine =this.myForm.get('semaine')?.value;
       const matriculeUser: number = Number(localStorage.getItem('matricule'));
-    
+      const etat = this.recupererEtatPistolet(pistolet);
+
+      if (etat === 'jaune' || etat === 'rouge') {
+        pistolet.rempliePlanAction = 1;
+      }
       // Appeler le service pour ajouter le pistolet
       this.pistoletPneumatiqueService.ajouterPistolet(matriculeUser, pistolet).subscribe(
         (response: AjoutPistoletResponse) => {
@@ -822,51 +1028,111 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
           this.myForm.get('typePistolet')?.setErrors(null);
           this.myForm.get('selectedValue')?.setErrors(null);
     
-          const ettendu =  valeurMax - valeurMin;
-                 console.log("ettendu est :"+ ettendu)
-                     if(ettendu >= 3){
-                     Swal.fire({
-                       title: 'Attention !' ,
-                       text:  `Le pistolet a été ajouté mais avec des valeurs critiques${
-                             ettendu >= 3 ? ' (Étendue ≥ 3)' : ''
-                           }` ,
-                       icon: 'warning' ,
-                       confirmButtonText: 'OK',
-                       customClass: {
-                         popup: 'custom-popup-warning',
-                         title: 'custom-title-warning' ,
-                         confirmButton :'custom-confirm-button-warning' 
-                       }
-                       
-                     });
-                   }
-                   ///  zone jaune en bas 
-                   else  if((moyenne >= 34 && moyenne <= 35) || (moyenne >= 45 && moyenne <= 46)){
-                     Swal.fire({
-                       title: 'Attention !' ,
-                       text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Jaune' ,
-                       icon: 'warning' ,
-                       confirmButtonText: 'OK',
-                       customClass: {
-                         popup: 'custom-popup-warning',
-                         title: 'custom-title-warning' ,
-                         confirmButton :'custom-confirm-button-warning' 
-                       }
-                     });
-                   }
-                   else  if((moyenne >= 30 && moyenne <= 34) || (moyenne >= 46 && moyenne <= 50)){
-                     Swal.fire({
-                       title: 'Attention !' ,
-                       text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Rouge',
-                       icon: 'error' ,
-                       confirmButtonText: 'OK',
-                       customClass: {
-                         popup: 'custom-popup-warning',
-                         title: 'custom-title-warning' ,
-                         confirmButton :'custom-confirm-button-warning' 
-                       }
-                     });
-                   }
+const ettendu =  valeurMax - valeurMin;
+console.log("ettendu est :"+ ettendu)
+    if(ettendu >= 3){
+    Swal.fire({
+      title: 'Attention !' ,
+      text:  `Le pistolet a été ajouté mais avec des valeurs critiques${
+            ettendu >= 3 ? ' (Étendue ≥ 3)' : ''
+          }` ,
+      icon: 'warning' ,
+      confirmButtonText: 'OK',
+      customClass: {
+        popup: 'custom-popup-warning',
+        title: 'custom-title-warning' ,
+        confirmButton :'custom-confirm-button-warning' 
+      }
+      
+      }).then(() => {
+                  this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+                    next: (techniciens) => {
+                      this.techniciens = techniciens;
+              
+                      techniciens.forEach(tech => {
+                        const emailData: EmailPistoletRequest = {
+                          toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                          nomResponsable : tech.nom +"  " +tech.prenom , 
+                          numPistolet : pistolet.numeroPistolet+"",
+                          typePistolet : pistolet.categorie ,
+                          couleurPistolet : "Jaune" ,
+                          localisation : this.plantUser,
+                          valeurMesuree : pistolet.etendu+"",          
+                          limitesAcceptables : "3"  };
+              
+                        this.envoyerEmailErreurTechniciens(emailData);
+                      });
+                    }
+                  });
+              }) ;
+  }
+  ///  zone jaune en bas 
+  else  if(((moyenne > 34 && moyenne <= 35) || (moyenne >= 45 && moyenne < 46))){
+    Swal.fire({
+      title: 'Attention !' ,
+      text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Jaune' ,
+      icon: 'warning' ,
+      confirmButtonText: 'OK',
+      customClass: {
+        popup: 'custom-popup-warning',
+        title: 'custom-title-warning' ,
+        confirmButton :'custom-confirm-button-warning' 
+      }
+      }).then(() => {
+                this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+                  next: (techniciens) => {
+                    this.techniciens = techniciens;
+            
+                    techniciens.forEach(tech => {
+                      const emailData: EmailPistoletRequest = {
+                        toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                        nomResponsable : tech.nom +"  " +tech.prenom , 
+                        numPistolet : pistolet.numeroPistolet+"",
+                        typePistolet : pistolet.categorie ,
+                        couleurPistolet : "Jaune" ,
+                        localisation : this.plantUser,
+                        valeurMesuree : pistolet.etendu+"",          
+                        limitesAcceptables : "Supérieur à 35 et inférieur à 45"  };
+            
+                      this.envoyerEmailWarningTechniciens(emailData);
+                    });
+                  }
+                });
+            }) ;
+  }
+    else  if((moyenne >= 30 && moyenne <= 34) || (moyenne >= 46 && moyenne <= 50)){
+      Swal.fire({
+        title: 'Attention !' ,
+        text:  'Le pistolet a été ajouté mais avec des valeurs critiques Moyenne en zone Rouge',
+        icon: 'error' ,
+        confirmButtonText: 'OK',
+        customClass: {
+          popup: 'custom-popup-warning',
+          title: 'custom-title-warning' ,
+          confirmButton :'custom-confirm-button-warning' 
+        }
+        }).then(() => {
+                  this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+                    next: (techniciens) => {
+                      this.techniciens = techniciens;
+              
+                      techniciens.forEach(tech => {
+                        const emailData: EmailPistoletRequest = {
+                          toEmail: tech.email, // assure-toi que le champ email existe dans UserDTO
+                          nomResponsable : tech.nom +"  " +tech.prenom , 
+                          numPistolet : pistolet.numeroPistolet+"",
+                          typePistolet : pistolet.categorie ,
+                          couleurPistolet : "Jaune" ,
+                          localisation : this.plantUser,
+                          valeurMesuree : pistolet.etendu+"",          
+                          limitesAcceptables : "Supérieur à 35 et inférieur à 45"  };
+              
+                        this.envoyerEmailErreurTechniciens(emailData);
+                      });
+                    }
+                  });
+              }) ;
+    }
                    else  if(ettendu < 3 || ( moyenne >= 35.1 && moyenne <= 44.9) ){
                      Swal.fire({
                        title: 'Ajout réussi !',
@@ -897,9 +1163,32 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
                }
   } 
   }
-    
-    
-    
+envoyerEmailErreurTechniciens(emailData: EmailPistoletRequest) {
+  this.servicePistoletGeneral.sendErreurEmail(emailData).subscribe({
+    next: () => {
+      Swal.fire('Succès', 'Email envoyé avec succès au technicien', 'success');
+    },
+    error: (err) => {
+      console.error('Erreur envoi email :', err);
+      Swal.fire('Erreur', 'Échec de l’envoi de l’email', 'error');
+    }
+  });
+}
+envoyerEmailWarningTechniciens(emailData: EmailPistoletRequest) {
+  this.servicePistoletGeneral.sendWarningEmail(emailData).subscribe({
+    next: () => {
+      Swal.fire('Succès', 'Email envoyé avec succès au technicien', 'success');
+    },
+    error: (err) => {
+      console.error('Erreur envoi email :', err);
+      Swal.fire('Erreur', 'Échec de l’envoi de l’email', 'error');
+    }
+  });
+}
+recupererEtatPistolet(p: Pistolet): string {
+  const etat = this.servicePistoletGeneral.etatPistolet(p.etendu, p.moyenne, p.type);
+  return etat;
+}
       // Méthode pour réinitialiser le formulaire
       cancelForm() {
         this.myForm.reset();

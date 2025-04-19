@@ -72,6 +72,11 @@ export class HeaderComponent  implements OnInit{
       this.recupererNombreNotificationsPistolet() ; 
       this.recupererListePistoletsNonValides() ;
     }
+    if( this.role =="TECHNICIEN"){
+      this.nom_process ="Montage Pistolet"; 
+      this.recupererNombreNotificationsTechnicien() ; 
+      this.recupererListePistoletsNonValidesTechniciens() ;
+    }
 
     this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
    
@@ -89,11 +94,38 @@ export class HeaderComponent  implements OnInit{
       }
     });
   }
+  recupererNombreNotificationsTechnicien(){
+    this.servicePistolet.getNombreNotificationsTechniciens().subscribe({
+      next: (count) => {
+        this.serviceGeneral.nbrNotifications = count;
+
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des notifications :', err);
+      }
+    });
+  }
   get pistoletsNonValides() {
     return this.pistolets.filter(p => !this.pistoletsValides.has(p.id));
   }
   recupererListePistoletsNonValides(){
     this.servicePistolet.getPistoletsNonValidees().subscribe({
+      next: (data) => {
+        this.pistolets = data;
+        console.error('pistolets non valides :', this.pistolets);
+        this.pistolets.forEach(p => {
+          const etat = this.servicePistolet.etatPistolet(p.etendu, p.moyenne, p.type);
+          p.activationValider = etat === "vert";
+          p.messageEtat = this.genererMessageEtat(etat); // 
+        });
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des pistolets :', err);
+      }
+    });
+  }
+  recupererListePistoletsNonValidesTechniciens(){
+    this.servicePistolet.getPistoletsNonValideesTechniciens().subscribe({
       next: (data) => {
         this.pistolets = data;
         console.error('pistolets non valides :', this.pistolets);
@@ -241,7 +273,10 @@ export class HeaderComponent  implements OnInit{
         });
       }
       
-  
+      creerPlanAction(p : Pistolet) {
+        console.log('Création d’un plan d’action pour le pistolet ');
+        this.router.navigate(['/ui-components/addPlanAction']) ; 
+      }
     logout(){
       localStorage.clear() ;
       this.router.navigate(['/login'])
