@@ -5,13 +5,17 @@ import { EmailPistoletRequest } from 'src/app/Modeles/EmailPistoletRequest';
 import { PdekResultat } from 'src/app/Modeles/PdekResultat';
 import { Pistolet } from 'src/app/Modeles/Pistolet';
 import { User } from 'src/app/Modeles/User';
+import { GeneralService } from '../Géneral/general.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PistoletGeneralService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient , private general : GeneralService) {}
+
+  nbrNotifications: number ; 
+  pistolets: Pistolet[] = [];
 
   getDernierNumeroCycle(typePistolet: string, numPistolet: number, categorie: string, segment: number, nomPlant: string): Observable<number> {
     const token = localStorage.getItem('token');
@@ -87,7 +91,7 @@ export class PistoletGeneralService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.get<number>('http://localhost:8281/operations/pistolet/nbrNotifications',
+    return this.http.get<number>('http://localhost:8281/operations/pistolet/nbrNotificationsAgentsQualite',
       { headers }
     );
   }
@@ -101,13 +105,13 @@ export class PistoletGeneralService {
       { headers }
     );
   }
-  getPistoletsNonValidees(): Observable<Pistolet[]> {
+  getPistoletsNonValideesAgentsQualite(): Observable<Pistolet[]> {
     const token = localStorage.getItem('token'); // récupère le token depuis le local storage
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.get<Pistolet[]>('http://localhost:8281/operations/pistolet/pistolets-non-validees', { headers });
+    return this.http.get<Pistolet[]>('http://localhost:8281/operations/pistolet/pistolets-non-validees-agents-Qualite', { headers });
   }
   getPistoletsNonValideesTechniciens(): Observable<Pistolet[]> {
     const token = localStorage.getItem('token'); // récupère le token depuis le local storage
@@ -158,6 +162,63 @@ export class PistoletGeneralService {
     headers,
     responseType: 'text' as 'json'  
   });
+}
+recupererListePistoletsNonValidesAgentQualite() {
+  this.getPistoletsNonValideesAgentsQualite().subscribe({
+    next: (data) => {
+      this.general.pistolets = data;
+      this.general.pistolets.forEach(p => {
+        const etat = this.etatPistolet(p.etendu, p.moyenne, p.type);
+
+        const estVert = etat === "vert";
+        const estJauneOuRougeAvecPlanNonRempli = (etat === "jaune" || etat === "rouge") && p.rempliePlanAction === 0;
+
+        p.activationValider = estVert || estJauneOuRougeAvecPlanNonRempli;
+
+        if (estJauneOuRougeAvecPlanNonRempli) {
+          p.messageEtat = this.genererMessageEtat("vert");
+        } else {
+          p.messageEtat = this.genererMessageEtat(etat);
+        }
+      });
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des pistolets :', err);
+    }
+  });
+}
+
+
+recupererListePistoletsNonValidesTechniciens() {
+  this.getPistoletsNonValideesTechniciens().subscribe({
+    next: (data) => {
+      this.general.pistolets = data;
+      console.error('pistolets non valides :', this.pistolets);
+      this.general.pistolets.forEach(p => {
+        const etat = this.etatPistolet(p.etendu, p.moyenne, p.type);
+      //  const estVert = etat === "vert";
+      //  const estJauneOuRougeAvecPlanNonRempli = (etat === "jaune" || etat === "rouge") && p.rempliePlanAction === 0;
+     //  p.activationValider = estVert || estJauneOuRougeAvecPlanNonRempli;  
+
+        p.messageEtat = this.genererMessageEtat(etat); // 
+      });
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des pistolets :', err);
+    }
+  });
+}
+genererMessageEtat(etat: string): string {
+  switch (etat) {
+    case 'vert':
+      return 'Attente de votre validation immédiate.';
+    case 'jaune':
+      return 'Zone jaune détectée : une vérification peut être nécessaire.';
+    case 'rouge':
+      return 'Zone rouge détectée : intervention immédiate requise.';
+    default:
+      return 'État inconnu.';
+  }
 }
   etatPistolet(etendu: number, moyenne: number, typePistolet: string): string {
     if (typePistolet === "PISTOLET_ROUGE") {

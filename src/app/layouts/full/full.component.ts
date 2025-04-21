@@ -18,6 +18,8 @@ import { AppNavItemComponent } from './sidebar/nav-item/nav-item.component';
 import { navItems } from './sidebar/sidebar-data';
 import { AppTopstripComponent } from './top-strip/topstrip.component';
 import { NavItem } from './sidebar/nav-item/nav-item';
+import { PistoletGeneralService } from 'src/app/services/Agent Qualité Montage Pistolet/pistolet-general.service';
+import { GeneralService } from 'src/app/services/Géneral/general.service';
 
 
 const MOBILE_VIEW = 'screen and (max-width: 768px)';
@@ -48,9 +50,33 @@ export class FullComponent implements OnInit {
   userString  = localStorage.getItem('user') || '';
   userRole: string = localStorage.getItem('role') || '';  // Récupère le rôle de l'utilisateur depuis localStorage
 
-
   ngOnInit(): void { 
     // Récupération du nom complet de l'utilisateur
+    if( this.role =="AGENT_QUALITE_PISTOLET"){
+      this.servicePistolet.recupererListePistoletsNonValidesAgentQualite() ;
+      this.servicePistolet.getNombreNotifications().subscribe({
+        next: (count) => {
+          this.serviceGeneral.nbrNotifications = count;
+  
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération des notifications :', err);
+        }
+      });
+    
+    }
+    if( this.role =="TECHNICIEN"){
+      this.servicePistolet.recupererListePistoletsNonValidesTechniciens() ;
+      this.servicePistolet.getNombreNotificationsTechniciens().subscribe({
+        next: (count) => {
+          this.serviceGeneral.nbrNotifications = count;
+  
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération des notifications :', err);
+        }
+      });
+    }
     if (this.userString) {
       const user = JSON.parse(this.userString); // Convertir la chaîne en objet
       this.fullName = `${user.prenom} ${user.nom}`; // Affecter à this.fullName
@@ -108,6 +134,8 @@ export class FullComponent implements OnInit {
     private settings: CoreService,
     private router: Router,
     private breakpointObserver: BreakpointObserver,
+    private servicePistolet : PistoletGeneralService , 
+    public  serviceGeneral : GeneralService 
   ) {
     this.htmlElement = document.querySelector('html')!;
     this.layoutChangesSubscription = this.breakpointObserver

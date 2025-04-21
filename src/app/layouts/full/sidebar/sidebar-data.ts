@@ -256,7 +256,7 @@ export const navItems: NavItem[] = [
     iconName: 'list-details',
     route: '/ui-components/listePdekPistolet',
     bgcolor: 'error',
-    roles: ['ADMIN', 'AGENT_QUALITE_PISTOLET'], 	
+    roles: ['ADMIN', 'AGENT_QUALITE_PISTOLET' , 'TECHNICIEN'], 	
 
   },
 
@@ -264,14 +264,14 @@ export const navItems: NavItem[] = [
   {
     navCap: 'Plan d actions',
   },
- {
+ /*{
     displayName: 'Ajout Plan d action',
     iconName: 'file-text',
     route: '/ui-components/addPlanAction',
     bgcolor: 'success',
     roles: ['TECHNICIEN'], 	
 
-  }, 
+  }, */
   {
     displayName: 'Liste Plan d actions',
     iconName: 'file-text',

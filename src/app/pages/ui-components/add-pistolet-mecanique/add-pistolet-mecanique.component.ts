@@ -76,6 +76,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
   });
 
   ngOnInit(): void {
+    this.servicePistoletGeneral.recupererListePistoletsNonValidesAgentQualite() ;
     this.plantUser = localStorage.getItem('plant') !;
     this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
     this.recupererTechniciens() ; 
@@ -296,7 +297,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
                       typePistolet : pistolet.categorie ,
                       couleurPistolet : "Bleu" ,
                       localisation : this.plantUser,
-                      valeurMesuree : pistolet.etendu+"",          
+                      valeurMesuree : pistolet.moyenne+"",          
                       limitesAcceptables : "Supérieur à 56 et infernieur à 74"  };
           
                     this.envoyerEmailWarningTechniciens(emailData);
@@ -333,7 +334,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
                       typePistolet : pistolet.categorie ,
                       couleurPistolet : "Bleu" ,
                       localisation : this.plantUser,
-                      valeurMesuree : pistolet.etendu+"",          
+                      valeurMesuree : pistolet.moyenne+"",          
                       limitesAcceptables : "Supérieur à 56 et infernieur à 74"  };
           
                     this.envoyerEmailErreurTechniciens(emailData);
@@ -572,7 +573,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
                       typePistolet : pistolet.categorie ,
                       couleurPistolet : "Bleu" ,
                       localisation : this.plantUser,
-                      valeurMesuree : pistolet.etendu+"",          
+                      valeurMesuree : pistolet.moyenne+"",          
                       limitesAcceptables : "Supérieur à 131 et inférieur à 149"  };
           
                     this.envoyerEmailWarningTechniciens(emailData);
@@ -605,7 +606,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
                       typePistolet : pistolet.categorie ,
                       couleurPistolet : "Rouge" ,
                       localisation : this.plantUser,
-                      valeurMesuree : pistolet.etendu+"",          
+                      valeurMesuree : pistolet.moyenne+"",          
                       limitesAcceptables : "Supérieur à 131 et inférieur à 149" };
           
                     this.envoyerEmailErreurTechniciens(emailData);
@@ -842,7 +843,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
                       typePistolet : pistolet.categorie ,
                       couleurPistolet : "Vert" ,
                       localisation : this.plantUser,
-                      valeurMesuree : pistolet.etendu+"",          
+                      valeurMesuree : pistolet.moyenne+"",          
                       limitesAcceptables : "Supérieur à 88 et inférieur à 112"  };
           
                     this.envoyerEmailWarningTechniciens(emailData);
@@ -875,7 +876,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
                       typePistolet : pistolet.categorie ,
                       couleurPistolet : "Vert" ,
                       localisation : this.plantUser,
-                      valeurMesuree : pistolet.etendu+"",          
+                      valeurMesuree : pistolet.moyenne+"",          
                       limitesAcceptables : "Supérieur à 88 et inférieur à 112"  };
           
                     this.envoyerEmailErreurTechniciens(emailData);
@@ -1112,7 +1113,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
                       typePistolet : pistolet.categorie ,
                       couleurPistolet : "Jaune" ,
                       localisation : this.plantUser,
-                      valeurMesuree : pistolet.etendu+"",          
+                      valeurMesuree : pistolet.moyenne+"",          
                       limitesAcceptables : "Supérieur à 35 et inférieur à 45"  };
           
                     this.envoyerEmailWarningTechniciens(emailData);
@@ -1145,7 +1146,7 @@ export class AddPistoletMecaniqueComponent implements OnInit{
                       typePistolet : pistolet.categorie ,
                       couleurPistolet : "Juane" ,
                       localisation : this.plantUser,
-                      valeurMesuree : pistolet.etendu+"",          
+                      valeurMesuree : pistolet.moyenne+"",          
                       limitesAcceptables : "Supérieur à 35 et inférieur à 45"  };
           
                     this.envoyerEmailErreurTechniciens(emailData);

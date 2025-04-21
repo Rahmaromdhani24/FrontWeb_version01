@@ -21,13 +21,13 @@
   <mat-menu #menu="matMenu" panelClass="custom-notif-menu">
    <!-- Pour l'AGENT_QUALITE_PISTOLET -->
 <ng-container *ngIf="role === 'AGENT_QUALITE_PISTOLET'">
-  <mat-menu-item *ngFor="let p of pistolets.slice(0, 3); let last = last">
+  <mat-menu-item *ngFor="let p of serviceGeneral.pistolets.slice(0, 3); let last = last">
     <div style="width: 100%;">
-      <p style="margin-left: 10px;">
+      <p style="margin-left: 9px;">
         <strong>
           <span [style]="getCouleurPistoletStyle(p.type)">Pistolet</span> ({{ p.categorie }})
         </strong>
-        - Segment : {{ p.segment }}
+         Numéro : {{ p.numeroPistolet }} &nbsp;&nbsp;&nbsp;&nbsp;
         <span>{{ p.messageEtat }}</span>
       </p>
       <small class="time">{{ getDifferenceFromNow(p) }}</small>
@@ -40,20 +40,20 @@
     <hr *ngIf="!last" />
   </mat-menu-item>
     <!-- Bouton voir plus -->
-    <div style="width: 100%; display: flex; justify-content: center; padding-top: 8px;">
+    <div  *ngIf="serviceGeneral.pistolets.length > 0; else aucuneNotif"  style="width: 100%; display: flex; justify-content: center; padding-top: 8px;">
       <button mat-flat-button class="bg-success text-white" (click)="voirTousNotifications()">Voir plus</button>
     </div>
 </ng-container>
 
 <!-- Pour le Technicien -->
 <ng-container *ngIf="role === 'TECHNICIEN'">
-  <mat-menu-item *ngFor="let p of pistolets.slice(0, 3); let last = last">
+  <mat-menu-item *ngFor="let p of serviceGeneral.pistolets.slice(0, 3); let last = last">
     <div style="width: 100%;">
-      <p style="margin-left: 10px;">
+      <p style="margin-left: 9px;">
         <strong>
           <span [style]="getCouleurPistoletStyle(p.type)">Pistolet</span> ({{ p.categorie }})
         </strong>
-        - Segment : {{ p.segment }}
+        Numéro : {{ p.numeroPistolet }} &nbsp;&nbsp;&nbsp;&nbsp;<br>
         <span>{{ p.messageEtat }}</span>
       </p>
       <small class="time">{{ getDifferenceFromNow(p) }}</small>
@@ -66,11 +66,16 @@
     <hr *ngIf="!last" />
   </mat-menu-item>
     <!-- Bouton voir plus -->
-    <div style="width: 100%; display: flex; justify-content: center; padding-top: 8px;">
+    <div  *ngIf="serviceGeneral.pistolets.length > 0; else aucuneNotif" style="width: 100%; display: flex; justify-content: center; padding-top: 8px;">
       <button mat-flat-button class="bg-success text-white" (click)="voirTousNotifications()">Voir plus</button>
     </div>
 </ng-container>
-
+<!-- ✅ Message si aucun pistolet -->
+<ng-template #aucuneNotif>
+  <div style="padding: 10px; text-align: center;">
+    <p>Pas de notifications</p>
+  </div>
+</ng-template>
           <!-- Cas où il n'y a aucune notification -->
       <ng-template #noNotif>
         <mat-menu-item>

@@ -84,11 +84,14 @@ export class ChartAddPistoletBleuComponent implements OnInit {
     console.log('Type de pistolet:',  this.typePistolet);
     console.log('id de pdek :',  this.idPdek);
     console.log('numero de page de pdek :',  this.numPage);
-    this.recuepererDernierNumeroDeCycle(); 
-    this.recupererDonneesDeFichierPdekDePageParticulier().subscribe();
-    this.general.nbrNotifications++ ;  
     this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
+
+
+    
     this.recupererPistoletByNumeroEtEtat();
+    this.pistoletGeneralService.recupererListePistoletsNonValidesAgentQualite() ;
+    this.recuepererDernierNumeroDeCycle() ; 
+    this.recupererDonneesDeFichierPdekDePageParticulier().subscribe();
 
   }
   /***************************** Chart moyenne X *******************************************/
@@ -287,7 +290,7 @@ public seriesEtendue: { x: number, y: number }[] = [];
   }
 };
  
-recuepererDernierNumeroDeCycle() {
+recuepererDernierNumeroDeCycle(){
   this.pistoletGeneralService.getDernierNumeroCycle(this.typePistolet,  this.numeroPistolet, this.categorie, this.segmentUser, this.plantUser)
   .subscribe({
     next: (numeroCycle) => {
@@ -298,7 +301,8 @@ recuepererDernierNumeroDeCycle() {
       console.error('Erreur récupération du numéro de cycle', err);
     }
   });
-}
+  
+  }
 
 recupererDonneesDeFichierPdekDePageParticulier(): Observable<Pistolet[]> {
   return this.pistoletGeneralService.getPistoletsParPdekEtPage(this.idPdek, this.numPage).pipe(
@@ -310,14 +314,15 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Pistolet[]> {
         x: p.numCourant,
         y: p.moyenne
       }));
+
       this.donneesMoyenne = this.seriesMoyenne;
 
       this.seriesEtendue = data.map(p => ({
         x: p.numCourant,
         y: p.etendu
       }));
-
       this.donneesEtendu = this.seriesEtendue;
+
       if (data.length > 0) {
         this.numeroCourant = data[data.length - 1].numCourant;
       }
@@ -333,22 +338,6 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Pistolet[]> {
     })
   );
 }
-
-recupererPistoletByNumeroEtEtat(): void {
-  this.pistoletGeneralService.getPistoletInformations(this.numeroPistolet , this.typePistolet , this.categorie).subscribe({
-    next: (data) => {
-      console.log('Pistolet récupéré :', data);
-      this.pistolet = data;
-
-      // Appel de la méthode qui détermine l'état du pistolet
-      const etat = this.recupererEtatPistolet(this.pistolet);
-      console.log('État du pistolet :', etat);
-    },
-    error: (err) => {
-      console.error('Erreur lors de la récupération du pistolet :', err);
-    }
-  });
-}
 validerPdekPistolet(): void {
   this.pistoletGeneralService.getPistoletInformations(this.numeroPistolet , this.typePistolet , this.categorie).subscribe({
     next: (data) => {
@@ -357,7 +346,8 @@ validerPdekPistolet(): void {
       console.log('id de pistolet validé :', this.idPistolet);
       this.pistoletGeneralService.validerPistolet(this.idPistolet, this.matriculeAgentQualite).subscribe({
         next: () => {
-          this.general.recupererNombreNotificationsPistolet();
+          this.pistoletGeneralService.recupererListePistoletsNonValidesAgentQualite() ;
+          this.pistoletGeneralService.getNombreNotifications();
           this.general.nbrNotifications--;
 
           this.valide = true; // ✅ le bouton est maintenant validé
@@ -394,16 +384,37 @@ validerPdekPistolet(): void {
   });
 }
 
+recupererPistoletByNumeroEtEtat(): void {
+  this.pistoletGeneralService.getPistoletInformations(this.numeroPistolet, this.typePistolet, this.categorie).subscribe({
+    next: (data) => {
+      console.log('Pistolet récupéré :', data);
+      this.pistolet = data;
+
+      const etat = this.recupererEtatPistolet(this.pistolet);
+      console.log('État du pistolet :', etat);
+
+      if (etat === 'vert') {
+        this.general.nbrNotifications++;
+
+        // Appel ici, après avoir détecté l'état vert
+        this.pistoletGeneralService.recupererListePistoletsNonValidesAgentQualite();
+
+        console.log('Notification ajoutée. Total :', this.general.nbrNotifications);
+      }
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération du pistolet :', err);
+    }
+  });
+}
+
 
 recupererEtatPistolet(p: Pistolet): string {
   const etat = this.pistoletGeneralService.etatPistolet(p.etendu, p.moyenne, p.type);
   p.activationValider = etat === "vert";
   return etat;
 }
-creerPlanAction() {
-  console.log('Création d’un plan d’action pour le pistolet ');
-  this.router.navigate(['/ui-components/addPlanAction']) ; 
-}
+
 
 naviger(){
   this.router.navigate(['/pdekPistoletBleu']);

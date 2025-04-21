@@ -62,6 +62,11 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
 
   pistolet: Pistolet = new Pistolet();
   ngOnInit(): void {
+    this.servicePistoletGeneral.recupererListePistoletsNonValidesAgentQualite() ;
+    this.plantUser = localStorage.getItem('plant') !;
+    this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+    this.recupererTechniciens() ; 
+
     this.myForm = new FormGroup({
       selectedValue: new FormControl(null, Validators.required),
       nombreCollier: new FormControl('', Validators.required),
@@ -287,7 +292,7 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
                                 typePistolet : pistolet.categorie ,
                                 couleurPistolet : "Bleu" ,
                                 localisation : this.plantUser,
-                                valeurMesuree : pistolet.etendu+"",          
+                                valeurMesuree : pistolet.moyenne+"",          
                                 limitesAcceptables : "Supérieur à 56 et infernieur à 74"  };
                     
                               this.envoyerEmailWarningTechniciens(emailData);
@@ -320,7 +325,7 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
                 typePistolet : pistolet.categorie ,
                 couleurPistolet : "Bleu" ,
                 localisation : this.plantUser,
-                valeurMesuree : pistolet.etendu+"",          
+                valeurMesuree : pistolet.moyenne+"",          
                 limitesAcceptables : "Supérieur à 56 et infernieur à 74"  };
     
               this.envoyerEmailErreurTechniciens(emailData);
@@ -555,7 +560,7 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
                           typePistolet : pistolet.categorie ,
                           couleurPistolet : "Rouge" ,
                           localisation : this.plantUser,
-                          valeurMesuree : pistolet.etendu+"",          
+                          valeurMesuree : pistolet.moyenne+"",          
                           limitesAcceptables : "Supérieur à 131 et inférieur à 149"  };
               
                         this.envoyerEmailWarningTechniciens(emailData);
@@ -588,7 +593,7 @@ else  if((moyenne >= 110 && moyenne <= 125) || (moyenne >= 166 && moyenne <= 180
                           typePistolet : pistolet.categorie ,
                           couleurPistolet : "Rouge" ,
                           localisation : this.plantUser,
-                          valeurMesuree : pistolet.etendu+"",          
+                          valeurMesuree : pistolet.moyenne+"",          
                           limitesAcceptables : "Supérieur à 131 et inférieur à 149"  };
               
                         this.envoyerEmailErreurTechniciens(emailData);
@@ -823,7 +828,7 @@ else  if((moyenne >= 110 && moyenne <= 125) || (moyenne >= 166 && moyenne <= 180
                   typePistolet : pistolet.categorie ,
                   couleurPistolet : "Vert" ,
                   localisation : this.plantUser,
-                  valeurMesuree : pistolet.etendu+"",          
+                  valeurMesuree : pistolet.moyenne+"",          
                   limitesAcceptables : "Supérieur à 88 et inférieur à 112"  };
       
                 this.envoyerEmailWarningTechniciens(emailData);
@@ -856,7 +861,7 @@ else  if((moyenne >= 110 && moyenne <= 125) || (moyenne >= 166 && moyenne <= 180
                         typePistolet : pistolet.categorie ,
                         couleurPistolet : "Vert" ,
                         localisation : this.plantUser,
-                        valeurMesuree : pistolet.etendu+"",          
+                        valeurMesuree : pistolet.moyenne+"",          
                         limitesAcceptables :"Supérieur à 88 et inférieur à 112"  };
             
                       this.envoyerEmailErreurTechniciens(emailData);
@@ -1091,7 +1096,7 @@ console.log("ettendu est :"+ ettendu)
                         typePistolet : pistolet.categorie ,
                         couleurPistolet : "Jaune" ,
                         localisation : this.plantUser,
-                        valeurMesuree : pistolet.etendu+"",          
+                        valeurMesuree : pistolet.moyenne+"",          
                         limitesAcceptables : "Supérieur à 35 et inférieur à 45"  };
             
                       this.envoyerEmailWarningTechniciens(emailData);
@@ -1124,7 +1129,7 @@ console.log("ettendu est :"+ ettendu)
                           typePistolet : pistolet.categorie ,
                           couleurPistolet : "Jaune" ,
                           localisation : this.plantUser,
-                          valeurMesuree : pistolet.etendu+"",          
+                          valeurMesuree : pistolet.moyenne+"",          
                           limitesAcceptables : "Supérieur à 35 et inférieur à 45"  };
               
                         this.envoyerEmailErreurTechniciens(emailData);
@@ -1182,6 +1187,17 @@ envoyerEmailWarningTechniciens(emailData: EmailPistoletRequest) {
     error: (err) => {
       console.error('Erreur envoi email :', err);
       Swal.fire('Erreur', 'Échec de l’envoi de l’email', 'error');
+    }
+  });
+}
+recupererTechniciens(){
+  this.servicePistoletGeneral.getTechniciens(this.plantUser, this.segmentUser, this.nomOperation).subscribe({
+    next: (data) => {
+      this.techniciens = data;
+      console.log('Techniciens récupérés :', data);
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des techniciens :', err);
     }
   });
 }

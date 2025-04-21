@@ -15,9 +15,19 @@ export class TechnicienServiceService {
 
 
 
-  private baseUrl ='http://localhost:8281/planAction/addPlanAtcion'
-  ajouterPlanAction(pagePdekId: number, userId: number, details: DetailsPlanAction): Observable<any> {
-    const url = `${this.baseUrl}/${pagePdekId}/ajouter/${userId}`;
-    return this.http.post(url, details);
+  private baseUrl = 'http://localhost:8281/planAction/addPlanAction';
+
+  ajouterPlanAction(pdekId: number, numeroPage: number, userId: number, numeroPistolet: number,
+                    typePistolet: string, categoriePistolet: string, details: DetailsPlanAction): Observable<any> {
+    const url = `${this.baseUrl}/${pdekId}/${numeroPage}/${userId}/${numeroPistolet}/${typePistolet}/${categoriePistolet}`;
+    const token = localStorage.getItem('token'); // Assure-toi que le token est bien stocké
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(url, details, { headers });
   }
+  
 }

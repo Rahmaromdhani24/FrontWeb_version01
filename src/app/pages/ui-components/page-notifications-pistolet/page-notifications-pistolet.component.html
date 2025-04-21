@@ -1,82 +1,108 @@
-<div class="stylePage" *ngIf="role === 'AGENT_QUALITE_PISTOLET'">
-  <mat-card class="cardWithShadow theme-card" id="styleCard">
-    <mat-card-header>
-      <mat-card-title id="titrePageNotifications">
-        Notifications : {{ serviceGeneral.nbrNotifications }}
-      </mat-card-title>
-    </mat-card-header>
+<!-- AGENT QUALITÉ -->
+<ng-container *ngIf="role === 'AGENT_QUALITE_PISTOLET'">
+  <div class="stylePage" *ngIf="serviceGeneral.pistolets.length > 0; else aucuneNotifAgent">
+    <mat-card class="cardWithShadow theme-card" id="styleCard">
+      <mat-card-header>
+        <mat-card-title id="titrePageNotifications">
+          Notifications : {{ serviceGeneral.nbrNotifications }}
+        </mat-card-title>
+      </mat-card-header>
 
-    <mat-card-content class="b-t-1">
-      <div *ngFor="let p of pistoletsNonValides; let last = last" >
-        <div class="notification-row">
-          <div class="message">
-            <p>
-              Le PDEK du pistolet <span id="styleSpan">{{ p.categorie }}</span>
-              de couleur
-              <span [style]="getCouleurPistoletStyle(p.type)">
-                {{ formatPistolet(p.type) }}
-              </span>,
-              numéro <span id="styleSpan">{{ p.numeroPistolet }}</span><br>
-              dans le segment <span id="styleSpan">{{ p.segment }}</span>
-              <span> ,{{ p.messageEtat }}</span>
-            </p>
-            <small class="time">{{ getDifferenceFromNow(p) }}</small>
+      <mat-card-content class="b-t-1">
+        <div *ngFor="let p of serviceGeneral.pistolets; let last = last">
+          <div class="notification-row">
+            <div class="message">
+              <p>
+                Le PDEK du pistolet <span id="styleSpan">{{ p.categorie }}</span>
+                de couleur
+                <span [style]="getCouleurPistoletStyle(p.type)">
+                  {{ formatPistolet(p.type) }}
+                </span>,
+                numéro <span id="styleSpan">{{ p.numeroPistolet }}</span><br>
+                dans le segment <span id="styleSpan">{{ p.segment }}</span>
+                <span> ,{{ p.messageEtat }}</span>
+              </p>
+              <small class="time">{{ getDifferenceFromNow(p) }}</small>
+            </div>
+
+            <div class="actions">
+              <button mat-flat-button color="primary" (click)="voirPistolet(p)">Voir PDEK</button>
+              <button
+                mat-flat-button
+                [ngClass]="{
+                  'bg-success text-white': p.activationValider,
+                  'bg-error text-white': !p.activationValider
+                }"
+                (click)="validerPdekPistolet(p.id)"
+                [disabled]="!p.activationValider"
+              >
+                Valider PDEK
+              </button>
+            </div>
           </div>
-
-          <div class="actions">
-            <button mat-flat-button color="primary" (click)="voirPistolet(p)">  Voir PDEK </button>
-       
-            <button 
-            mat-flat-button 
-            [ngClass]="{
-              'bg-success text-white': p.activationValider,
-              'bg-error text-white': !p.activationValider
-            }"
-            (click)="validerPdekPistolet(p.id)" [disabled]="!p.activationValider"> Valider PDEK </button>
-           
-          
+          <hr *ngIf="!last" />
         </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-        <hr *ngIf="!last" />
+  <ng-template #aucuneNotifAgent>
+    <mat-card>
+      <div style="padding: 10px; text-align: center;">
+        <p>Pas de notifications</p>
       </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
-<!------------------ Technicien -------------------------------->
-<div class="stylePage" *ngIf="role === 'TECHNICIEN'">
-  <mat-card class="cardWithShadow theme-card" id="styleCard">
-    <mat-card-header>
-      <mat-card-title id="titrePageNotifications">
-        Notifications : {{ serviceGeneral.nbrNotifications }}
-      </mat-card-title>
-    </mat-card-header>
+    </mat-card>
+    <div id="espace"></div>
+  </ng-template>
+</ng-container>
 
-    <mat-card-content class="b-t-1">
-      <div *ngFor="let p of pistoletsNonValides; let last = last" >
-        <div class="notification-row">
-          <div class="message">
-            <p>
-              Le PDEK du pistolet <span id="styleSpan">{{ p.categorie }}</span>
-              de couleur
-              <span [style]="getCouleurPistoletStyle(p.type)">
-                {{ formatPistolet(p.type) }}
-              </span>,
-              numéro <span id="styleSpan">{{ p.numeroPistolet }}</span><br>
-              dans le segment <span id="styleSpan">{{ p.segment }}</span>
-              <span> ,{{ p.messageEtat }}</span>
-            </p>
-            <small class="time">{{ getDifferenceFromNow(p) }}</small>
+<!-- TECHNICIEN -->
+<ng-container *ngIf="role === 'TECHNICIEN'">
+  <div class="stylePage" *ngIf="serviceGeneral.pistolets.length > 0; else aucuneNotifTechnicien">
+    <mat-card class="cardWithShadow theme-card" id="styleCard">
+      <mat-card-header>
+        <mat-card-title id="titrePageNotifications">
+          Notifications : {{ serviceGeneral.nbrNotifications }}
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content class="b-t-1">
+        <div *ngFor="let p of serviceGeneral.pistolets; let last = last">
+          <div class="notification-row">
+            <div class="message">
+              <p>
+                Le PDEK du pistolet <span id="styleSpan">{{ p.categorie }}</span>
+                de couleur
+                <span [style]="getCouleurPistoletStyle(p.type)">
+                  {{ formatPistolet(p.type) }}
+                </span>,
+                numéro <span id="styleSpan">{{ p.numeroPistolet }}</span><br>
+                dans le segment <span id="styleSpan">{{ p.segment }}</span>
+                <span> ,{{ p.messageEtat }}</span>
+              </p>
+              <small class="time">{{ getDifferenceFromNow(p) }}</small>
+            </div>
+
+            <div class="actions">
+              <button mat-flat-button color="primary" (click)="voirPistolet(p)">Voir PDEK</button>
+              <button mat-flat-button class="bg-success text-white" (click)="creerPlanAction(p)">
+                Remplir Plan d'action
+              </button>
+            </div>
           </div>
-
-          <div class="actions">
-            <button mat-flat-button color="primary" (click)="voirPistolet(p)">  Voir PDEK </button>
-            <button mat-flat-button class="bg-success text-white" (click)="creerPlanAction(p)">Remplie Plan d'action</button>
+          <hr *ngIf="!last" />
         </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-        <hr *ngIf="!last" />
+  <ng-template #aucuneNotifTechnicien>
+    <mat-card>
+      <div style="padding: 10px; text-align: center;">
+        <p>Pas de notifications</p>
       </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
+    </mat-card>
+    <div id="espace"></div>
+
+  </ng-template>
+</ng-container>

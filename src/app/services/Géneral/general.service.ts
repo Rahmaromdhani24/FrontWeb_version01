@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Pistolet } from 'src/app/Modeles/Pistolet';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ export class GeneralService {
 
   constructor(private http: HttpClient) { }
   nbrNotifications: number ; 
+  pistolets: Pistolet[] = [];
 
   private urlLogin = 'http://localhost:8281/auth/login';
   login(matricule: number): Observable<any> {
@@ -37,7 +39,7 @@ saveToken(token: string) {
 getToken(): string | null {
   return localStorage.getItem('token');
 }
-getNombreNotifications(): Observable<number> {
+/*getNombreNotifications(): Observable<number> {
     const token = localStorage.getItem('token');
     
     const headers = new HttpHeaders({
@@ -59,5 +61,5 @@ recupererNombreNotificationsPistolet(){
     }
   });
 }
-
+*/
 }

@@ -68,14 +68,15 @@ export class HeaderComponent  implements OnInit{
    this.fullname =  localStorage.getItem('fullName') ;
    this.plant=   localStorage.getItem('plant') ;
     if( this.role =="AGENT_QUALITE_PISTOLET"){
-      this.nom_process ="Montage Pistolet"; 
+      this.nom_process ="Montage Pistolet";  
+      this.servicePistolet.recupererListePistoletsNonValidesAgentQualite() ;
       this.recupererNombreNotificationsPistolet() ; 
-      this.recupererListePistoletsNonValides() ;
+    
     }
     if( this.role =="TECHNICIEN"){
-      this.nom_process ="Montage Pistolet"; 
+      this.nom_process ="Montage Pistolet";     
+      this.servicePistolet.recupererListePistoletsNonValidesTechniciens() ;
       this.recupererNombreNotificationsTechnicien() ; 
-      this.recupererListePistoletsNonValidesTechniciens() ;
     }
 
     this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
@@ -106,30 +107,34 @@ export class HeaderComponent  implements OnInit{
     });
   }
   get pistoletsNonValides() {
-    return this.pistolets.filter(p => !this.pistoletsValides.has(p.id));
+    return this.serviceGeneral.pistolets.filter(p => !this.pistoletsValides.has(p.id));
   }
-  recupererListePistoletsNonValides(){
+  /*recupererListePistoletsNonValides(){
     this.servicePistolet.getPistoletsNonValidees().subscribe({
       next: (data) => {
-        this.pistolets = data;
+        this.serviceGeneral.pistolets = data;
         console.error('pistolets non valides :', this.pistolets);
-        this.pistolets.forEach(p => {
+        this.serviceGeneral.pistolets.forEach(p => {
           const etat = this.servicePistolet.etatPistolet(p.etendu, p.moyenne, p.type);
-          p.activationValider = etat === "vert";
-          p.messageEtat = this.genererMessageEtat(etat); // 
+        // Nouvelle logique de validation
+        const estVert = etat === "vert";
+        const estJauneOuRougeAvecPlanNonRempli = (etat === "jaune" || etat === "rouge") && p.rempliePlanAction === 0;
+
+        p.activationValider = estVert || estJauneOuRougeAvecPlanNonRempli;  
+        p.messageEtat = this.genererMessageEtat(etat); // 
         });
       },
       error: (err) => {
         console.error('Erreur lors de la récupération des pistolets :', err);
       }
     });
-  }
-  recupererListePistoletsNonValidesTechniciens(){
+  }*/
+ /* recupererListePistoletsNonValidesTechniciens(){
     this.servicePistolet.getPistoletsNonValideesTechniciens().subscribe({
       next: (data) => {
-        this.pistolets = data;
+        this.serviceGeneral.pistolets = data;
         console.error('pistolets non valides :', this.pistolets);
-        this.pistolets.forEach(p => {
+        this.serviceGeneral.pistolets.forEach(p => {
           const etat = this.servicePistolet.etatPistolet(p.etendu, p.moyenne, p.type);
           p.activationValider = etat === "vert";
           p.messageEtat = this.genererMessageEtat(etat); // 
@@ -139,7 +144,7 @@ export class HeaderComponent  implements OnInit{
         console.error('Erreur lors de la récupération des pistolets :', err);
       }
     });
-  }
+  }*/
   genererMessageEtat(etat: string): string {
     switch (etat) {
       case 'vert':
@@ -247,7 +252,7 @@ export class HeaderComponent  implements OnInit{
             this.serviceGeneral.nbrNotifications--;
       
             // ✅ Retirer le pistolet validé de la liste locale
-            this.pistolets = this.pistolets.filter(p => p.id !== pistoletId);
+            this.serviceGeneral.pistolets = this.serviceGeneral.pistolets.filter(p => p.id !== pistoletId);
       
             Swal.fire({
               title: 'Confirmation !',
@@ -273,10 +278,15 @@ export class HeaderComponent  implements OnInit{
         });
       }
       
-      creerPlanAction(p : Pistolet) {
-        console.log('Création d’un plan d’action pour le pistolet ');
-        this.router.navigate(['/ui-components/addPlanAction']) ; 
+      creerPlanAction(p: Pistolet) {
+        console.log('Création d’un plan d’action pour le pistolet :', p);
+      
+        const pistoletJson = JSON.stringify(p) ;
+        localStorage.setItem('PistoletPlanAction', pistoletJson); 
+      
+        this.router.navigate(['/ui-components/addPlanAction']);
       }
+      
     logout(){
       localStorage.clear() ;
       this.router.navigate(['/login'])
