@@ -49,7 +49,7 @@ export class FullComponent implements OnInit {
   role: string = '';
   userString  = localStorage.getItem('user') || '';
   userRole: string = localStorage.getItem('role') || '';  // Récupère le rôle de l'utilisateur depuis localStorage
-
+  userSexe: string = '';
   ngOnInit(): void { 
     // Récupération du nom complet de l'utilisateur
     if( this.role =="AGENT_QUALITE_PISTOLET"){
@@ -79,6 +79,7 @@ export class FullComponent implements OnInit {
     }
     if (this.userString) {
       const user = JSON.parse(this.userString); // Convertir la chaîne en objet
+      this.userSexe = user.sexe?.toLowerCase(); // suppose que le champ s'appelle "sexe"
       this.fullName = `${user.prenom} ${user.nom}`; // Affecter à this.fullName
       localStorage.setItem('fullName' , this.fullName ) ; 
       console.log("Nom complet de l'utilisateur : " + this.fullName); // Vérification dans la console
@@ -101,8 +102,16 @@ export class FullComponent implements OnInit {
   clearStorage(){
     localStorage.clear() ; 
     this.router.navigate(['/login']);
-
   }
+  
+  getUserImage(): string {
+    if (this.userSexe === 'femme') {
+      return '/assets/images/profile/femme.PNG';
+    } else {
+      return '/assets/images/profile/user-1.jpg'; 
+    }
+  }
+  
   // Fonction pour vérifier si l'utilisateur a accès à un item
   hasAccess(item: NavItem): boolean {
     // Si aucun rôle n'est spécifié, on affiche l'élément

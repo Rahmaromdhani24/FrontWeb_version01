@@ -1,0 +1,212 @@
+<div class="loading" *ngIf="showLoader">
+    <span id="loader" class="loader"></span>
+  </div>
+  <form action="" class="search-bar"  *ngIf="!showLoader">
+    <input type="search" name="search" pattern=".*\S.*" required>
+    <button class="search-btn" type="submit">
+      <span>Search</span>
+    </button>
+  </form>
+  <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
+    <div class="pdf-container" *ngFor="let page of pages">
+      <!-- En-tête -->
+    <div class="header">
+      <!-- Titre principal -->
+      <div class="main-title" style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">
+        Carte d'enregistrement des données du processus "Pistolet collier de serrage"
+      </div>
+      <div class="styleLogoLeoni"> LEONI </div>
+    </div>
+      <!-- Tableau -->
+    <div id="idBorderTableau">
+    <table border="2" id="tableTitre">
+      <tr>
+        <td>Type opération Mesure de <br> valeur de force de serrage</td>
+        <td>Instrument de mesure :<br>Machine de traction MAV<br>Outil KBP-GS2B</td>
+        <td>Spécification de mesure : 80 - 120 N<br>
+          <strong class="styleSpecidication">OGW = 120/OEW - 20%T </strong><br>
+          <strong class="styleSpecidication">UGW = 80/UEG + 20%T </strong><br></td>
+          <td>Fréquence de contrôle :<br>Selon PDS</td>
+        <td>Réglage 3 :<br>Interval de diamétre <br>de seraage <br>
+          <strong class="styleSpecidication">de 1.5 mm à 50mm</strong></td>
+        <td>Numéro de pistolet :<br><strong>{{ getNumeroPistolet(page) ?? '' }}</strong></td>
+        <td>
+          Segment / année<br>
+          {{segmentUser}} /  {{ getAnnee(page,0) ?? '' }} <br>
+          <div style="background-color: rgb(255, 0, 0); display: inline-block; padding: 4px 8px; font-weight: bold;">
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </div>
+        </td>
+      </tr>
+  </table>
+   
+    </div>
+      <div id="idBorderMoyenne">
+        <div class="vertical-text-moyenne">La moyenne X̄</div>
+        <apx-chart 
+        [series]="page.chartOptionsMoyenne.series"
+        [chart]="page.chartOptionsMoyenne.chart"
+        [xaxis]="page.chartOptionsMoyenne.xaxis"
+        [yaxis]="page.chartOptionsMoyenne.yaxis"
+        [stroke]="page.chartOptionsMoyenne.stroke"
+        [dataLabels]="page.chartOptionsMoyenne.dataLabels"
+        [markers]="page.chartOptionsMoyenne.markers"
+        [tooltip]="page.chartOptionsMoyenne.tooltip"
+        [annotations]="page.chartOptionsMoyenne.annotations"
+        [fill]="page.chartOptionsMoyenne.fill"
+        [legend]="page.chartOptionsMoyenne.legend"
+          style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -244px;"
+  
+        ></apx-chart>
+      </div>
+      
+      <div  id="idBorderEtendu">
+        <div class="vertical-text-etendu">L'étendu R</div>
+        <apx-chart 
+          [series]="page.chartOptionsEtendue.series"
+          [chart]="page.chartOptionsEtendue.chart"
+          [xaxis]="page.chartOptionsEtendue.xaxis"
+          [yaxis]="page.chartOptionsEtendue.yaxis"
+          [stroke]="page.chartOptionsEtendue.stroke"
+          [dataLabels]="page.chartOptionsEtendue.dataLabels"
+          [markers]="page.chartOptionsEtendue.markers"
+          [tooltip]="page.chartOptionsEtendue.tooltip"
+          [annotations]="page.chartOptionsEtendue.annotations"
+          style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -240px;"
+        ></apx-chart>
+        </div>
+  
+      <div class="tables-wrapper" >
+       <!-- TABLEAU PRINCIPAL -->
+<table class="main-table">
+  <!-- Code de répartition -->
+  <tr>
+    <th>Code de répartition</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getCodeRepartition(page, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Date sans année -->
+  <tr>
+    <th>Date</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getDateSansAnnee(page, col) ?? '' }}
+    </td>
+    
+  </tr>
+
+  <!-- Coupe propre -->
+  <tr>
+    <th>Coupe Propre <br> 'OK' &nbsp;'N-OK'</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getCoupePropre(page, col) ?? '' }}
+    </td>
+    
+  </tr>
+
+  <!-- Nom -->
+  <tr>
+    <th>Nom</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getNom(page, col) ?? '' }}
+    </td>    
+  </tr>
+
+  <!-- 5 LIGNES X -->
+  <tr>
+    <th rowspan="5">X</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 0, col) ?? '' }}
+    </td> 
+  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 1, col) ?? '' }}
+    </td>  
+  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 2, col) ?? '' }}
+    </td>  
+  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 3, col) ?? '' }}
+    </td>  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 4, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Moyenne -->
+  <tr>
+    <th>X̄</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getMoyenne(page, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Étendue -->
+  <tr>
+    <th>R</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getEtendu(page, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Num courant -->
+  <tr>
+    <th>Nr courant</th>
+    <td *ngFor="let i of [].constructor(25); let idx = index">
+      {{ idx + 1 }}
+    </td>
+  </tr>
+  
+</table>
+
+  <div class="side-wrapper">
+
+  <table class="side-table">
+    <thead>
+      <tr>
+        <th>Nr.</th>
+        <th>Nr. De collier</th>
+        <th>Axe de serrage</th>
+        <th>Semaine</th>
+        <th>Décision</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of twentyFive; let index = index">
+        <td>{{ index + 1 }}</td>
+        <ng-container *ngIf="page.pistolets[index] as pistolet">
+          <td>{{ pistolet.nbrCollierTester }}</td>
+          <td>{{ pistolet.axeSerrage }}</td>
+          <td>{{ pistolet.semaine }}</td>
+          <td>
+            <button (click)="onValiderPistolet(pistolet.id)" 
+                    *ngIf="pistolet.decision === 0 && !pistoletsValides.has(pistolet.id)" 
+                    class="custom-check-button">
+              <i class="fa fa-check"></i>
+            </button>
+            <span *ngIf="pistolet.decision === 1 || pistoletsValides.has(pistolet.id)">Confirmé</span>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="!page.pistolets[index]">
+          <td></td><td></td><td></td><td></td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+  <div id="idBorderRemarque">
+    <span id="spanRemarque">Remarque<br></span>
+  </div>
+</div>
+
+      </div>
+       </div>
+       <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" (click)="naviger()">Retour</button>
+    </div>
+  

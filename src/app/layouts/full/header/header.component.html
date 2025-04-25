@@ -94,7 +94,7 @@
 
   <!-- Menu profil -->
   <button class="rounded-pill" mat-mini-fab [matMenuTriggerFor]="profilemenu" aria-label="Profil" id="imageUser">
-    <img src="/assets/images/profile/user-1.jpg" class="rounded-circle object-cover d-block" width="35" />
+    <img [src]="getUserImage()" width="40" class="rounded-circle">
   </button>
 
   <div class="d-none d-lg-flex text-left flex-col">

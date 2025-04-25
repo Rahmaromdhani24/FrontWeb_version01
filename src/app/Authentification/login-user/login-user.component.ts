@@ -61,8 +61,13 @@ export class LoginUserComponent implements OnInit {
               Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Cette matricule n'existe pas, Veuillez réessayer !",
+                text: "Erreur de connexion !" ,
               });
+              /* Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Cette matricule n'existe pas, Veuillez réessayer !",
+              });*/
             }
           }
         });
@@ -74,6 +79,7 @@ export class LoginUserComponent implements OnInit {
         this.authService.getUser(matricule).subscribe({
           next: (user) => {
             this.admin = user;
+            
             localStorage.setItem('user', JSON.stringify(user));
     
             if (user.role === "AGENT_QUALITE" && user.operation === "Montage_Pistolet") {

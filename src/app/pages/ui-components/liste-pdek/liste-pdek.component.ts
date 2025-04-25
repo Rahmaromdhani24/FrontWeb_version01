@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { OperatorDetailsModalComponent } from '../operator-details-modal/operator-details-modal.component';
+import { OperatorDetailsModalComponent } from '../Montage Pistolet/operator-details-modal/operator-details-modal.component';
 import { PistoletJauneService } from 'src/app/services/PDF/Pistolet Jaune/pistolet-jaune.service';
 import { PlanActionPdfService } from 'src/app/services/PDF/Plan d\'action/plan-action-pdf.service';
 interface Operateur {
@@ -71,6 +71,8 @@ displayedColumns: string[] = [
   segments: string[] = ['VW', 'BM'];
   machines: string[] = ['D306', 'D295'];
 // Dans votre composant.ts
+
+
 statuses: string[] = ['en cours', 'Valider', 'Rejeter'];
   // Filtres actuels
   currentProcessFilter: string[] = [];
@@ -169,7 +171,7 @@ statuses: string[] = ['en cours', 'Valider', 'Rejeter'];
       this.pistoletJauneService.openPDFInNewWindow();
   }
   viewPlanAction(){
-    this.planActionPdfService.openPDFInNewWindow();
+   // this.planActionPdfService.openPDFInNewWindow();
 
   }
   printRow(row: PDEKData) {

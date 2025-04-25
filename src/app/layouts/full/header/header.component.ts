@@ -62,7 +62,41 @@ export class HeaderComponent  implements OnInit{
   roleDashboard : string  | null ; 
   activationBoutonValider : boolean = false ;
   pistoletsValides: Set<number> = new Set();
+  dropdownOpen = false;
+  userSexe: string = '';
+  userString  = localStorage.getItem('user') || '';
+
+  languages = [
+    { code: 'fr', label: 'Français', flag: 'assets/flags/fr.png' },
+    { code: 'en', label: 'English', flag: 'assets/flags/gb.png' },
+    { code: 'de', label: 'Deutsch', flag: 'assets/flags/de.png' }
+  ];
+
+  selectedLang = this.languages[0];
+
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  changeLanguage(lang: any) {
+    this.selectedLang = lang;
+    this.dropdownOpen = false;
+
+    const frame = document.querySelector('iframe.goog-te-menu-frame') as HTMLIFrameElement;
+    if (frame) {
+      const innerDoc = frame.contentDocument || frame.contentWindow?.document;
+      const items = innerDoc?.querySelectorAll('.goog-te-menu2-item span.text');
+
+      items?.forEach((el: any) => {
+        if (el.innerText === lang.label) {
+          (el as HTMLElement).click();
+        }
+      });
+    }
+  }
   ngOnInit(): void {
+  const user = JSON.parse(this.userString); // Convertir la chaîne en objet
+  this.userSexe = user.sexe?.toLowerCase(); // suppose que le champ s'appelle "sexe"
    this.role= localStorage.getItem('role') ;//, "AGENT_QUALITE_PISTOLET");
    this.roleDashboard = localStorage.getItem('roleDashboard') ;
    this.fullname =  localStorage.getItem('fullName') ;
@@ -83,7 +117,13 @@ export class HeaderComponent  implements OnInit{
    
     
   }
-
+  getUserImage(): string {
+    if (this.userSexe === 'femme') {
+      return '/assets/images/profile/femme.PNG';
+    } else {
+      return '/assets/images/profile/user-1.jpg'; 
+    }
+  }
   recupererNombreNotificationsPistolet(){
     this.servicePistolet.getNombreNotifications().subscribe({
       next: (count) => {

@@ -6,6 +6,7 @@ import { PdekResultat } from 'src/app/Modeles/PdekResultat';
 import { Pistolet } from 'src/app/Modeles/Pistolet';
 import { User } from 'src/app/Modeles/User';
 import { GeneralService } from '../Géneral/general.service';
+import { PDEK } from 'src/app/Modeles/Pdek';
 
 @Injectable({
   providedIn: 'root'
@@ -82,6 +83,19 @@ export class PistoletGeneralService {
 
     return this.http.get<PdekResultat[]>(
       `http://localhost:8281/pdek/pdeks/${typeOperation}`,
+      { headers }
+    );
+  }
+  
+  getPdeks(typeOperation: string): Observable<PDEK[]> {
+    const token = localStorage.getItem('token');
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<PDEK[]>(
+      `http://localhost:8281/pdek/pdeksAllSaufPistolet/${typeOperation}`,
       { headers }
     );
   }
@@ -248,4 +262,15 @@ genererMessageEtat(etat: string): string {
     return "inconnu";
   }
   
+  /***********************************************************************************/
+  private baseUrl = 'http://localhost:8281/operations/pistolet';
+  getUsersByPdek(pdekId: number): Observable<User[]> {
+    const token = localStorage.getItem('token'); // récupère le token depuis le local storage
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<User[]>(`${this.baseUrl}/users-by-pdek/${pdekId}`, { headers });
+  }
 } 

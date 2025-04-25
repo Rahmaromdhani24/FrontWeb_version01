@@ -246,7 +246,7 @@ export const navItems: NavItem[] = [
   {
     displayName: 'Liste PDEKs',
     iconName: 'list-details',
-    route: '/ui-components/listePdek',
+    route: '/ui-components/listePdekTousProcess',
     bgcolor: 'error',
     roles: ['ADMIN', 'AGENT_QUALITE'], 	
 
@@ -276,7 +276,7 @@ export const navItems: NavItem[] = [
     displayName: 'Liste Plan d actions',
     iconName: 'file-text',
     route: '/ui-components/listePlanAction',
-    bgcolor: 'error',
+    bgcolor: 'primary',
     roles: ['AGENT_QUALITE_PISTOLET' ,'TECHNICIEN'], 	
 
   }, 

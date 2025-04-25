@@ -8,21 +8,22 @@ import { AppMenuComponent } from './menu/menu.component';
 import { AppTooltipsComponent } from './tooltips/tooltips.component';
 import { AppFormsComponent } from './forms/forms.component';
 import { AppTablesComponent } from './tables/tables.component';
-import { AddPistoletMecaniqueComponent } from './add-pistolet-mecanique/add-pistolet-mecanique.component';
-import { AddPistoletPneumatiqueComponent } from './add-pistolet-pneumatique/add-pistolet-pneumatique.component';
-import { ChartAddPistoletJauneComponent } from './chart-add-pistolet-jaune/chart-add-pistolet-jaune.component';
-import { ChartAddPistoletVertComponent } from './chart-add-pistolet-vert/chart-add-pistolet-vert.component';
-import { ChartAddPistoletRougeComponent } from './chart-add-pistolet-rouge/chart-add-pistolet-rouge.component';
-import { ChartAddPistoletBleuComponent } from './chart-add-pistolet-bleu/chart-add-pistolet-bleu.component';
+import { AddPistoletMecaniqueComponent } from './Montage Pistolet/add-pistolet-mecanique/add-pistolet-mecanique.component';
+import { AddPistoletPneumatiqueComponent } from './Montage Pistolet/add-pistolet-pneumatique/add-pistolet-pneumatique.component';
+import { ChartAddPistoletJauneComponent } from './Montage Pistolet/chart-add-pistolet-jaune/chart-add-pistolet-jaune.component';
+import { ChartAddPistoletVertComponent } from './Montage Pistolet/chart-add-pistolet-vert/chart-add-pistolet-vert.component';
+import { ChartAddPistoletRougeComponent } from './Montage Pistolet/chart-add-pistolet-rouge/chart-add-pistolet-rouge.component';
+import { ChartAddPistoletBleuComponent } from './Montage Pistolet/chart-add-pistolet-bleu/chart-add-pistolet-bleu.component';
 import { ListePDEKComponent } from './liste-pdek/liste-pdek.component';
-import { ListPlanActionComponent } from './list-plan-action/list-plan-action.component';
-import { AddPlanActionComponent } from './add-plan-action/add-plan-action.component';
-import { ListePdekPistoletComponent } from './liste-pdek-pistolet/liste-pdek-pistolet.component';
+import { ListPlanActionComponent } from './Montage Pistolet/list-plan-action/list-plan-action.component';
+import { AddPlanActionComponent } from './Montage Pistolet/add-plan-action/add-plan-action.component';
+import { ListePdekPistoletComponent } from './Montage Pistolet/liste-pdek-pistolet/liste-pdek-pistolet.component';
 import { PdekPistoletJauneComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-jaune/pdek-pistolet-jaune.component';
 import { PdekPistoletRougeComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-rouge/pdek-pistolet-rouge.component';
 import { PdekPistoletBleuComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-bleu/pdek-pistolet-bleu.component';
 import { PdekPistoletVertComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-vert/pdek-pistolet-vert.component';
-import { PageNotificationsPistoletComponent } from './page-notifications-pistolet/page-notifications-pistolet.component';
+import { PageNotificationsPistoletComponent } from './Montage Pistolet/page-notifications-pistolet/page-notifications-pistolet.component';
+import { ListsPdekTousProcessComponent } from './Operation Soudure/lists-pdek-tous-process/lists-pdek-tous-process.component';
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -76,6 +77,11 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'pageNotificationsPistolet',
         component: PageNotificationsPistoletComponent,
+      } ,
+      /************************** Soudure  ****************************************/
+      {
+        path: 'listePdekTousProcess',
+        component: ListsPdekTousProcessComponent,
       } ,
      /*
       {

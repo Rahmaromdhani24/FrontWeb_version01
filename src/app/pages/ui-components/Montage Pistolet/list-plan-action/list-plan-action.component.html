@@ -1,0 +1,123 @@
+<div id="styleCard">
+<mat-card class="cardWithShadow theme-card" style="margin-top: -16px;margin-left: 0px;
+                                                   position: sticky;min-width: 994px;">
+    <!-- Filtres alignés sur une seule ligne -->
+    <div class="filter-container">
+      <!-- Barre de recherche -->
+      <mat-form-field appearance="outline" class="search-box">
+        <mat-label>Rechercher</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="🔍 Tout champ">
+      </mat-form-field>
+  
+      <!-- Filtre Type de Process -->
+          <!-- Filtre Type de Process -->
+          <mat-form-field appearance="outline" class="filter-box">
+            <mat-label>Type des Pistolets</mat-label>
+            <mat-select (selectionChange)="applyProcessFilter($event.value)" multiple>
+              <mat-option *ngFor="let couleur of couleurPistolet" [value]="couleur"> {{ formatPistolet(couleur) }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+      <!-- Filtre Segment -->
+      <mat-form-field appearance="outline" class="filter-box">
+        <mat-label>Plant</mat-label>
+        <mat-select (selectionChange)="applyPlantFilter($event.value)" multiple>
+          <mat-option *ngFor="let p of plant" [value]="p">{{p}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Filtre Statut 
+      <mat-form-field appearance="outline" class="filter-box">
+        <mat-label>Statut</mat-label>
+        <mat-select (selectionChange)="applyStatusFilter($event.value)" multiple>
+          <mat-option *ngFor="let status of statuses" [value]="status">{{status}}</mat-option>
+        </mat-select>
+      </mat-form-field>-->
+
+      <img src="assets/resources pdek/images/icone add.jpg"  *ngIf="isChefDeLigne()" 
+      alt="Add" class="add-icon" id="imageAddPlanAction"(click)="navigateToAddPlanActionPage()">
+    </div>
+  
+    <mat-divider></mat-divider>
+  
+    <!-- Tableau -->
+    <div class="table-responsive">
+      <mat-table [dataSource]="dataSource" matSort>
+        <!-- Colonnes -->
+        <ng-container matColumnDef="plant">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Plant</mat-header-cell>
+          <mat-cell *matCellDef="let row">&nbsp;&nbsp;&nbsp;{{row.pistolet.plant}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="segment">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Segment</mat-header-cell>
+          <mat-cell *matCellDef="let row">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{row.pistolet.segment}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="typePistolet">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Couleur Pistolet</mat-header-cell>
+          <mat-cell *matCellDef="let row" style="text-align: center;">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ formatPistolet(row.pistolet.typePistolet) }}
+          </mat-cell>
+        </ng-container>               
+
+        <ng-container matColumnDef="numeroPistolet">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Numéro pistolet</mat-header-cell>
+          <mat-cell *matCellDef="let row" style="text-align: center;">&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{row.pistolet.numeroPistolet}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="categorie">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Catégorie</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{ row.pistolet.categorie }}</mat-cell>
+        </ng-container>
+  
+        <ng-container matColumnDef="usersRempliePDEK">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Opérateurs</mat-header-cell>
+          <mat-cell *matCellDef="let row" (click)="viewOperatorsDetails(row)">
+            <div class="user-cell">
+              <i class="fa-solid fa-people-group" style="margin-left: 25px;"></i>
+              <span class="operator-count" *ngIf="row.operateurs?.length > 0">
+                ({{row.operateurs.length}})
+              </span>
+            </div>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="dateCreation">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Date Création</mat-header-cell>
+          <mat-cell *matCellDef="let row" style="text-align: center;">
+            {{row.dateCreation}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="creerPar">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Créé Par</mat-header-cell>
+          <mat-cell *matCellDef="let row" style="text-align: center;">
+            {{row.userAddPlanAction.prenom}}&nbsp;&nbsp; {{row.userAddPlanAction.nom}}</mat-cell>
+        </ng-container>
+
+          <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Actions</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              <!-- Icône Eye (visualisation) - couleur primaire -->
+              <button mat-icon-button (click)="viewPlanAction(row.id)" matTooltip="Voir détails">
+                <i class="fas fa-eye fa-sm" id="iconeEye"></i>
+        
+              </button>
+              
+              <!-- Icône Print (impression) - couleur accent -->
+              <button mat-icon-button (click)="printRow(row)" matTooltip="Imprimer">
+                <i class="fa-solid fa-print" id="iconePrint"></i>      
+            </button>
+            </mat-cell>
+          </ng-container>
+  
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </mat-card>
+</div>

@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import autoTable from 'jspdf-autotable';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';import { DetailsPlanAction } from 'src/app/Modeles/DetailsPlanAction';
 
 interface jsPDFWithAutoTable extends jsPDF {
   lastAutoTable?: {
@@ -13,20 +15,26 @@ interface jsPDFWithAutoTable extends jsPDF {
   providedIn: 'root'
 })
 export class PlanActionPdfService {
+      constructor(private http: HttpClient) { }
     
-    openPDFInNewWindow(): void {
-        const pdfDoc = this.generatePDF();
-        
-        // 1. Créer un blob avec le bon type MIME
+  getDetailsByPlanActionId(id: number): Observable<DetailsPlanAction[]> {
+      const token = localStorage.getItem('token'); 
+    
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+    
+      return this.http.get<DetailsPlanAction[]>(`http://localhost:8281/planAction/${id}/details`, { headers });
+    }
+
+    openPDFInNewWindow(id: number): void {
+      this.getDetailsByPlanActionId(id).subscribe(data => {
+        const pdfDoc = this.generatePDF(data);
+    
         const blob = pdfDoc.output('blob');
-        
-        // 2. Créer un objet File pour forcer le nom
         const file = new File([blob], "Plan d'action.pdf", { type: 'application/pdf' });
-        
-        // 3. Créer une URL objet
         const fileUrl = URL.createObjectURL(file);
-        
-        // 4. Ouvrir dans un nouvel onglet avec iframe
+    
         const newWindow = window.open('', '_blank');
         if (newWindow) {
           newWindow.document.write(`
@@ -68,9 +76,10 @@ export class PlanActionPdfService {
             newWindow.document.body.removeChild(downloadLink);
           }, 10000);
         }
-      }
+      });
+    }
 
-  generatePDF() {
+  generatePDF(details: DetailsPlanAction[]) {
     const doc = new jsPDF('landscape');
     const pageWidth = doc.internal.pageSize.width;
     const margin = 10;
@@ -80,9 +89,9 @@ export class PlanActionPdfService {
     
     // En-tête
     doc.setFontSize(7);
-    doc.text('IT 3 455-05', margin, 10);
-    doc.text('Annexe 4 Etat 09.2018', margin, 15);
-    doc.text('Page 1 sur 4', margin, 20);
+    //doc.text('IT 3 455-05', margin, 10);
+    //doc.text('Annexe 4 Etat 09.2018', margin, 15);
+    //doc.text('Page 1 sur 4', margin, 20);
     
     // Titre et logo
     doc.setFont('helvetica', 'bold');
@@ -109,22 +118,36 @@ export class PlanActionPdfService {
       { header: 'Qualité', dataKey: 'qualite', width: 20 }
   ];
   // Création des données avec vérification explicite
-const tableData = [];
-for (let i = 0; i < 14; i++) {
-    tableData.push({
-        nr: i + 1,
-        date: '',
-        probleme: '',
-        matricule: '',
-        decisions: '',
-        delais: '',
-        responsable: '',
-        contremetre: '',
-        maintenance: '',
-        qualite: ''
-    });
-}
+  const tableData = details.map((item, index) => ({
+    nr: index + 1,
+    date: item.dateCreation || '',
+    probleme: item.description_probleme || '',
+    matricule: item.matricule_operateur || '',
+    decisions: item.description_decision || '',
+    delais: item.delais || '',
+    responsable: item.responsable || '',
+    contremetre: item.signature_contermetre && item.signature_contermetre !== 0 ? 'Validé' : '',
+    maintenance: item.signature_maintenance && item.signature_maintenance !== 0 ? 'Validé' : '',
+  qualite: item.signature_qualite && item.signature_qualite !== 0 ? 'Validé' : ''
+  }));
 
+  const totalRows = 13;
+const rowsToAdd = totalRows - tableData.length;
+
+for (let i = 0; i < rowsToAdd; i++) {
+  tableData.push({
+    nr: tableData.length + 1,
+    date: '',
+    probleme: '',
+    matricule: '',
+    decisions: '',
+    delais: '',
+    responsable: '',
+    contremetre: '',
+    maintenance: '',
+    qualite: ''
+  });
+}
     // Configuration des en-têtes
     const headers = [
         [
@@ -196,12 +219,12 @@ for (let i = 0; i < 14; i++) {
       },
       columnStyles: {
           0: { cellWidth: 8, halign: 'center' },
-          1: { cellWidth: 25, halign: 'left' },
+          1: { cellWidth: 25, halign: 'center' },
           2: { cellWidth: 50, halign: 'left' },
-          3: { cellWidth: 40, halign: 'left' },
+          3: { cellWidth: 40, halign: 'center' },
           4: { cellWidth: 50, halign: 'left' },
-          5: { cellWidth: 20, halign: 'left' },
-          6: { cellWidth: 20, halign: 'left' },
+          5: { cellWidth: 20, halign: 'center' },
+          6: { cellWidth: 20, halign: 'center' },
           7: { cellWidth: 20, halign: 'center' },
           8: { cellWidth: 20, halign: 'center' },
           9: { cellWidth: 20, halign: 'center' }
@@ -238,4 +261,5 @@ for (let i = 0; i < 14; i++) {
 
     return doc;
 }
-}
+    }
+  

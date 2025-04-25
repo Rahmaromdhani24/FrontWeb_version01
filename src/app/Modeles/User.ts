@@ -10,6 +10,7 @@ export class User {
     email: string;
     plant: string;
     role: Role;
+    sexe : string ; 
   
     constructor(
       matricule: number,

@@ -1,0 +1,235 @@
+<div class="loading" *ngIf="showLoader">
+    <span id="loader" class="loader"></span>
+  </div>
+  <form action="" class="search-bar"  *ngIf="!showLoader">
+    <input type="search" name="search" pattern=".*\S.*" required>
+    <button class="search-btn" type="submit">
+      <span>Search</span>
+    </button>
+  </form>
+  <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
+    <div class="pdf-container" *ngFor="let page of pages">
+      <!-- En-tête -->
+    <div class="header">
+      <!-- Titre principal -->
+      <div class="main-title" style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">
+        Carte d'enregistrement des données de processus à critére variable
+      </div>
+      <div class="styleLogoLeoni"> LEONI </div>
+    </div>
+      <!-- Tableau -->
+    <div id="idBorderTableau">
+    <table border="2" id="tableTitre">
+      <tr>
+        <td style="font-size: 13px;">Type de l'opération  :
+          <br><strong style="color: black;font-size: 18px;">soudure à Ultrason</strong>
+        </td>
+        <td style="font-size: 13px;"> Section du fil :<br>
+          <strong style="color: black;font-size: 18px;">{{ getSectionFil(page,0)}}</strong>
+        </td>
+        <td style="font-size: 13px;">Limite de pelage <br>
+          <strong style="color: red;font-size: 18px;">Pelage min {{pelageMin}} N</strong>
+        </td>
+        <td style="font-size: 13px;">Nombre d'echantillons<br>
+          <strong style="color: rgb(4, 172, 46);font-size: 18px;"> 5 Piéces</strong>
+        </td>
+        <td style="font-size: 13px;">Fréquence de contrôle :<br>Selon PDS</td>
+        <td style="font-size: 13px;">N° de machine :<br><strong>{{ getNumMachine() }}</strong></td>
+        <td style="font-size: 13px;">
+          Segment / année<br>
+          {{segmentUser}} /  {{ getAnnee(page,0) ?? '' }}        
+        </td>
+      </tr>
+  </table>
+   
+    </div>
+      <div id="idBorderMoyenne">
+        <div class="vertical-text-moyenne">La moyenne X̄</div>
+        <apx-chart 
+        [series]="page.chartOptionsMoyenne.series"
+        [chart]="page.chartOptionsMoyenne.chart"
+        [xaxis]="page.chartOptionsMoyenne.xaxis"
+        [yaxis]="page.chartOptionsMoyenne.yaxis"
+        [stroke]="page.chartOptionsMoyenne.stroke"
+        [dataLabels]="page.chartOptionsMoyenne.dataLabels"
+        [markers]="page.chartOptionsMoyenne.markers"
+        [tooltip]="page.chartOptionsMoyenne.tooltip"
+        [annotations]="page.chartOptionsMoyenne.annotations"
+        [fill]="page.chartOptionsMoyenne.fill"
+        [legend]="page.chartOptionsMoyenne.legend"
+          style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -244px;"
+  
+        ></apx-chart>
+      </div>
+      
+      <div  id="idBorderEtendu">
+        <div class="vertical-text-etendu">L'étendu R</div>
+        <apx-chart 
+          [series]="page.chartOptionsEtendue.series"
+          [chart]="page.chartOptionsEtendue.chart"
+          [xaxis]="page.chartOptionsEtendue.xaxis"
+          [yaxis]="page.chartOptionsEtendue.yaxis"
+          [stroke]="page.chartOptionsEtendue.stroke"
+          [dataLabels]="page.chartOptionsEtendue.dataLabels"
+          [markers]="page.chartOptionsEtendue.markers"
+          [tooltip]="page.chartOptionsEtendue.tooltip"
+          [annotations]="page.chartOptionsEtendue.annotations"
+          style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -240px;"
+        ></apx-chart>
+        </div>
+  
+      <div class="tables-wrapper" >
+       <!-- TABLEAU PRINCIPAL -->
+<table class="main-table">
+  <tr>
+    <th>Pliage</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getPilage(page, col) ?? '' }}
+    </td> 
+  </tr>
+  <tr>
+    <th>Distance B/C</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getDistanceBC(page, col) ?? '' }}
+    </td> 
+  </tr>
+  <tr>
+    <th>Traction</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getTraction(page, col) ?? '' }}
+    </td> 
+  </tr>
+  <!-- Code de répartition -->
+  <tr>
+    <th>Code de controle</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getCodeControle(page, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Date sans année -->
+  <tr>
+    <th>Date </th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getDateSansAnnee(page, col) ?? '' }}
+    </td>
+    
+  </tr>
+  <tr>
+    <th>Mat de QM</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      <ng-container *ngIf="getSoudureByIndex(page, col) as soudure">
+        <ng-container *ngIf="soudure.decision === 1 && soudure.rempliePlanAction === 0; else boutonValidation">
+          {{ soudure.matriculeAgentQualite }}
+        </ng-container>
+        <ng-template #boutonValidation>
+          <button 
+            (click)="onValiderPistolet(soudure.id)" 
+            *ngIf="soudure.decision === 0 && !pistoletsValides.has(soudure.id)" 
+            class="custom-check-button">
+            <i class="fa fa-check"></i>
+          </button>
+        </ng-template>
+      </ng-container>
+    </td>
+  </tr>
+  
+
+  <!-- 5 LIGNES X -->
+  <tr>
+    <th rowspan="5">X</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 0, col) ?? '' }}
+    </td> 
+  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 1, col) ?? '' }}
+    </td>  
+  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 2, col) ?? '' }}
+    </td>  
+  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 3, col) ?? '' }}
+    </td>  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 4, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Moyenne -->
+  <tr>
+    <th>X̄</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getMoyenne(page, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Étendue -->
+  <tr>
+    <th>R</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getEtendu(page, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Num courant -->
+  <tr>
+    <th>Nr courant</th>
+    <td *ngFor="let i of [].constructor(25); let idx = index">
+      {{ idx + 1 }}
+    </td>
+  </tr>
+  
+</table>
+
+  <div class="side-wrapper">
+
+  <table class="side-table">
+    <thead>
+      <tr>
+        <th>Nr.</th>
+        <th>Nr. Kanban</th>
+        <th>Grandeur de lot </th>
+        <th>Nr de Noeuds</th>
+        <th>Matricule OP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of twentyFive; let index = index">
+        <td>{{ index + 1 }}</td>
+        <ng-container *ngIf="page.soudures[index] as soudure">
+          <td>{{ soudure.nbrKanban }}</td>
+          <td>{{ soudure.grendeurLot }}</td>
+          <td>{{ soudure.nbrNoeud }}</td>
+          <td>{{ soudure.matriculeOperateur }}</td>
+          <!--td>
+            <button (click)="onValiderPistolet(soudure.id)" 
+                    *ngIf="soudure.decision === 0 && !pistoletsValides.has(soudure.id)" 
+                    class="custom-check-button">
+              <i class="fa fa-check"></i>
+            </button>
+            <span *ngIf="soudure.decision === 1 || pistoletsValides.has(soudure.id)">Confirmé</span>
+          </td-->
+        </ng-container>
+        <ng-container *ngIf="!page.soudures[index]">
+          <td></td><td></td><td></td><td></td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+  <div id="idBorderRemarque">
+    <span id="spanRemarque">Remarque<br></span>
+  </div>
+</div>
+
+      </div>
+       </div>
+       <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" (click)="naviger()">Retour</button>
+    </div>
+  

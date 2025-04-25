@@ -1,0 +1,29 @@
+::ng-deep .operator-modal {
+  min-width: 400px;
+  max-width: 600px;
+  padding: 16px;
+
+  .operator-details {
+    padding: 8px 0;
+    width: 100%;
+  }
+  #titleModal{
+    margin-left: 75px;
+
+  }
+
+  .operator-info {
+    padding: 8px 0;
+
+    .label {
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.7);
+      min-width: 80px;
+      display: inline-block;
+    }
+  }
+
+  mat-divider {
+    margin: 8px 0;
+  }
+}

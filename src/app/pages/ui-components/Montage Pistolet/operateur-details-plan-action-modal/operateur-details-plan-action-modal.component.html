@@ -1,0 +1,31 @@
+<h2 mat-dialog-title style="margin-left: 75px;">
+    Téchniciens  ayant rempli ce Plan d'action   </h2>
+    
+  <mat-dialog-content class="operator-details">
+    <mat-list>
+      <mat-list-item *ngFor="let operator of data.operators; let last = last" 
+      style="height: 130px;" class="operator-info">
+        <div matLine>
+          <span class="label">Matricule:</span> {{ operator.matricule }}
+        </div>
+        <div matLine>
+          <span class="label">Nom:</span> {{ operator.nom }}
+        </div>
+        <div matLine>
+          <span class="label">Prénom:</span> {{ operator.prenom }}
+        </div>
+        <div matLine>
+          <span class="label">Plant:</span> {{ operator.plant }}
+        </div>
+        <div matLine>
+          <span class="label">Segment:</span> {{ operator.segment }}
+        </div>
+        <mat-divider *ngIf="!last"></mat-divider>
+      </mat-list-item>
+    </mat-list>
+  </mat-dialog-content>
+  
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close style=" margin: auto;">
+        Fermer</button>
+    </mat-dialog-actions>
