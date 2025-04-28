@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Pistolet } from 'src/app/Modeles/Pistolet';
+import { Soudure } from 'src/app/Modeles/Soudure';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class GeneralService {
   constructor(private http: HttpClient) { }
   nbrNotifications: number ; 
   pistolets: Pistolet[] = [];
+  donnees: any[] = [];
 
   private urlLogin = 'http://localhost:8281/auth/login';
   login(matricule: number): Observable<any> {

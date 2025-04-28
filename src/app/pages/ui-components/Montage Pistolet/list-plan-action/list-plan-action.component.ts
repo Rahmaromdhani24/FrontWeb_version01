@@ -196,10 +196,10 @@ viewOperatorsDetails(row: PlanActionDTO): void {
 navigateToAddPlanActionPage(){
   this.router.navigate(['/ui-components/addPlanAction']);
 }
-isChefDeLigne(): boolean {
+/*isChefDeLigne(): boolean {
  // return this.currentUserRole === 'CHEF_DE_LIGNE';
    return this.currentUserRole === 'AGENT_QUALITE';
-}
+}*/
 recupereListPlanAction() {
   this.planActionService.getPlansByTypeOperation("Montage_Pistolet").subscribe({
     next: (data) => {

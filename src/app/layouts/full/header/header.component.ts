@@ -17,8 +17,14 @@ import { CommonModule } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { PistoletGeneralService } from 'src/app/services/Agent Qualité Montage Pistolet/pistolet-general.service';
 import { Pistolet } from 'src/app/Modeles/Pistolet';
+import { Soudure } from 'src/app/Modeles/Soudure';
+import { Torsadage } from 'src/app/Modeles/Torsadage';
 import Swal from 'sweetalert2';
 import { GeneralService } from 'src/app/services/Géneral/general.service';
+import { SoudureService } from 'src/app/services/Agent Qualité Operation Soudure/soudure.service';
+import { TorsadageService } from 'src/app/services/Agent Qualite Operation Torsadage/torsadage.service';
+import { forkJoin } from 'rxjs';
+
 export interface Notification {
     processName: string;  
     message: string;     
@@ -51,7 +57,8 @@ export class HeaderComponent  implements OnInit{
   @Output() toggleMobileNav = new EventEmitter<void>();
 
   constructor(private router : Router , private servicePistolet : PistoletGeneralService , 
-              public  serviceGeneral : GeneralService  ){}
+              public  serviceGeneral : GeneralService , public serviceSoudure : SoudureService ,
+              public serviceTorsadage : TorsadageService ){}
   matriculeAgentQualite : number ; 
   pistolets: Pistolet[] = [];
   role : string | null ; 
@@ -74,19 +81,13 @@ export class HeaderComponent  implements OnInit{
 
   selectedLang = this.languages[0];
 
-  toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
-  }
-
-  changeLanguage(lang: any) {
-    this.selectedLang = lang;
-    this.dropdownOpen = false;
-
+  toggleDropdown() {  this.dropdownOpen = !this.dropdownOpen; }
+  
+  changeLanguage(lang: any) {  this.selectedLang = lang;  this.dropdownOpen = false;
     const frame = document.querySelector('iframe.goog-te-menu-frame') as HTMLIFrameElement;
     if (frame) {
       const innerDoc = frame.contentDocument || frame.contentWindow?.document;
       const items = innerDoc?.querySelectorAll('.goog-te-menu2-item span.text');
-
       items?.forEach((el: any) => {
         if (el.innerText === lang.label) {
           (el as HTMLElement).click();
@@ -94,6 +95,7 @@ export class HeaderComponent  implements OnInit{
       });
     }
   }
+
   ngOnInit(): void {
   const user = JSON.parse(this.userString); // Convertir la chaîne en objet
   this.userSexe = user.sexe?.toLowerCase(); // suppose que le champ s'appelle "sexe"
@@ -104,22 +106,37 @@ export class HeaderComponent  implements OnInit{
     if( this.role =="AGENT_QUALITE_PISTOLET"){
       this.nom_process ="Montage Pistolet";  
       this.servicePistolet.recupererListePistoletsNonValidesAgentQualite() ;
-      this.recupererNombreNotificationsPistolet() ; 
-    
+      this.recupererNombreNotificationsPistolet() ;  
     }
+
     if( this.role =="TECHNICIEN"){
+      this.serviceGeneral.donnees = [];
+      this.serviceGeneral.nbrNotifications=0 ; 
       this.nom_process ="Montage Pistolet";     
       this.servicePistolet.recupererListePistoletsNonValidesTechniciens() ;
       this.recupererNombreNotificationsTechnicien() ; 
     }
-
+    if( this.role =="AGENT_QUALITE"){
+      this.serviceGeneral.donnees = [];
+      this.serviceGeneral.nbrNotifications=0 ; 
+      this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
+      this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
+      this.recupererNombreNotificationsTousProcessSaufPistolet() ;  
+    }
+    if( this.role =="CHEF_DE_LIGNE"){
+      this.serviceGeneral.donnees = [];
+      this.serviceGeneral.nbrNotifications=0 ; 
+      this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
+      this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
+      this.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;   
+    }
     this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
    
     
   }
   getUserImage(): string {
     if (this.userSexe === 'femme') {
-      return '/assets/images/profile/femme.PNG';
+      return '/assets/images/profile/image1.png';
     } else {
       return '/assets/images/profile/user-1.jpg'; 
     }
@@ -135,6 +152,23 @@ export class HeaderComponent  implements OnInit{
       }
     });
   }
+
+  
+  recupererNombreNotificationsTousProcessSaufPistoletChefLigne(){
+    forkJoin([
+      this.serviceSoudure.getNombreNotificationsChefDeLigne(),
+      this.serviceTorsadage.getNombreNotificationsChefDeLigne()
+    ]).subscribe({
+      next: ([countSoudure, countTorsadage]) => {
+        this.serviceGeneral.nbrNotifications = countSoudure + countTorsadage;
+        console.log('Total notifications :', this.serviceGeneral.nbrNotifications);
+      },
+      error: (err: any) => {
+        console.error('Erreur lors de la récupération des notifications :', err);
+      }
+    });
+  }
+
   recupererNombreNotificationsTechnicien(){
     this.servicePistolet.getNombreNotificationsTechniciens().subscribe({
       next: (count) => {
@@ -146,45 +180,26 @@ export class HeaderComponent  implements OnInit{
       }
     });
   }
+
+  recupererNombreNotificationsTousProcessSaufPistolet() {
+    forkJoin([
+      this.serviceSoudure.getNombreNotificationsAgentQualitePourValidation(),
+      this.serviceTorsadage.getNombreNotificationsAgentQualitePourValidation()
+    ]).subscribe({
+      next: ([countSoudure, countTorsadage]) => {
+        this.serviceGeneral.nbrNotifications = countSoudure + countTorsadage;
+        console.log('Total notifications :', this.serviceGeneral.nbrNotifications);
+      },
+      error: (err: any) => {
+        console.error('Erreur lors de la récupération des notifications :', err);
+      }
+    });
+  }
+
   get pistoletsNonValides() {
     return this.serviceGeneral.pistolets.filter(p => !this.pistoletsValides.has(p.id));
   }
-  /*recupererListePistoletsNonValides(){
-    this.servicePistolet.getPistoletsNonValidees().subscribe({
-      next: (data) => {
-        this.serviceGeneral.pistolets = data;
-        console.error('pistolets non valides :', this.pistolets);
-        this.serviceGeneral.pistolets.forEach(p => {
-          const etat = this.servicePistolet.etatPistolet(p.etendu, p.moyenne, p.type);
-        // Nouvelle logique de validation
-        const estVert = etat === "vert";
-        const estJauneOuRougeAvecPlanNonRempli = (etat === "jaune" || etat === "rouge") && p.rempliePlanAction === 0;
-
-        p.activationValider = estVert || estJauneOuRougeAvecPlanNonRempli;  
-        p.messageEtat = this.genererMessageEtat(etat); // 
-        });
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des pistolets :', err);
-      }
-    });
-  }*/
- /* recupererListePistoletsNonValidesTechniciens(){
-    this.servicePistolet.getPistoletsNonValideesTechniciens().subscribe({
-      next: (data) => {
-        this.serviceGeneral.pistolets = data;
-        console.error('pistolets non valides :', this.pistolets);
-        this.serviceGeneral.pistolets.forEach(p => {
-          const etat = this.servicePistolet.etatPistolet(p.etendu, p.moyenne, p.type);
-          p.activationValider = etat === "vert";
-          p.messageEtat = this.genererMessageEtat(etat); // 
-        });
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des pistolets :', err);
-      }
-    });
-  }*/
+ 
   genererMessageEtat(etat: string): string {
     switch (etat) {
       case 'vert':
@@ -198,6 +213,18 @@ export class HeaderComponent  implements OnInit{
     }
   }
   
+  genererMessageEtatAllProcess(etat: string): string {
+    switch (etat) {
+      case 'vert':
+        return 'Attente de votre validation immédiate.';
+      case 'jaune':
+        return 'Zone jaune détectée : une vérification peut être nécessaire.';
+      case 'rouge':
+        return 'Zone rouge détectée : intervention immédiate requise.';
+      default:
+        return 'État inconnu.';
+    }
+  }
     formatPistolet(value: string): string {
          return value.replace('PISTOLET_', '').toLowerCase().replace(/^\w/, c => c.toUpperCase());
        }
@@ -219,6 +246,11 @@ export class HeaderComponent  implements OnInit{
     voirTousNotifications(){
       this.router.navigate(['/ui-components/pageNotificationsPistolet']) 
     }
+
+    voirTousNotificationsAllProcess(){
+      this.router.navigate(['/ui-components/pagesNotificationsAllProcess']) 
+    }
+
     getDifferenceFromNow(pistolet: { dateCreation: string; heureCreation: string }): string {
       if (!pistolet?.dateCreation || !pistolet?.heureCreation) {
         return "Date invalide";
@@ -244,6 +276,8 @@ export class HeaderComponent  implements OnInit{
       const remainingHours = totalHours % 24;
       return `Il y a ${totalDays}j ${remainingHours}h`;
     }
+
+
      voirPistolet(p : Pistolet ) {
           const jsonPistolet = JSON.stringify(p);
           const pistolet: Pistolet = JSON.parse(jsonPistolet);
@@ -283,7 +317,33 @@ export class HeaderComponent  implements OnInit{
           this.router.navigate(['/pdekPistoletBleu'])
          }
             }
-      
+
+    voirPdek(p: any) {
+      console.log("Objet à afficher :", p);
+      if (p.typeOperation === 'Soudure') {
+        const soudure: Soudure = p as Soudure; // 👈 Pas besoin de passer par JSON
+        console.log('Objet Soudure :', soudure);
+        const response = {
+          pdekId: p.pdekId,
+          pageNumber: p.numPage };      
+          console.log('Objet responseApi, id pdek :', response.pdekId, ", numéro de page :", response.pageNumber);
+          localStorage.setItem("reponseApi", JSON.stringify(response));
+          localStorage.setItem("soudure", JSON.stringify(soudure)); // Ici on stringify directement
+          this.router.navigate(['/pdekSoudure']);
+      }
+    }
+    creerPlanActionAllProcess(p: any) {
+      if (p.typeOperation === 'Soudure') {
+      const soudure: Soudure = p as Soudure;
+      localStorage.setItem("SoudurePlanAction", JSON.stringify(soudure));    
+      this.router.navigate(['/ui-components/addPlanActionSoudure']);
+    }
+    if (p.typeOperation === 'Torsadage') {
+      const torsadage: Torsadage = p as Torsadage;
+      localStorage.setItem("TorsadagePlanAction", JSON.stringify(torsadage));    
+      this.router.navigate(['/ui-components/addPlanActionTorsadage']);
+    }
+  }
       validerPdekPistolet(pistoletId: number) {
         this.servicePistolet.validerPistolet(pistoletId, this.matriculeAgentQualite).subscribe({
           next: () => {
@@ -327,6 +387,68 @@ export class HeaderComponent  implements OnInit{
         this.router.navigate(['/ui-components/addPlanAction']);
       }
       
+    
+      getDifferenceFromNowAll(donnee: { date: string; heureCreation: string }): string {
+        if (!donnee?.date || !donnee?.heureCreation) {
+          return "Date invalide";
+        }
+      
+        const instanceDateStr = `${donnee.date}T${donnee.heureCreation}:00`;
+        const instanceDate = new Date(instanceDateStr);
+        const now = new Date();
+      
+        if (isNaN(instanceDate.getTime())) {
+          return "Date invalide";
+        }
+      
+        const diffMs = now.getTime() - instanceDate.getTime();
+        const totalMinutes = Math.floor(diffMs / (1000 * 60));
+        const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      
+        if (totalMinutes < 1) return "Il y a moins d’une minute";
+        if (totalMinutes < 60) return `Il y a ${totalMinutes} min`;
+        if (totalHours < 24) return `Il y a ${totalHours}h`;
+      
+        const remainingHours = totalHours % 24;
+        return `Il y a ${totalDays}j ${remainingHours}h`;
+      }
+
+ 
+         validerPdek(donnee : any) {
+           console.log("Objet valider  :"+donnee) ; 
+           if(donnee.typeOperation ==='Soudure'){
+           this.serviceSoudure.validerSoudure (donnee.id, this.matriculeAgentQualite).subscribe({
+             next: () => {
+               this.recupererNombreNotificationsTousProcessSaufPistolet();
+               console.log('Pdek validé avec succès');
+               this.pistoletsValides.add(donnee.id); 
+              this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
+ 
+               Swal.fire({
+                 title: 'Confirmation !',
+                 text: 'Pdek validé avec succès.',
+                 icon: 'success',
+                 confirmButtonText: 'OK',
+                 customClass: {
+                   popup: 'custom-popup',
+                   title: 'custom-title',
+                   confirmButton: 'custom-confirm-button'
+                 }
+               });
+             },
+             error: (err) => {
+               console.error('Erreur lors de la validation :', err);
+               Swal.fire({
+                 title: 'Erreur',
+                 text: 'Erreur lors de la validation',
+                 icon: 'error',
+                 confirmButtonText: 'OK'
+               });
+             }
+           });
+         }
+         }
     logout(){
       localStorage.clear() ;
       this.router.navigate(['/login'])

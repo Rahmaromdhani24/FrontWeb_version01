@@ -55,7 +55,7 @@ export class FullComponent implements OnInit {
     if( this.role =="AGENT_QUALITE_PISTOLET"){
       this.servicePistolet.recupererListePistoletsNonValidesAgentQualite() ;
       this.servicePistolet.getNombreNotifications().subscribe({
-        next: (count) => {
+      next: (count) => {
           this.serviceGeneral.nbrNotifications = count;
   
         },
@@ -90,7 +90,7 @@ export class FullComponent implements OnInit {
     const roleMapping: { [key: string]: string } = {
       'AGENT_QUALITE': 'Agent de qualité',
       'AGENT_QUALITE_PISTOLET': 'Agent de qualité',
-      'CHEF_LIGNE': 'Chef de ligne',
+      'CHEF_DE_LIGNE': 'Chef de ligne',
       'TECHNICIEN': 'Technicien',
       'ADMINISTRATEUR': 'Administrateur'
     };
@@ -106,7 +106,7 @@ export class FullComponent implements OnInit {
   
   getUserImage(): string {
     if (this.userSexe === 'femme') {
-      return '/assets/images/profile/femme.PNG';
+      return '/assets/images/profile/image1.png';
     } else {
       return '/assets/images/profile/user-1.jpg'; 
     }

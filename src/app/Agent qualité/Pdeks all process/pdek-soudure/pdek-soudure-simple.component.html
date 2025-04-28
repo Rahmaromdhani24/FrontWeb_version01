@@ -1,0 +1,228 @@
+<div class="loading" *ngIf="showLoader">
+  <span id="loader" class="loader"></span>
+</div>
+<div class="pdf-scroll-wrapper" *ngIf="!showLoader">
+  <div class="pdf-container">
+    <!-- En-tête -->
+  <div class="header">
+    <!-- Titre principal -->
+    <div class="main-title" style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">
+      Carte d'enregistrement des données de processus à critére variable
+    </div>
+    <!-- Label LEONI -->
+  <div class="styleLogoLeoni"> LEONI </div>
+  </div>
+    <!-- Tableau -->
+     <div id="idBorderTableau">
+      <table border="2" id="tableTitre">
+        <tr>
+          <td style="font-size: 13px;">Type de l'opération  :
+            <br><strong style="color: black;font-size: 18px;">soudure à Ultrason</strong>
+          </td>
+          <td style="font-size: 13px;"> Section du fil :<br>
+            <strong style="color: black;font-size: 18px;">{{sectionFil}}</strong>
+          </td>
+          <td style="font-size: 13px;">Limite de pelage <br>
+            <strong style="color: red;font-size: 18px;">Pelage min {{pelageMin}} N</strong>
+          </td>
+          <td style="font-size: 13px;">Nombre d'echantillons<br>
+            <strong style="color: rgb(4, 172, 46);font-size: 18px;"> 5 Piéces</strong>
+          </td>
+          <td style="font-size: 13px;">Fréquence de contrôle :<br>Selon PDS</td>
+          <td style="font-size: 13px;">N° de machine :<br><strong>{{numeroMachine}}</strong></td>
+          <td style="font-size: 13px;">
+            Segment / année<br>
+            {{segmentUser}} /  {{ getAnnee() ?? '' }}        
+          </td>
+        </tr>
+    </table>
+  </div>
+  
+    <div id="idBorderMoyenne">
+      <div class="vertical-text-moyenne">La moyenne X̄</div>
+      <apx-chart 
+        [series]="chartOptionsMoyenne.series"
+        [chart]="chartOptionsMoyenne.chart"
+        [xaxis]="chartOptionsMoyenne.xaxis"
+        [yaxis]="chartOptionsMoyenne.yaxis"
+        [stroke]="chartOptionsMoyenne.stroke"
+        [dataLabels]="chartOptionsMoyenne.dataLabels"
+        [markers]="chartOptionsMoyenne.markers"
+        [tooltip]="chartOptionsMoyenne.tooltip"
+        [annotations]="chartOptionsMoyenne.annotations"
+        style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -244px;"
+
+      ></apx-chart>
+    </div>
+    
+    <div  id="idBorderEtendu">
+      <div class="vertical-text-etendu">L'étendu R</div>
+      <apx-chart 
+        [series]="chartOptionsEtendue.series"
+        [chart]="chartOptionsEtendue.chart"
+        [xaxis]="chartOptionsEtendue.xaxis"
+        [yaxis]="chartOptionsEtendue.yaxis"
+        [stroke]="chartOptionsEtendue.stroke"
+        [dataLabels]="chartOptionsEtendue.dataLabels"
+        [markers]="chartOptionsEtendue.markers"
+        [tooltip]="chartOptionsEtendue.tooltip"
+        [annotations]="chartOptionsEtendue.annotations"
+        style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -240px;"
+      ></apx-chart>
+      </div>
+
+    <div class="tables-wrapper">
+      <!-- Tableau principal -->
+      <table class="main-table">
+        <tr>
+          <th>Pliage</th>
+          <td *ngFor="let i of twentyFive; let col = index">
+            {{ getPilage(i) ?? '' }}
+          </td>
+        </tr>
+        <tr>
+          <th>Distance B/C</th>
+          <td *ngFor="let i of twentyFive; let col = index">
+            {{ getDistanceBC(i) ?? '' }}
+          </td> 
+        </tr>
+        <tr>
+          <th>Traction</th>
+          <td *ngFor="let i of twentyFive; let col = index">
+            {{ getTraction(i) ?? '' }}
+          </td> 
+        </tr>
+        <!-- Code de répartition -->
+        <tr>
+          <th>Code de controle</th>
+          <td *ngFor="let i of twentyFive; let col = index">
+            {{ getCodeControle(i) ?? '' }}
+          </td>
+        </tr>
+      
+        <!-- Date sans année -->
+        <tr>
+          <th>Date </th>
+          <td *ngFor="let i of twentyFive; let col = index">
+            {{ getDateSansAnnee(i) ?? '' }}
+          </td>         
+        </tr>
+
+        <tr>
+          <th>Matricule QM</th>
+          <td *ngFor="let index of getRange(25); let col = index">
+            <ng-container *ngIf="soudures[index]">
+              <ng-container *ngIf="getMatriculeAgentQualite(soudures[index].numeroCycle) === 0; else matricule">
+                <button 
+                  (click)="validerSoudure(soudures[index].id)" 
+                  *ngIf="!souduresValides.has(soudures[index].numeroCycle) 
+                         && getDecisionSoudure(soudures[index].numeroCycle) === 0 
+                         && getRempliePlanAction(soudures[index].numeroCycle) === 0; else pasValide" 
+                  class="custom-check-button">
+                  <i class="fa fa-check"></i>
+                </button>
+              </ng-container>
+              <ng-template #matricule>
+                {{ getMatriculeAgentQualite(soudures[index].numeroCycle) }}
+              </ng-template>
+              <ng-template #pasValide>
+                invalide
+              </ng-template>
+            </ng-container>
+            <ng-container *ngIf="!soudures[index]">
+              <!-- Affichage vide si pas de soudure -->
+              <!-- Tu peux aussi mettre &nbsp; pour garder la cellule visible -->
+              &nbsp;
+            </ng-container>
+          </td>
+        </tr>
+        
+        
+        
+        
+        <!-- 5 lignes X -->
+        <tr>
+          <th rowspan="5">X</th>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(0, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(1, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(2, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(3, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <td *ngFor="let num of twentyFive">{{ getValeurX(4, num) ?? '' }}</td>
+        </tr>
+        <tr>
+          <th>X̄</th>
+          <td *ngFor="let i of twentyFive">
+            {{ getMoyenne(i) ?? '' }}
+          </td>
+        </tr>
+        
+        <!-- Ligne de l'étendue -->
+        <tr>
+          <th>R</th>
+          <td *ngFor="let i of twentyFive">
+            {{ getEtendu(i) ?? '' }}
+          </td>
+        </tr>
+
+        <tr>
+          <th>Quantité Atteinte</th>
+          <td *ngFor="let i of twentyFive">
+            {{ getQuantiteAtteinte(i) ?? '' }}
+          </td>
+        </tr>
+        <tr>
+          <th>Nr courant</th>
+          <td *ngFor="let i of numCourants">{{i}}</td>
+        </tr>
+      </table>
+
+      <div class="side-wrapper">
+
+        <table class="side-table">
+          <thead>
+            <tr>
+              <th>Nr.</th>
+              <th>Nr. Kanban</th>
+              <th>Grandeur de lot </th>
+              <th>Nr de Noeuds</th>
+              <th>Matricule OP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i of twentyFive; let index = index">
+              <td>{{ index + 1 }}</td>
+              <ng-container *ngIf="getSoudureParNumCourant(i) as soudure; else emptyRow">
+                <td>{{ soudure.nbrKanban }}</td>
+                <td>{{ soudure.grendeurLot }}</td>
+                <td>{{ soudure.nbrNoeud }}</td>
+                <td>{{ soudure.matriculeOperateur }}</td>
+              </ng-container>
+              <ng-template #emptyRow>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </ng-template>
+            </tr>
+          </tbody>
+          
+        </table>
+        <div id="idBorderRemarque">
+          <span id="spanRemarque">Remarque<br></span>
+        </div>
+      </div>
+      
+            </div>
+             </div>
+             <button mat-flat-button color="primary" class="m-r-8" type="submit" 
+             id="retourBtn" (click)="naviger()">Retour</button>
+          </div>
+        

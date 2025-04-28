@@ -91,6 +91,9 @@ export class LoginUserComponent implements OnInit {
             else if (user.role === "TECHNICIEN") {
               localStorage.setItem('role', "TECHNICIEN");
             }
+            else if (user.role === "CHEF_DE_LIGNE") {
+              localStorage.setItem('role', "CHEF_DE_LIGNE");
+            }
             else if (user.role === "ADMIN") {
               localStorage.setItem('role', "Administrateur");
             }

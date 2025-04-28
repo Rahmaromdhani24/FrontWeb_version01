@@ -1,0 +1,227 @@
+<div class="loading" *ngIf="showLoader">
+    <span id="loader" class="loader"></span>
+  </div>
+  <!--form action="" class="search-bar"  *ngIf="!showLoader">
+    <input type="search" name="search" pattern=".*\S.*" required>
+    <button class="search-btn" type="submit">
+      <span>Search</span>
+    </button>
+  </form-->
+  <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
+    <div class="pdf-container" *ngFor="let page of pages">
+      <!-- En-tête -->
+    <div class="header">
+      <!-- Titre principal -->
+      <div class="main-title" style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">
+        Carte d'enregistrement des données de processus à critére variable
+      </div>
+      <div class="styleLogoLeoni"> LEONI </div>
+    </div>
+      <!-- Tableau -->
+    <div id="idBorderTableau">
+    <table border="2" id="tableTitre">
+      <tr>
+        <td style="font-size: 13px;">Type de l'opération  :
+          <br><strong style="color: black;font-size: 18px;">Torsadage </strong>
+        </td>
+        <td style="font-size: 13px;">Instruction de mesure  :
+            <br><strong style="color: black;font-size: 14px;">Régle en mm</strong>
+          </td>
+        <td style="font-size: 13px;"> Spécification de mesure :<br>
+          <strong style="color: black;font-size: 18px;">{{ specificationMesure}}+/- 2 mm²</strong>
+        </td>
+        <td style="font-size: 13px;">Fréquence de controle <br>
+          <strong style="color: red;font-size: 18px;">IC TN 34 06</strong>
+        </td>
+        <td style="font-size: 13px;">Nombre d'echantillons<br>
+          <strong style="color: rgb(4, 172, 46);font-size: 18px;"> 5 Piéces</strong>
+        </td>
+        <td style="font-size: 13px;">N° de machine :<br><strong>{{ getNumMachine() }}</strong></td>
+        <td style="font-size: 13px;">
+          Segment / année<br>
+          {{segmentUser}} /  {{ getAnnee(page,0) ?? '' }}        
+        </td>
+      </tr>
+  </table>
+   
+    </div>
+      <div id="idBorderMoyenne">
+        <div class="vertical-text-moyenne">La moyenne X̄</div>
+        <apx-chart 
+        [series]="page.chartOptionsMoyenne.series"
+        [chart]="page.chartOptionsMoyenne.chart"
+        [xaxis]="page.chartOptionsMoyenne.xaxis"
+        [yaxis]="page.chartOptionsMoyenne.yaxis"
+        [stroke]="page.chartOptionsMoyenne.stroke"
+        [dataLabels]="page.chartOptionsMoyenne.dataLabels"
+        [markers]="page.chartOptionsMoyenne.markers"
+        [tooltip]="page.chartOptionsMoyenne.tooltip"
+        [annotations]="page.chartOptionsMoyenne.annotations"
+        [fill]="page.chartOptionsMoyenne.fill"
+        [legend]="page.chartOptionsMoyenne.legend"
+          style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -244px;"
+  
+        ></apx-chart>
+      </div>
+      
+      <div  id="idBorderEtendu">
+        <div class="vertical-text-etendu">L'étendu R</div>
+        <apx-chart 
+          [series]="page.chartOptionsEtendue.series"
+          [chart]="page.chartOptionsEtendue.chart"
+          [xaxis]="page.chartOptionsEtendue.xaxis"
+          [yaxis]="page.chartOptionsEtendue.yaxis"
+          [stroke]="page.chartOptionsEtendue.stroke"
+          [dataLabels]="page.chartOptionsEtendue.dataLabels"
+          [markers]="page.chartOptionsEtendue.markers"
+          [tooltip]="page.chartOptionsEtendue.tooltip"
+          [annotations]="page.chartOptionsEtendue.annotations"
+          style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -240px;"
+        ></apx-chart>
+        </div>
+  
+      <div class="tables-wrapper" >
+       <!-- TABLEAU PRINCIPAL -->
+<table class="main-table">
+  <tr>
+    <th>Longueur final du fil au début Cmd</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getLongueurFinalDebutCde(page, col) ?? '' }}
+    </td> 
+  </tr>
+  <tr>
+    <th>Longueur final du fil a la fin Cmd</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getLongueurFinalFinCde(page, col) ?? '' }}
+    </td> 
+  </tr>
+ 
+  <!-- Code de répartition -->
+  <tr>
+    <th>Code de mesure</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getCodeControle(page, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Date sans année -->
+  <tr>
+    <th>Date </th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getDateSansAnnee(page, col) ?? '' }}
+    </td>
+    
+  </tr>
+  <tr>
+    <th>Nom </th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getMatriculeOperateur(page, col) ?? '' }}
+    </td>
+    
+  </tr>
+  
+
+  <!-- 5 LIGNES X -->
+  <tr>
+    <th rowspan="5">X</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 0, col) ?? '' }}
+    </td> 
+  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 1, col) ?? '' }}
+    </td>  
+  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 2, col) ?? '' }}
+    </td>  
+  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 3, col) ?? '' }}
+    </td>  </tr>
+  <tr>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getValeurX(page, 4, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Moyenne -->
+  <tr>
+    <th>X̄</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getMoyenne(page, col) ?? '' }}
+    </td>
+  </tr>
+
+  <!-- Étendue -->
+  <tr>
+    <th>R</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getEtendu(page, col) ?? '' }}
+    </td>
+  </tr>
+  <tr>
+    <th>Atteinte quantité</th>
+    <td *ngFor="let i of twentyFive; let col = index">
+      {{ getQuantiteAtteint(page, col) ?? '' }}
+    </td>
+  </tr>
+  <!-- Num courant -->
+  <tr>
+    <th>Nr courant</th>
+    <td *ngFor="let i of [].constructor(25); let idx = index">
+      {{ idx + 1 }}
+    </td>
+  </tr>
+  
+</table>
+
+  <div class="side-wrapper">
+
+  <table class="side-table">
+    <thead>
+      <tr>
+        <th>Nr.</th>
+        <th>Nr. De commande</th>
+        <th>Quantité total </th>
+        <th>Nr de fils</th>
+        <th>Décision</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of twentyFive; let index = index">
+        <td>{{ index + 1 }}</td>
+        <ng-container *ngIf="page.torsadages[index] as torsadage">
+          <td>{{ torsadage.numCommande }}</td>
+          <td>{{ torsadage.quantiteTotale }}</td>
+          <td>{{ torsadage.numerofil }}</td>
+          <!--td>{{ torsadage.decision }}</td-->
+          <td>
+            <button (click)="onValiderTorsadage(torsadage.id)" 
+                    *ngIf="torsadage.decision === 0 && !pistoletsValides.has(torsadage.id)" 
+                    class="custom-check-button">
+              <i class="fa fa-check"></i>
+            </button>
+            <span *ngIf="torsadage.decision === 1 || pistoletsValides.has(torsadage.id)">Confirmé</span>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="!page.torsadages[index]">
+          <td></td><td></td><td></td><td></td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+  <div id="idBorderRemarque">
+    <span id="spanRemarque">Remarque<br></span>
+  </div>
+</div>
+
+      </div>
+       </div>
+       <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
+       (click)="naviger()">Retour à la liste des PDEKs</button>
+    </div>
+  

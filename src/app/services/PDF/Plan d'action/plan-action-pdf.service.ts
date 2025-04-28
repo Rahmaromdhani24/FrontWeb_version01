@@ -122,7 +122,7 @@ export class PlanActionPdfService {
     nr: index + 1,
     date: item.dateCreation || '',
     probleme: item.description_probleme || '',
-    matricule: item.matricule_operateur || '',
+    matricule: item.matricule_operateur ||item.matricule_chef_ligne || '',
     decisions: item.description_decision || '',
     delais: item.delais || '',
     responsable: item.responsable || '',

@@ -162,18 +162,21 @@ displayedColumns: string[] = [
       localStorage.setItem('pdekSoudure', JSON.stringify(row));
       this.router.navigate(['/pdeks-soudure', row.id]);
     } 
-    /*if (row.typePistolet === 'PISTOLET_JAUNE') {
+   if (row.typeOperation === 'Torsadage') {
       console.log("id de pdek est :"+row.id);
-      this.router.navigate(['/pdek-pistolet-jaune', row.id]);
-    } 
-    if (row.typePistolet === 'PISTOLET_ROUGE') {
+      localStorage.setItem('pdekTorsadage', JSON.stringify(row));
+      this.router.navigate(['/pdeks-torsadage', row.id]);
+    }
+    if (row.typeOperation === 'Sertissage_IDC') {
       console.log("id de pdek est :"+row.id);
-      this.router.navigate(['/pdek-pistolet-rouge', row.id]);
-    } 
-    if (row.typePistolet === 'PISTOLET_VERT') {
+      localStorage.setItem('pdekSertissageIDC', JSON.stringify(row));
+      this.router.navigate(['/pdeks-sertissageIDC', row.id]);
+    }
+    if (row.typeOperation === 'Sertissage_Normal') {
       console.log("id de pdek est :"+row.id);
-      this.router.navigate(['/pdek-pistolet-vert', row.id]);
-    } */
+      localStorage.setItem('pdekSertissage', JSON.stringify(row));
+      this.router.navigate(['/pdeks-sertissage', row.id]);
+    }
   }
   viewPlanAction(id: number){
     console.log('id de plan action' +id) ; 

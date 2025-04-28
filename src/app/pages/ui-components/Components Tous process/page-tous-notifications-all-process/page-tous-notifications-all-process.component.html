@@ -1,0 +1,109 @@
+<!-- AGENT QUALITÉ -->
+<ng-container *ngIf="role === 'AGENT_QUALITE'">
+    <div class="stylePage" *ngIf="serviceGeneral.donnees.length > 0; else aucuneNotifAgent">
+      <mat-card class="cardWithShadow theme-card" id="styleCard">
+        <mat-card-header>
+          <mat-card-title id="titrePageNotifications">
+            Notifications : {{ serviceGeneral.nbrNotifications }}
+          </mat-card-title>
+        </mat-card-header>  
+      <mat-card-content class="b-t-1">
+        <div *ngFor="let p of serviceGeneral.donnees; let last = last">
+          <div class="notification-row">
+            <div class="message">
+              <p>
+                  Dans le processus <strong style="color:red">{{p.typeOperation}}</strong>,
+                  le PDEK de la section <strong style="color: rgb(9, 155, 9);">{{p.sectionFil}}</strong> 
+                  sur la machine <strong>{{p.numeroMachine}} </strong> ,
+                  dans la segment <strong>{{ p.segment}}</strong> de plant
+                  <strong>{{p.plant}}</strong>  , 
+                  est en attente de votre validation immédiate.  
+                </p>
+                <small class="time">{{ getDifferenceFromNowAll(p) }}</small>
+              </div>
+              <div class="actions">
+                <button mat-flat-button color="primary" (click)="voirPdek(p)">
+                  Voir PDEK
+                </button>
+                <button
+                  mat-flat-button
+                  color="accent"
+                  class="bg-success text-white"
+                  (click)="valider(p)">
+                  Valider PDEK
+                </button>
+              </div>
+            </div> <!-- Fermeture de notification-row -->
+  
+            <hr *ngIf="!last" />
+          </div> <!-- Fermeture du ngFor -->
+        </mat-card-content>
+  
+      </mat-card>
+    </div>
+  
+    <ng-template #aucuneNotifAgent>
+      <mat-card>
+        <div style="padding: 10px; text-align: center;">
+          <p>Pas de notifications</p>
+        </div>
+      </mat-card>
+      <div id="espace"></div>
+    </ng-template>
+  </ng-container>
+  
+  <!-- chef de ligne  -->
+  <ng-container *ngIf="role === 'CHEF_DE_LIGNE'">
+    <div class="stylePage" *ngIf="serviceGeneral.donnees.length > 0; else aucuneNotifTechnicien">
+      <mat-card class="cardWithShadow theme-card" id="styleCard">
+        <mat-card-header>
+          <mat-card-title id="titrePageNotifications">
+            Notifications : {{ serviceGeneral.nbrNotifications }}
+          </mat-card-title>
+        </mat-card-header>
+  
+        <mat-card-content class="b-t-1">
+          <div *ngFor="let p of serviceGeneral.donnees; let last = last">
+            <div class="notification-row">
+              <div class="message">
+                <p>
+                  Dans le processus <strong style="color:red">{{p.typeOperation}}</strong>,
+                  le PDEK <span *ngIf="p.typeOperation =='Soudure'">de la section</span>
+                  <span *ngIf="p.typeOperation =='Torsadage'">de la spécification de mesure</span>
+                    <strong style="color: rgb(9, 155, 9);">{{p.sectionFil}}</strong> 
+                  sur la machine <strong>{{p.numeroMachine}} </strong> ,
+                  dans la segment <strong>{{ p.segment}}</strong> de plant
+                  <strong>{{p.plant}}</strong>  , 
+                 <span>{{genererMessageEtatAllProcess(p.zone)}}</span>
+                </p>
+                <small class="time">{{ getDifferenceFromNowAll(p) }}</small>
+              </div>
+              <div class="actions">
+                <button mat-flat-button color="primary" (click)="voirPdek(p)">
+                  Voir PDEK
+                </button>
+                <button
+                  mat-flat-button
+                  color="accent"
+                  class="bg-success text-white"
+                  (click)="creerPlanActionAllProcess(p)">
+                  Remplir plan d'action
+                </button>
+              </div>
+              </div>
+            <hr *ngIf="!last" />
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <ng-template #aucuneNotifTechnicien>
+      <mat-card>
+        <div style="padding: 10px; text-align: center;">
+          <p>Pas de notifications</p>
+        </div>
+      </mat-card>
+      <div id="espace"></div>
+  
+    </ng-template>
+  </ng-container>
+  

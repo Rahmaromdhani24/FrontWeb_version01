@@ -1,8 +1,13 @@
 export interface Soudure {
     id: number;
+    typeOperation : string ; 
+    plant : string ; 
+    segment : number ; 
+    numeroMachine : string ; 
     code: string;
     sectionFil: string;
     date: string;
+    heureCreation: string;
     numeroCycle: number;
     userSoudure: number;
     moyenne: number;
@@ -22,5 +27,9 @@ export interface Soudure {
     matriculeAgentQualite : number ;  
     decision : number ; 
     rempliePlanAction : number ; 
+    pdekId : number ;
+    numPage : number ; 
+    quantiteAtteint : number ; 
+    zone?:string ;
   }
   

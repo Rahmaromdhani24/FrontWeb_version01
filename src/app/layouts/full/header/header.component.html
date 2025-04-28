@@ -1,4 +1,4 @@
-<mat-toolbar class="topbar gap-10">
+<mat-toolbar class="topbar gap-10" >
 
   <!-- Menu mobile -->
   <button mat-icon-button (click)="toggleMobileNav.emit()" class="d-flex d-md-none justify-content-center">
@@ -70,6 +70,65 @@
       <button mat-flat-button class="bg-success text-white" (click)="voirTousNotifications()">Voir plus</button>
     </div>
 </ng-container>
+
+<!-- Agent de qualite de tous les process -->
+<ng-container *ngIf="role === 'AGENT_QUALITE'">
+  <mat-menu-item *ngFor="let p of serviceGeneral.donnees.slice(0, 3); let last = last">
+    <div style="width: 100%;">
+      <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Soudure' ">
+        Dans le processus  <strong style="color:red;">{{ p.typeOperation }}</strong> , le PDEK de la section 
+        <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+        <span>, est en attente de votre validation immédiate.</span>
+      </p>
+      <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Torsadage' ">
+        Dans le processus  <strong style="color:red;">Torsadage</strong> , le PDEK de la spécification de mesure 
+        <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+        <span>, est en attente de votre validation immédiate.</span>
+      </p>
+      <small class="time">{{ getDifferenceFromNowAll(p) }}</small>
+      <div>
+        <button mat-button color="primary" (click)="voirPdek(p)">Voir le PDEK</button>
+        <button mat-button color="accent" (click)="validerPdek(p)">Valider Pdek</button>
+      </div>
+    </div>
+    <hr *ngIf="!last" />
+  </mat-menu-item>
+    <!-- Bouton voir plus -->
+    <div  *ngIf="serviceGeneral.donnees.length > 0; else aucuneNotif"  style="width: 100%; display: flex; justify-content: center; padding-top: 8px;">
+      <button mat-flat-button class="bg-success text-white" (click)="voirTousNotificationsAllProcess()">Voir plus</button>
+    </div>
+</ng-container>
+
+
+<!-- chef de ligne  de tous les process -->
+<ng-container *ngIf="role === 'CHEF_DE_LIGNE'">
+  <mat-menu-item *ngFor="let p of serviceGeneral.donnees.slice(0, 3); let last = last">
+    <div style="width: 100%;">
+      <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Soudure' ">
+        Dans le processus  <strong style="color:red;">{{ p.typeOperation }}</strong> , le PDEK de la section 
+        <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+        <span>{{ genererMessageEtatAllProcess(p.zone) }}</span>
+      </p>
+      <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Torsadage' ">
+        Dans le processus  <strong style="color:red;">Torsadage</strong> , le PDEK de la spécification de mesure 
+        <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+        <span>{{ genererMessageEtatAllProcess(p.zone) }}</span>
+      </p>
+      <small class="time">{{ getDifferenceFromNowAll(p) }}</small>
+      <div>
+        <button mat-button color="primary" (click)="voirPdek(p)">Voir le PDEK</button>
+        <button mat-button color="accent" (click)="creerPlanActionAllProcess(p)">Ajout Plan action</button>
+      </div>
+    </div>
+    <hr *ngIf="!last" />
+  </mat-menu-item>
+    <!-- Bouton voir plus -->
+    <div  *ngIf="serviceGeneral.donnees.length > 0; else aucuneNotif"  style="width: 100%; display: flex; justify-content: center; padding-top: 8px;">
+      <button mat-flat-button class="bg-success text-white" (click)="voirTousNotificationsAllProcess()">Voir plus</button>
+    </div>
+</ng-container>
+
+
 <!-- ✅ Message si aucun pistolet -->
 <ng-template #aucuneNotif>
   <div style="padding: 10px; text-align: center;">

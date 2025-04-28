@@ -570,7 +570,7 @@ public chartOptionsEtendue: {
     this.router.navigate(['/ui-components/listePdekTousProcess']);
   }
 
-  chargerEtenduMax(sectionFil: number): void {
+  chargerEtenduMax(sectionFil: string): void {
     this.soudureService.getEtenduMax(sectionFil).subscribe({
       next: (val: number) => {
         this.etenduMax = val;
@@ -585,7 +585,7 @@ public chartOptionsEtendue: {
   
 
 // Méthodes pour récupérer les valeurs
-chargerMoyenneMin(sectionFil: number): void {
+chargerMoyenneMin(sectionFil: string): void {
   this.soudureService.getMoyenneMin(sectionFil).subscribe({
     next: (val: number) => {
       this.moyenneMin = val;
@@ -598,7 +598,7 @@ chargerMoyenneMin(sectionFil: number): void {
   });
 }
 
-chargerMoyenneMax(sectionFil: number): void {
+chargerMoyenneMax(sectionFil: string): void {
   this.soudureService.getMoyenneMax(sectionFil).subscribe({
     next: (val: number) => {
       this.moyenneMax = val;
@@ -611,7 +611,7 @@ chargerMoyenneMax(sectionFil: number): void {
   });
 }
 
-chargerPelageMin(sectionFil: number): void {
+chargerPelageMin(sectionFil: string): void {
   this.soudureService.getPelageValeur(sectionFil).subscribe({
     next: (val: number) => {
       this.pelageMin = val;
@@ -623,10 +623,18 @@ chargerPelageMin(sectionFil: number): void {
     }
   });
 }
-  extraireValeurNumeriqueSectionFil(sectionFil: string): number {
+  /*extraireValeurNumeriqueSectionFil(sectionFil: string): number {
     const valeurStr = sectionFil.trim().split(' ')[0];
     return parseFloat(valeurStr);
-  }
+  }*/
+    extraireValeurNumeriqueSectionFil(sectionFil: string): string {
+      if (!sectionFil) {
+        return "0.00";
+      }
+      const match = sectionFil.match(/[0-9]+(\.[0-9]+)?/);
+      const value = match ? parseFloat(match[0]) : 0;
+      return value.toFixed(2); // forcer 2 chiffres après la virgule sous forme de string
+    }
   checkAndUpdateGraph() {
     if (this.pelageMin && this.moyenneMin && this.moyenneMax) {
       this.chargerToutesLesPages(); // Met à jour le graphique uniquement après que toutes les valeurs sont disponibles

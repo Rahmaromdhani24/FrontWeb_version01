@@ -23,7 +23,11 @@ import { PdekPistoletRougeComponent } from '../../Agent qualité/Pdeks Pistolet/
 import { PdekPistoletBleuComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-bleu/pdek-pistolet-bleu.component';
 import { PdekPistoletVertComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-vert/pdek-pistolet-vert.component';
 import { PageNotificationsPistoletComponent } from './Montage Pistolet/page-notifications-pistolet/page-notifications-pistolet.component';
-import { ListsPdekTousProcessComponent } from './Operation Soudure/lists-pdek-tous-process/lists-pdek-tous-process.component';
+import { ListsPdekTousProcessComponent } from './Components Tous process/lists-pdek-tous-process/lists-pdek-tous-process.component';
+import { PageTousNotificationsAllProcessComponent } from './Components Tous process/page-tous-notifications-all-process/page-tous-notifications-all-process.component';
+import { AddPlanActionSoudureComponent } from './Operation Soudure/add-plan-action-soudure/add-plan-action-soudure.component';
+import { AddPlanActionTorsadageComponent } from './Operation torsadage/add-plan-action-torsadage/add-plan-action-torsadage.component';
+import { ListsPlanActionsTousProcessComponent } from './Components Tous process/lists-plan-actions-tous-process/lists-plan-actions-tous-process.component';
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -83,6 +87,22 @@ export const UiComponentsRoutes: Routes = [
         path: 'listePdekTousProcess',
         component: ListsPdekTousProcessComponent,
       } ,
+      {
+        path: 'listePlanActionsTousProcess',
+        component: ListsPlanActionsTousProcessComponent,
+      } ,
+      {
+        path: 'pagesNotificationsAllProcess',
+        component: PageTousNotificationsAllProcessComponent,
+      } ,
+      {
+        path: 'addPlanActionSoudure',
+        component: AddPlanActionSoudureComponent,
+      },
+      {
+        path: 'addPlanActionTorsadage',
+        component: AddPlanActionTorsadageComponent,
+      },
      /*
       {
         path: 'tooltips',

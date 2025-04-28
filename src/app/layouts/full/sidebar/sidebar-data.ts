@@ -248,7 +248,7 @@ export const navItems: NavItem[] = [
     iconName: 'list-details',
     route: '/ui-components/listePdekTousProcess',
     bgcolor: 'error',
-    roles: ['ADMIN', 'AGENT_QUALITE'], 	
+    roles: ['ADMIN', 'AGENT_QUALITE' , 'CHEF_DE_LIGNE'], 	
 
   },
   {
@@ -277,7 +277,15 @@ export const navItems: NavItem[] = [
     iconName: 'file-text',
     route: '/ui-components/listePlanAction',
     bgcolor: 'primary',
-    roles: ['AGENT_QUALITE_PISTOLET' ,'TECHNICIEN'], 	
+    roles: ['AGENT_QUALITE_PISTOLET' ,'TECHNICIEN' ,'AGENT_QUALITE'], 	
+
+  }, 
+  {
+    displayName: 'Liste Plan d actions',
+    iconName: 'file-text',
+    route: '/ui-components/listePlanActionsTousProcess',
+    bgcolor: 'primary',
+    roles: ['AGENT_QUALITE' ,'CHEF_DE_LIGNE' ], 	
 
   }, 
   

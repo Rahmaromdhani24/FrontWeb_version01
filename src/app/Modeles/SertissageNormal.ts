@@ -1,0 +1,31 @@
+export interface SertissageNormal{
+  id: number;
+  code: string;
+  sectionFil: string;
+  numOutil: string;
+  numContact: string;
+  date: string;
+  numCycle: number;
+  userSertissageNormal: number;
+  hauteurSertissageEch1: number;
+  hauteurSertissageEch2: number;
+  hauteurSertissageEch3: number;
+  hauteurSertissageEchFin: number;
+  largeurSertissage: number;
+  largeurSertissageEchFin: number;
+  hauteurIsolant: number;
+  largeurIsolant: number;
+  largeurIsolantEchFin: number;
+  hauteurIsolantEchFin: number;
+  traction: string;
+  tractionFinEch: number;
+  produit: string;
+  serieProduit: string;
+  quantiteCycle: number;
+  segment: number;
+  numeroMachine: string;
+  decision: number;
+  rempliePlanAction: number;
+  pdekId : number ;
+  numPage : number ; 
+}

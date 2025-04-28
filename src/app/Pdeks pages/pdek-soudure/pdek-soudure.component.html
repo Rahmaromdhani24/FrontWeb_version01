@@ -1,12 +1,6 @@
 <div class="loading" *ngIf="showLoader">
     <span id="loader" class="loader"></span>
   </div>
-  <form action="" class="search-bar"  *ngIf="!showLoader">
-    <input type="search" name="search" pattern=".*\S.*" required>
-    <button class="search-btn" type="submit">
-      <span>Search</span>
-    </button>
-  </form>
   <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
     <div class="pdf-container" *ngFor="let page of pages">
       <!-- En-tête -->
@@ -40,9 +34,9 @@
           {{segmentUser}} /  {{ getAnnee(page,0) ?? '' }}        
         </td>
       </tr>
-  </table>
-   
+  </table> 
     </div>
+    
       <div id="idBorderMoyenne">
         <div class="vertical-text-moyenne">La moyenne X̄</div>
         <apx-chart 
@@ -230,6 +224,7 @@
 
       </div>
        </div>
-       <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" (click)="naviger()">Retour</button>
+       <button mat-flat-button color="primary" class="m-r-8" type="submit" 
+       id="retourBtn" (click)="naviger()">Retour à la liste des PDEKs</button>
     </div>
   

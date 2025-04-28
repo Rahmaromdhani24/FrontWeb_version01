@@ -34,14 +34,17 @@
         </mat-select>
       </mat-form-field>-->
 
-      <img src="assets/resources pdek/images/icone add.jpg"  *ngIf="isChefDeLigne()" 
-      alt="Add" class="add-icon" id="imageAddPlanAction"(click)="navigateToAddPlanActionPage()">
+      <!--img src="assets/resources pdek/images/icone add.jpg"  *ngIf="isChefDeLigne()" 
+      alt="Add" class="add-icon" id="imageAddPlanAction"(click)="navigateToAddPlanActionPage()"-->
     </div>
   
     <mat-divider></mat-divider>
-  
+
+    <div *ngIf="dataSource.data.length === 0" class="no-data-message">
+      <strong>Pas de plans d'actions pour le moment</strong>
+    </div>
     <!-- Tableau -->
-    <div class="table-responsive">
+    <div class="table-responsive"  *ngIf="dataSource.data.length > 0">
       <mat-table [dataSource]="dataSource" matSort>
         <!-- Colonnes -->
         <ng-container matColumnDef="plant">
