@@ -22,8 +22,6 @@ export interface PDEK {
     projets?: string;
     pages?: string;
     controlesQualite?: string;
-
-  
     // Propriété ajoutée dynamiquement
     planAction?: any;
   }

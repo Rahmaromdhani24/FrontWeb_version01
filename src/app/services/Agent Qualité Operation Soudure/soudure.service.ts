@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError  , map} from 'rxjs/operators';
@@ -10,8 +10,17 @@ import { GeneralService } from '../Géneral/general.service';
   providedIn: 'root'
 })
 export class SoudureService {
+  private _generalService: GeneralService;
 
-  constructor(private http: HttpClient , private general : GeneralService) {}
+  constructor(private http: HttpClient ,
+              private injector: Injector ) {}
+
+private get general(): GeneralService {
+  if (!this._generalService) {
+    this._generalService = this.injector.get(GeneralService);
+  }
+  return this._generalService;
+}
 
   private urlGetEtenduMax = "http://localhost:8281/operations/soudure/etenduMax";
   getEtenduMax(sectionFil: string): Observable<number> {

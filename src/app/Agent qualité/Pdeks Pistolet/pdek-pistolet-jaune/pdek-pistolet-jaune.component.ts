@@ -98,18 +98,8 @@ public chartOptionsMoyenne: {
     type: 'line',
     height: 400,
     background: 'transparent',
-    animations: {
-      enabled: false,
-      easing: 'linear',
-      speed: 1,
-      animateGradually: {
-        enabled: false
-      },
-      dynamicAnimation: {
-        enabled: false
-      }
-    },
-    toolbar: { show: false }
+    animations: { enabled: false },
+    toolbar: { show: false } 
   },
   xaxis: {
     type: 'numeric',
@@ -250,18 +240,8 @@ public chartOptionsMoyenne: {
       type: 'line',
       height: 250,
       background: 'transparent',
-      animations: {
-        enabled: false,
-        easing: 'linear',
-        speed: 1,
-        animateGradually: {
-          enabled: false
-        },
-        dynamicAnimation: {
-          enabled: false
-        }
-      },
-      toolbar: { show: false }
+      animations: { enabled: false },
+      toolbar: { show: false } 
     }
     ,
     xaxis: {

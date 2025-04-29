@@ -331,16 +331,28 @@ export class HeaderComponent  implements OnInit{
           localStorage.setItem("soudure", JSON.stringify(soudure)); // Ici on stringify directement
           this.router.navigate(['/pdekSoudure']);
       }
+         if (p.typeOperation === 'Torsadage') {
+           const torsadage: Torsadage = p as Torsadage; // 👈 Pas besoin de passer par JSON
+           console.log('Objet Torsadage :', torsadage);      
+           const response = {
+             pdekId: p.pdekId,
+             pageNumber: p.numPage
+           };
+           console.log('Objet responseApi, id pdek :', response.pdekId, ", numéro de page :", response.pageNumber);     
+           localStorage.setItem("reponseApi", JSON.stringify(response));
+           localStorage.setItem("torsadage", JSON.stringify(torsadage)); // Ici on stringify directement
+           this.router.navigate(['/pdekTorsadage']);
+         }
     }
     creerPlanActionAllProcess(p: any) {
       if (p.typeOperation === 'Soudure') {
       const soudure: Soudure = p as Soudure;
-      localStorage.setItem("SoudurePlanAction", JSON.stringify(soudure));    
+      localStorage.setItem("DonneePlanAction", JSON.stringify(soudure));    
       this.router.navigate(['/ui-components/addPlanActionSoudure']);
     }
     if (p.typeOperation === 'Torsadage') {
       const torsadage: Torsadage = p as Torsadage;
-      localStorage.setItem("TorsadagePlanAction", JSON.stringify(torsadage));    
+      localStorage.setItem("DonneePlanAction", JSON.stringify(torsadage));    
       this.router.navigate(['/ui-components/addPlanActionTorsadage']);
     }
   }

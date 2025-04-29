@@ -2,14 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Pistolet } from 'src/app/Modeles/Pistolet';
-import { Soudure } from 'src/app/Modeles/Soudure';
+import { forkJoin } from 'rxjs';
+import { TorsadageService } from '../Agent Qualite Operation Torsadage/torsadage.service';
+import { SoudureService } from '../Agent Qualité Operation Soudure/soudure.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeneralService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient ,
+              public serviceSoudure : SoudureService , 
+              public serviceTorsadage : TorsadageService) { }
   nbrNotifications: number ; 
   pistolets: Pistolet[] = [];
   donnees: any[] = [];
@@ -42,4 +46,33 @@ getToken(): string | null {
   return localStorage.getItem('token');
 }
 
+/*****************************************************************************************************/
+recupererNombreNotificationsTousProcessSaufPistolet() {
+  forkJoin([
+    this.serviceSoudure.getNombreNotificationsAgentQualitePourValidation(),
+    this.serviceTorsadage.getNombreNotificationsAgentQualitePourValidation()
+  ]).subscribe({
+    next: ([countSoudure, countTorsadage]) => {
+      this.nbrNotifications = countSoudure + countTorsadage;
+      console.log('Total notifications :', this.nbrNotifications);
+    },
+    error: (err: any) => {
+      console.error('Erreur lors de la récupération des notifications :', err);
+    }
+  });
+}
+recupererNombreNotificationsTousProcessSaufPistoletChefLigne(){
+    forkJoin([
+      this.serviceSoudure.getNombreNotificationsChefDeLigne(),
+      this.serviceTorsadage.getNombreNotificationsChefDeLigne()
+    ]).subscribe({
+      next: ([countSoudure, countTorsadage]) => {
+        this.nbrNotifications = countSoudure + countTorsadage;
+        console.log('Total notifications :', this.nbrNotifications);
+      },
+      error: (err: any) => {
+        console.error('Erreur lors de la récupération des notifications :', err);
+      }
+    });
+  }
 }

@@ -16,10 +16,23 @@ export class ChefLigneService {
 
 
   private baseUrl = 'http://localhost:8281/planAction/addPlanActionSoudure';
-
   ajouterPlanActionSoudure(pdekId: number, numeroPage: number, userId: number, 
                     id: number, details: DetailsPlanAction): Observable<any> {
     const url = `${this.baseUrl}/${pdekId}/${numeroPage}/${userId}/${id}`;
+    const token = localStorage.getItem('token'); // Assure-toi que le token est bien stocké
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(url, details, { headers });
+  }
+  
+  private baseUrlAjouterPlanActionTorsadage = 'http://localhost:8281/planAction/addPlanActionTorsadage';
+  ajouterPlanActionTorsadage(pdekId: number, numeroPage: number, userId: number, 
+                    id: number, details: DetailsPlanAction): Observable<any> {
+    const url = `${this.baseUrlAjouterPlanActionTorsadage}/${pdekId}/${numeroPage}/${userId}/${id}`;
     const token = localStorage.getItem('token'); // Assure-toi que le token est bien stocké
   
     const headers = new HttpHeaders({

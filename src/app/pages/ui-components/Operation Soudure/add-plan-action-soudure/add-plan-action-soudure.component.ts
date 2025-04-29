@@ -23,6 +23,7 @@ import { GeneralService } from 'src/app/services/Géneral/general.service';
 import { ChefLigneService } from 'src/app/services/Chef de ligne/chef-ligne.service';
 import { SoudureService } from 'src/app/services/Agent Qualité Operation Soudure/soudure.service';
 import { TorsadageService } from 'src/app/services/Agent Qualite Operation Torsadage/torsadage.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-add-plan-action-soudure',
@@ -47,10 +48,11 @@ export class AddPlanActionSoudureComponent implements OnInit {
   operation: string = '';
   sectionFil: string = '';
   numeroPistolet: number = 0;
+  role : string ='' ; 
  constructor(private router: Router , private serviceChefLigne : ChefLigneService , 
               private serviceSoudure: SoudureService ,
               private serviceTorsadage: TorsadageService ,
-              private  general :GeneralService ) {}
+              public  general :GeneralService ) {}
     
   myForm : FormGroup = new FormGroup({
   descriptionProbleme: new FormControl(null, Validators.required),
@@ -111,10 +113,24 @@ submitForm() {
           }
         }).then((result) => {
           if (result.isConfirmed) {
-            this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ; 
-            this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ; 
-            this.general.nbrNotifications --;
-         
+           // this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ; 
+           // this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ; 
+            //this.general.nbrNotifications --;
+            this.role= localStorage.getItem('role')|| '';
+            if( this.role =="AGENT_QUALITE"){
+              this.general.donnees = [];
+              this.general.nbrNotifications=0 ; 
+              this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
+              this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
+              this.general.recupererNombreNotificationsTousProcessSaufPistolet() ;  
+            }
+            if( this.role =="CHEF_DE_LIGNE"){
+                this.general.donnees = [];
+                this.general.nbrNotifications=0 ; 
+                this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
+                this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
+                this.general.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;   
+            }
             this.router.navigate(['/dashboard']);
           }
         });

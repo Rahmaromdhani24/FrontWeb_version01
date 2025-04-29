@@ -119,15 +119,18 @@ export class PlanActionPdfService {
   ];
   // Création des données avec vérification explicite
   const tableData = details.map((item, index) => ({
-    nr: index + 1,
-    date: item.dateCreation || '',
-    probleme: item.description_probleme || '',
-    matricule: item.matricule_operateur ||item.matricule_chef_ligne || '',
-    decisions: item.description_decision || '',
-    delais: item.delais || '',
-    responsable: item.responsable || '',
-    contremetre: item.signature_contermetre && item.signature_contermetre !== 0 ? 'Validé' : '',
-    maintenance: item.signature_maintenance && item.signature_maintenance !== 0 ? 'Validé' : '',
+  nr: index + 1,
+  date: item.dateCreation || '',
+  probleme: item.description_probleme || '',
+  matricule: 
+  [item.matricule_operateur, item.matricule_chef_ligne]
+    .filter(Boolean) 
+    .join(' / ') ,
+  decisions: item.description_decision || '',
+  delais: item.delais || '',
+  responsable: item.responsable || '',
+  contremetre: item.signature_contermetre && item.signature_contermetre !== 0 ? 'Validé' : '',
+  maintenance: item.signature_maintenance && item.signature_maintenance !== 0 ? 'Validé' : '',
   qualite: item.signature_qualite && item.signature_qualite !== 0 ? 'Validé' : ''
   }));
 

@@ -16,6 +16,10 @@ import { PdekTorsadageComponent } from './Pdeks pages/pdek-torsadage/pdek-torsad
 import { PdekSertissageIDCComponent } from './Pdeks pages/pdek-sertissage-idc/pdek-sertissage-idc.component';
 import { PdekSertissageNormalComponent } from './Pdeks pages/pdek-sertissage-normal/pdek-sertissage-normal.component';
 import { PdekSoudureSimpleComponent } from './Agent qualité/Pdeks all process/pdek-soudure/pdek-soudure-simple.component';
+import { PdekTorsadageSimpleComponent } from './Agent qualité/Pdeks all process/pdek-torsadage/pdek-torsadage-simple.component';
+import { PdekSertissageIDCSimpleComponent } from './Agent qualité/Pdeks all process/pdek-sertissage-idcsimple/pdek-sertissage-idcsimple.component';
+import { PdekSertissageNormalSimpleComponent } from './Agent qualité/Pdeks all process/pdek-sertissage-normal-simple/pdek-sertissage-normal-simple.component';
+
 export const routes: Routes = [
 
   
@@ -37,9 +41,9 @@ export const routes: Routes = [
   {  path: 'pdeks-sertissage/:id',component: PdekSertissageNormalComponent } ,
 
   {  path: 'pdekSoudure',component: PdekSoudureSimpleComponent } ,
-  {  path: 'pdeks-torsadage',component: PdekTorsadageComponent } ,
-  {  path: 'pdeks-sertissageIDC',component: PdekSertissageIDCComponent } ,
-  {  path: 'pdeks-sertissage',component: PdekSertissageNormalComponent } ,
+  {  path: 'pdekTorsadage',component: PdekTorsadageSimpleComponent } ,
+  {  path: 'pdekSertissageIDC',component: PdekSertissageIDCSimpleComponent } ,
+  {  path: 'pdekSertissage',component: PdekSertissageNormalSimpleComponent } ,
     {
     path: '',
     component: FullComponent,

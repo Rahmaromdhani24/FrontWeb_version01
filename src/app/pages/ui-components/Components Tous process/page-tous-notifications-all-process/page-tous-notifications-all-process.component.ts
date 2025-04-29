@@ -55,27 +55,28 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
   pistoletsValides: Set<number> = new Set();
 
   ngOnInit(): void {
-   this.role= localStorage.getItem('role') ;//, "AGENT_QUALITE_PISTOLET");
+   this.role= localStorage.getItem('role') ;
    this.roleDashboard = localStorage.getItem('roleDashboard') ;
    this.fullname =  localStorage.getItem('fullName') ;
    this.plant=   localStorage.getItem('plant') ;
-
    if( this.role =="AGENT_QUALITE"){
-   // this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
-    //this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
+    this.serviceGeneral.donnees = [];
+    this.serviceGeneral.nbrNotifications=0 ; 
+    this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
+    this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
     this.recupererNombreNotificationsTousProcessSaufPistolet() ;  
   }
   if( this.role =="CHEF_DE_LIGNE"){
-    //this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
-    //this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
-    this.recupererNombreNotificationsTousProcessSaufPistolet() ; 
+      this.serviceGeneral.donnees = [];
+      this.serviceGeneral.nbrNotifications=0 ; 
+      this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
+      this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
+      this.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;   
   }
   this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
       
   }
-  
 
- 
   voirPdek(p: any) {
     console.log("Objet à afficher :", p);
   
@@ -93,35 +94,22 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
       localStorage.setItem("soudure", JSON.stringify(soudure)); // Ici on stringify directement
       this.router.navigate(['/pdekSoudure']);
     }
-  }
+      
+    if (p.typeOperation === 'Torsadage') {
+      const torsadage: Torsadage = p as Torsadage; // 👈 Pas besoin de passer par JSON
+      console.log('Objet Torsadage :', torsadage);
   
-
-/*
-     if(this.formatPistolet(p.type) ==='Rouge'){
+      const response = {
+        pdekId: p.pdekId,
+        pageNumber: p.numPage
+      };
+      console.log('Objet responseApi, id pdek :', response.pdekId, ", numéro de page :", response.pageNumber);
+  
       localStorage.setItem("reponseApi", JSON.stringify(response));
-      localStorage.setItem("pistolet", JSON.stringify(pistolet));
-      this.router.navigate(['/pdekPistoletRouge'])
-     }
-
-     if(this.formatPistolet(p.type) ==='Vert'){
-      localStorage.setItem("reponseApi", JSON.stringify(response));
-      localStorage.setItem("pistolet", JSON.stringify(pistolet));
-      this.router.navigate(['/pdekPistoletVert'])
-
+      localStorage.setItem("torsadage", JSON.stringify(torsadage)); // Ici on stringify directement
+      this.router.navigate(['/pdekTorsadage']);
     }
-     if(this.formatPistolet(p.type) ==='Jaune'){    
-      localStorage.setItem("reponseApi", JSON.stringify(response));
-      localStorage.setItem("pistolet", JSON.stringify(pistolet));
-      this.router.navigate(['/pdekPistoletJaune'])
-
-    }
-
-     if(this.formatPistolet(p.type) ==='Bleu'){ 
-      localStorage.setItem("reponseApi", JSON.stringify(response));
-      localStorage.setItem("pistolet", JSON.stringify(pistolet));
-      this.router.navigate(['/pdekPistoletBleu'])
-     }*/
-        
+  }
   
         valider(donnee : any) {
           console.log("Objet valider  :"+donnee) ; 
@@ -293,6 +281,9 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
             }
           });
         }
+
+          
+        
     logout(){
       localStorage.clear() ;
       this.router.navigate(['/login'])

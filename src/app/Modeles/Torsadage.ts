@@ -37,5 +37,6 @@ export interface Torsadage {
     pdekId : number ;
     numPage : number ; 
     sectionFil : string ; 
+    zone : string ;
   }
   

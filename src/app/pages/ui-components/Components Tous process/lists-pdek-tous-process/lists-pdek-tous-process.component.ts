@@ -178,9 +178,9 @@ displayedColumns: string[] = [
       this.router.navigate(['/pdeks-sertissage', row.id]);
     }
   }
-  viewPlanAction(id: number){
-    console.log('id de plan action' +id) ; 
-    this.planActionPdfService.openPDFInNewWindow(id);
+  viewPlanAction(row : PDEK  ){
+    console.log('id de plan action' +row.planAction.id) ; 
+    this.planActionPdfService.openPDFInNewWindow(row.planAction.id);
   }
   printRow(row: PDEK) {
     console.log('Imprimer:', row);
@@ -228,7 +228,6 @@ recupererListPdek() {
     next: (resultatsParType) => {
       // Fusionner toutes les listes de PDEK
       this.pdeks = resultatsParType.flat();
-
       const planActionObservables = this.pdeks.map(pdek =>
         this.planActionService.testerAllTypesPdeksSaufPistolet(pdek.id).pipe(
           catchError(err => {
@@ -266,6 +265,7 @@ recupererListPdek() {
       }
     }
   });
+  console.log("data de tableau :"+  this.pdeks) ; 
 }
 
 

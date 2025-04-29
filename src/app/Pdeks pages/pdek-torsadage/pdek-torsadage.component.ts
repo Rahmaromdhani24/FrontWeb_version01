@@ -135,15 +135,13 @@ getChartOptionsMoyenne(data: { x: number; y: number }[]) {
       type: 'line',
       height: 400,
       background: 'transparent',
-      animations: {
-        enabled: false
-      },
-      toolbar: {
-        show: false
-      }
+      animations: { enabled: false },
+      toolbar: { show: false }
     },
     xaxis: {
-      type: 'category',
+      type: 'numeric',
+      min: 1,
+      max: 25,
       labels: { show: false },
       axisTicks: { show: false },
       axisBorder: { show: false }
@@ -284,13 +282,15 @@ public chartOptionsEtendue: {
           type: 'line',
           height: 250,
           background: 'transparent',
-          animations: {
+          /*animations: {
             enabled: false,
             easing: 'linear',
             speed: 1,
             animateGradually: { enabled: false },
             dynamicAnimation: { enabled: false }
           },
+          toolbar: { show: false }*/
+          animations: { enabled: false },
           toolbar: { show: false }
         },
         xaxis: {
@@ -363,6 +363,7 @@ public chartOptionsEtendue: {
           x: p.numeroCycle,
           y: Number(p.etendu)
         }));
+        console.log("data etendu :"+  dataEtendue) ; 
 
         const pdekTorsadageJson = localStorage.getItem('pdekTorsadage') || '{}';
         const pdekTorsadage= JSON.parse(pdekTorsadageJson);    
@@ -390,7 +391,7 @@ public chartOptionsEtendue: {
 
 
 
-  getPistoletParNumCourant(num: number): Torsadage | undefined {
+  getTorsadageParNumCourant(num: number): Torsadage | undefined {
     return this.torsadages.find(p => p.numeroCycle === num); }
 
     getValeurX(page: any, row: number, col: number): number | null {
@@ -417,7 +418,41 @@ public chartOptionsEtendue: {
       return torsadage ? torsadage.matricule : null;
     }
     
-  
+    getValeurBoutDebutC1(page: any, col: number): number | null {
+      const torsadage = page.torsadages?.[col];
+      return torsadage ? torsadage.longueurBoutDebutCdeC1 : null;
+    }
+
+    getValeurBoutDebutC2(page: any, col: number): number | null {
+      const torsadage = page.torsadages?.[col];
+      return torsadage ? torsadage.longueurBoutDebutCdeC2 : null;
+    }
+
+    getValeurBoutFinC1(page: any, col: number): number | null {
+      const torsadage = page.torsadages?.[col];
+      return torsadage ? torsadage.longueurBoutFinCdeC1 : null;
+    }
+
+    getValeurBoutFinC2(page: any, col: number): number | null {
+      const torsadage = page.torsadages?.[col];
+      return torsadage ? torsadage.longueurBoutFinCdeC2 : null;
+    }
+    getDecalageMaxDebutC1(page: any, col: number): number | null {
+      const torsadage = page.torsadages?.[col];
+      return torsadage ? torsadage.decalageMaxDebutCdec1 : null;
+    }
+    getDecalageMaxDebutC2(page: any, col: number): number | null {
+      const torsadage = page.torsadages?.[col];
+      return torsadage ? torsadage.decalageMaxDebutCdec2 : null;
+    }
+    getDecalageMaxFinC1(page: any, col: number): number | null {
+      const torsadage = page.torsadages?.[col];
+      return torsadage ? torsadage.decalageMaxFinCdec1 : null;
+    }
+    getDecalageMaxFinC2(page: any, col: number): number | null {
+      const torsadage = page.torsadages?.[col];
+      return torsadage ? torsadage.decalageMaxFinCdec2 : null;
+    }
     getDateSansAnnee(page: any, col: number): string | null {
       const torsadage = page.torsadages?.[col];
       if (!torsadage || !torsadage.date) return null;

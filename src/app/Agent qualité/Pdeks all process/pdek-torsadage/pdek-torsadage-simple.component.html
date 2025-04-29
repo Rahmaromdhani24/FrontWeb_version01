@@ -2,7 +2,7 @@
     <span id="loader" class="loader"></span>
   </div>
   <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
-    <div class="pdf-container" *ngFor="let page of pages">
+    <div class="pdf-container">
       <!-- En-tête -->
     <div class="header">
       <!-- Titre principal -->
@@ -30,10 +30,10 @@
         <td style="font-size: 13px;">Nombre d'echantillons<br>
           <strong style="color: rgb(4, 172, 46);font-size: 18px;"> 5 Piéces</strong>
         </td>
-        <td style="font-size: 13px;">N° de machine :<br><strong>{{ getNumMachine() }}</strong></td>
+        <td style="font-size: 13px;">N° de machine :<br><strong>{{machine }}</strong></td>
         <td style="font-size: 13px;">
           Segment / année<br>
-          {{segmentUser}} /  {{ getAnnee(page,0) ?? '' }}        
+          {{segmentUser}} /  {{annee}}        
         </td>
       </tr>
   </table>
@@ -42,17 +42,16 @@
       <div id="idBorderMoyenne">
         <div class="vertical-text-moyenne">La moyenne X̄</div>
         <apx-chart 
-        [series]="page.chartOptionsMoyenne.series"
-        [chart]="page.chartOptionsMoyenne.chart"
-        [xaxis]="page.chartOptionsMoyenne.xaxis"
-        [yaxis]="page.chartOptionsMoyenne.yaxis"
-        [stroke]="page.chartOptionsMoyenne.stroke"
-        [dataLabels]="page.chartOptionsMoyenne.dataLabels"
-        [markers]="page.chartOptionsMoyenne.markers"
-        [tooltip]="page.chartOptionsMoyenne.tooltip"
-        [annotations]="page.chartOptionsMoyenne.annotations"
-        [fill]="page.chartOptionsMoyenne.fill"
-        [legend]="page.chartOptionsMoyenne.legend"
+        [series]="chartOptionsMoyenne.series"
+        [chart]="chartOptionsMoyenne.chart"
+        [xaxis]="chartOptionsMoyenne.xaxis"
+        [yaxis]="chartOptionsMoyenne.yaxis"
+        [stroke]="chartOptionsMoyenne.stroke"
+        [dataLabels]="chartOptionsMoyenne.dataLabels"
+        [markers]="chartOptionsMoyenne.markers"
+        [tooltip]="chartOptionsMoyenne.tooltip"
+        [annotations]="chartOptionsMoyenne.annotations"
+       
           style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -244px;"
   
         ></apx-chart>
@@ -61,17 +60,17 @@
       <div  id="idBorderEtendu">
         <div class="vertical-text-etendu">L'étendu R</div>
         <apx-chart 
-          [series]="page.chartOptionsEtendue.series"
-          [chart]="page.chartOptionsEtendue.chart"
-          [xaxis]="page.chartOptionsEtendue.xaxis"
-          [yaxis]="page.chartOptionsEtendue.yaxis"
-          [stroke]="page.chartOptionsEtendue.stroke"
-          [dataLabels]="page.chartOptionsEtendue.dataLabels"
-          [markers]="page.chartOptionsEtendue.markers"
-          [tooltip]="page.chartOptionsEtendue.tooltip"
-          [annotations]="page.chartOptionsEtendue.annotations"
-          style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -240px;"
-        ></apx-chart>
+        [series]="chartOptionsEtendue.series"
+        [chart]="chartOptionsEtendue.chart"
+        [xaxis]="chartOptionsEtendue.xaxis"
+        [yaxis]="chartOptionsEtendue.yaxis"
+        [stroke]="chartOptionsEtendue.stroke"
+        [dataLabels]="chartOptionsEtendue.dataLabels"
+        [markers]="chartOptionsEtendue.markers"
+        [tooltip]="chartOptionsEtendue.tooltip"
+        [annotations]="chartOptionsEtendue.annotations"
+        style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -240px;">
+      </apx-chart>
         </div>
   
       <div class="tables-wrapper" >
@@ -80,13 +79,13 @@
   <tr>
     <th colspan="2" class="bordered">Longueur fil début Cde</th>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getLongueurFinalDebutCde(page, col) ?? '' }}
+      {{ getLongueurFinalDebutCde(i) ?? '' }}
     </td> 
   </tr>
   <tr>
     <th colspan="2" class="bordered">Longueur fil fin Cde</th>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getLongueurFinalFinCde(page, col) ?? '' }}
+      {{ getLongueurFinalFinCde(i) ?? '' }}
     </td> 
   </tr>
 
@@ -97,14 +96,14 @@
     </th>
     <td><strong>C1</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getValeurBoutDebutC1(page, col) ?? '' }}
+      {{ getValeurBoutDebutC1(i) ?? '' }}
     </td>
   </tr>
 
   <tr>
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getValeurBoutDebutC2(page, col) ?? '' }}
+      {{ getValeurBoutDebutC2(i) ?? '' }}
     </td>
   </tr>
  
@@ -116,7 +115,7 @@
     </th>
     <td><strong>C1</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getValeurBoutFinC1(page, col) ?? '' }}
+      {{ getValeurBoutFinC1(i) ?? '' }}
     </td>
   </tr>
 
@@ -124,7 +123,7 @@
   <tr>
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getValeurBoutFinC2(page, col) ?? '' }}
+      {{ getValeurBoutFinC2(i) ?? '' }}
     </td>
   </tr>
 
@@ -135,7 +134,7 @@
     </th>
     <td><strong>C1</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getDecalageMaxDebutC1(page, col) ?? '' }}
+      {{ getDecalageMaxDebutC1(i) ?? '' }}
     </td>
   </tr>
 
@@ -143,7 +142,7 @@
   <tr>
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getDecalageMaxDebutC2(page, col) ?? '' }}
+      {{ getDecalageMaxDebutC2(i) ?? '' }}
     </td>
   </tr>
 
@@ -153,7 +152,7 @@
     </th>
     <td><strong>C1</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getDecalageMaxFinC1(page, col) ?? '' }}
+      {{ getDecalageMaxFinC1(i) ?? '' }}
     </td>
   </tr>
 
@@ -161,7 +160,7 @@
   <tr>
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getDecalageMaxFinC1(page, col) ?? '' }}
+      {{ getDecalageMaxFinC1(i) ?? '' }}
     </td>
   </tr>
   <!-- Code de répartition -->
@@ -169,64 +168,55 @@
   <tr>
     <th colspan="2" class="bordered">Longueur fil fin Cde</th>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getLongueurFinalFinCde(page, col) ?? '' }}
+      {{ getLongueurFinalFinCde(i) ?? '' }}
     </td> 
   </tr>
   <tr>
     <th colspan="2" class="bordered">Code de mesure</th>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getCodeControle(page, col) ?? '' }}
+      {{ getCodeControle(i) ?? '' }}
     </td>
   </tr>
   <!-- Date sans année -->
   <tr>
     <th colspan="2" class="bordered">Date </th>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getDateSansAnnee(page, col) ?? '' }}
+      {{ getDateSansAnnee(i) ?? '' }}
     </td>
     
   </tr>
   <tr>
     <th colspan="2" class="bordered">Nom </th>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getMatriculeOperateur(page, col) ?? '' }}
+      {{ getMatriculeOperateur(i) ?? '' }}
     </td>
     
   </tr>
   
+<!-- 5 LIGNES X -->
+<tr>
+  <th rowspan="5" colspan="2" class="bordered">X</th>
+  <td *ngFor="let i of twentyFive">{{ getValeurX(0, i) ?? '' }}</td>
+</tr>
+<tr>
+  <td *ngFor="let i of twentyFive">{{ getValeurX(1, i) ?? '' }}</td>
+</tr>
+<tr>
+  <td *ngFor="let i of twentyFive">{{ getValeurX(2, i) ?? '' }}</td>
+</tr>
+<tr>
+  <td *ngFor="let i of twentyFive">{{ getValeurX(3, i) ?? '' }}</td>
+</tr>
+<tr>
+  <td *ngFor="let i of twentyFive">{{ getValeurX(4, i) ?? '' }}</td>
+</tr>
 
-  <!-- 5 LIGNES X -->
-  <tr>
-    <th rowspan="5" colspan="2" class="bordered">X</th>
-    <td *ngFor="let i of twentyFive; let col = index">
-      {{ getValeurX(page, 0, col) ?? '' }}
-    </td> 
-  </tr>
-  <tr>
-    <td *ngFor="let i of twentyFive; let col = index">
-      {{ getValeurX(page, 1, col) ?? '' }}
-    </td>  
-  </tr>
-  <tr>
-    <td *ngFor="let i of twentyFive; let col = index">
-      {{ getValeurX(page, 2, col) ?? '' }}
-    </td>  
-  </tr>
-  <tr>
-    <td *ngFor="let i of twentyFive; let col = index">
-      {{ getValeurX(page, 3, col) ?? '' }}
-    </td>  </tr>
-  <tr>
-    <td *ngFor="let i of twentyFive; let col = index">
-      {{ getValeurX(page, 4, col) ?? '' }}
-    </td>
-  </tr>
 
   <!-- Moyenne -->
   <tr>
     <th colspan="2" class="bordered">X̄</th>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getMoyenne(page, col) ?? '' }}
+      {{ getMoyenne(i) ?? '' }}
     </td>
   </tr>
 
@@ -234,13 +224,13 @@
   <tr>
     <th colspan="2" class="bordered">R</th>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getEtendu(page, col) ?? '' }}
+      {{ getEtendu(i) ?? '' }}
     </td>
   </tr>
   <tr>
     <th colspan="2" class="bordered">Atteinte quantité</th>
     <td *ngFor="let i of twentyFive; let col = index">
-      {{ getQuantiteAtteint(page, col) ?? '' }}
+      {{ getQuantiteAtteint(i) ?? '' }}
     </td>
   </tr>
   <!-- Num courant -->
@@ -266,28 +256,49 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let i of twentyFive; let index = index">
-        <td >{{ index + 1 }}</td>
-        <ng-container *ngIf="page.torsadages[index] as torsadage">
-          <td>{{ torsadage.numCommande }}</td>
-          <td>{{ torsadage.quantiteTotale }}</td>
-          <td>{{ torsadage.numerofil }}</td>
-          <!--td>{{ torsadage.decision }}</td-->
+      <tr *ngFor="let i of getRange(25)">
+        <td>{{ i + 1 }}</td>
+        <ng-container *ngIf="torsadages[i]; else emptyRow">
+          <td>{{ torsadages[i].numCommande }}</td>
+          <td>{{ torsadages[i].quantiteTotale }}</td>
+          <td>{{ torsadages[i].numerofil }}</td>
           <td>
-            <button (click)="onValiderTorsadage(torsadage.id)" 
-                    *ngIf="torsadage.decision === 0 && !pistoletsValides.has(torsadage.id)" 
-                    class="custom-check-button">
-              <i class="fa fa-check"></i>
-            </button>
-            <span *ngIf="torsadage.decision === 1 || pistoletsValides.has(torsadage.id)">Confirmé</span>
+            <ng-container *ngIf="(getDecision(torsadages[i].numeroCycle) === 1 
+                                  && getRempliePlanAction(torsadages[i].numeroCycle) === 1) 
+                                  || torsadagesValides.has(torsadages[i].id); 
+                                  else checkOrInvalid">
+              <span>Confirmé</span>
+            </ng-container>
+      
+            <ng-template #checkOrInvalid>
+              <button 
+                (click)="onValiderTorsadage(torsadages[i].id)" 
+                *ngIf="!torsadagesValides.has(torsadages[i].numeroCycle) 
+                      && getDecision(torsadages[i].numeroCycle) === 0 
+                      && getRempliePlanAction(torsadages[i].numeroCycle) === 0
+                      && role === 'AGENT_QUALITE'; 
+                      else pasValide" 
+                class="custom-check-button">
+                <i class="fa fa-check"></i>
+              </button>
+            </ng-template>
+      
+            <ng-template #pasValide>
+              <span>Invalide</span>
+            </ng-template>
           </td>
         </ng-container>
-        <ng-container *ngIf="!page.torsadages[index]">
-          <td></td><td></td><td></td><td></td>
-        </ng-container>
+      
+        <ng-template #emptyRow>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </ng-template>
       </tr>
-    </tbody>
-  </table>
+      
+  </tbody>
+</table>
   <div id="idBorderRemarque">
     <span id="spanRemarque">Remarque<br></span>
   </div>
@@ -296,6 +307,6 @@
       </div>
        </div>
        <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
-       (click)="naviger()">Retour à la liste des PDEKs</button>
+       (click)="naviger()">Retour</button>
     </div>
   

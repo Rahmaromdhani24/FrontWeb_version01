@@ -20,6 +20,9 @@ import { User } from 'src/app/Modeles/User';
 import { TechnicienServiceService } from 'src/app/services/Technicien/technicien-service.service';
 import { DetailsPlanAction } from 'src/app/Modeles/DetailsPlanAction';
 import { GeneralService } from 'src/app/services/Géneral/general.service';
+import { ChefLigneService } from 'src/app/services/Chef de ligne/chef-ligne.service';
+import { SoudureService } from 'src/app/services/Agent Qualité Operation Soudure/soudure.service';
+import { TorsadageService } from 'src/app/services/Agent Qualite Operation Torsadage/torsadage.service';
 
 @Component({
   selector: 'app-add-plan-action-torsadage',
@@ -33,18 +36,22 @@ imports: [ MatFormFieldModule,
            MatInputModule,
            MatCheckboxModule,
            CommonModule],
+
   templateUrl: './add-plan-action-torsadage.component.html',
   styleUrl: './add-plan-action-torsadage.component.scss'
 })
 export class AddPlanActionTorsadageComponent implements OnInit {
 
-  pistoletPlanAction : any  ;
+  donneePlanAction : any  ;
   matriculeTechnicien : any ; 
-  categoriePistolet: string = '';
-  couleurPistolet: string = '';
+  operation: string = '';
+  sectionFil: string = '';
   numeroPistolet: number = 0;
- constructor(private router: Router , private serviceTechnicien : TechnicienServiceService , 
-              private servicePistoletGeneral: PistoletGeneralService ,private  general :GeneralService ) {}
+  role: string = '';
+ constructor(private router: Router , private serviceChefLigne : ChefLigneService , 
+              private serviceSoudure: SoudureService ,
+              private serviceTorsadage: TorsadageService ,
+              public  general :GeneralService ) {}
     
   myForm : FormGroup = new FormGroup({
   descriptionProbleme: new FormControl(null, Validators.required),
@@ -55,12 +62,12 @@ export class AddPlanActionTorsadageComponent implements OnInit {
 
  ngOnInit(): void {
   this.matriculeTechnicien = localStorage.getItem('matricule');
-  const stored = localStorage.getItem('PistoletPlanAction');
+  const stored = localStorage.getItem('DonneePlanAction');
   if (stored) {
     const parsed = JSON.parse(stored);
-    this.pistoletPlanAction = parsed;
-    this.categoriePistolet = parsed.categorie ;
-    this.couleurPistolet = this.getCouleurPistoletStyle(parsed.type );
+    this.donneePlanAction = parsed;
+    this.operation = parsed.typeOperation ;
+    this.sectionFil = parsed.sectionFil ;
     this.numeroPistolet = parsed.numeroPistolet;
   } 
 }
@@ -81,19 +88,16 @@ submitForm() {
   if (this.myForm.valid) {
     const detailsPlanAction: DetailsPlanAction = new DetailsPlanAction();
     detailsPlanAction.description_probleme = this.myForm.value.descriptionProbleme;
-    detailsPlanAction.matricule_operateur = this.pistoletPlanAction.matriculeAgentQualité;
+    detailsPlanAction.matricule_operateur = this.donneePlanAction.matriculeAgentQualité;
     detailsPlanAction.description_decision = this.myForm.value.descriptionDecision;
     detailsPlanAction.delais = this.myForm.value.delais;
     detailsPlanAction.responsable = this.myForm.value.responsable;
     
-    const pdekId = this.pistoletPlanAction.pdekId;
-    const numeroPage = this.pistoletPlanAction.numPage;
+    const pdekId = this.donneePlanAction.pdekId;
+    const numeroPage = this.donneePlanAction.numPage;
     const userId = this.matriculeTechnicien;
-    const numeroPistolet = this.pistoletPlanAction.numeroPistolet;
-    const typePistolet = this.pistoletPlanAction.type;
-    const categoriePistolet = this.pistoletPlanAction.categorie;
-    this.serviceTechnicien.ajouterPlanAction(pdekId, numeroPage,userId,  numeroPistolet,
-        typePistolet , categoriePistolet , detailsPlanAction).subscribe({
+    const idSoudure =  this.donneePlanAction.id;
+    this.serviceChefLigne.ajouterPlanActionTorsadage(pdekId, numeroPage,userId,  idSoudure , detailsPlanAction).subscribe({
       next: (data) => {
         console.log('Plan action ajouté avec succès', data);
         Swal.fire({
@@ -108,57 +112,45 @@ submitForm() {
           }
         }).then((result) => {
           if (result.isConfirmed) {
-            this.servicePistoletGeneral.recupererListePistoletsNonValidesTechniciens() ;
-            this.recupererNombreNotificationsTechnicien() ; 
-            this.general.nbrNotifications --;
-         
-            this.router.navigate(['/dashboard']);
-          }
-        });
-      },
-      error: (err) => {
-        console.error('Erreur lors de l’ajout', err);
-        Swal.fire({
-          title: 'Erreur',
-          text: "Erreur dans ajout de plan d'acion.",
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      }
-    });
+           // this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ; 
+           // this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ; 
+            //this.general.nbrNotifications --;
+            this.role= localStorage.getItem('role')|| '';
+            if( this.role =="AGENT_QUALITE"){
+              this.general.donnees = [];
+              this.general.nbrNotifications=0 ; 
+              this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
+              this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
+              this.general.recupererNombreNotificationsTousProcessSaufPistolet() ;  
+            }
+            if( this.role =="CHEF_DE_LIGNE"){
+                this.general.donnees = [];
+                this.general.nbrNotifications=0 ; 
+                this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
+                this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
+           }
+              this.router.navigate(['/dashboard']);
+            }
+          });
+        },
+        error: (err) => {
+          console.error('Erreur lors de l’ajout', err);
+          Swal.fire({
+            title: 'Erreur',
+            text: "Erreur dans ajout de plan d'acion.",
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      });
+    }
   }
-}
-recupererNombreNotificationsTechnicien(){
-  this.servicePistoletGeneral.getNombreNotificationsTechniciens().subscribe({
-    next: (count) => {
-      this.general.nbrNotifications = count;
+  
 
-    },
-    error: (err) => {
-      console.error('Erreur lors de la récupération des notifications :', err);
-    }
-  });
-}
-  getCouleurPistoletStyle(value: string): string {
-    const couleur = value.replace('PISTOLET_', '').toLowerCase();
-    switch (couleur) {
-      case 'rouge':
-        return 'rouge';
-      case 'vert':
-        return 'vert';
-      case 'bleu':
-        return 'bleu';
-      case 'jaune':
-        return 'jaune';
-      default:
-        return 'color: black; font-weight: bold;';
-    }
-  }
    toLowerCaseWord(word: string): string {
     return word.toLowerCase();
   }
   cancelForm(){
     this.router.navigate(['/ui-components/listePlanAction'])
   }
-
 }

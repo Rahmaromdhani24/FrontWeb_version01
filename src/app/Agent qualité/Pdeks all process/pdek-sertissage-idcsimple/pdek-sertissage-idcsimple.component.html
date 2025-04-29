@@ -1,0 +1,265 @@
+<div class="loading" *ngIf="showLoader">
+    <span id="loader" class="loader"></span>
+  </div>
+
+  <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
+    <div class="pdf-container" >
+      <!-- En-tête -->
+    <div class="header">
+      <!-- Titre principal -->
+      <div class="main-title" style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">
+        Carte d'enregistrement des données de processus (PDCC) Spécifique pour IDC Lumberg (Hauteur de fermuture) et Force de traction
+      </div>
+      <div class="styleLogoLeoni"> LEONI </div>
+    </div>
+      <!-- Tableau -->
+    <div id="idBorderTableau">
+    <table border="2" id="tableTitre">
+      <tr>
+        <td style="font-size: 13px;">Type de l'opération  :
+          <br><strong style="color: black;font-size: 18px;">Sertissage IDC </strong>
+        </td>
+        <td style="font-size: 13px;">Section du fil  :
+            <br><strong style="color: black;font-size: 18px;">0.35  mm²</strong>
+          </td>
+        <td style="font-size: 13px;"> Force de traction :<br>
+          <strong style="color: black;font-size: 18px;"> 50 N</strong>
+        </td>
+        <td style="font-size: 13px;">Hauteur de sertissage <br>
+          <strong style="color: red;font-size: 18px;">CH : 11 - 10.85</strong>
+        </td>    
+        <td style="font-size: 13px;">
+          Segment / année<br>
+          {{segmentUser}} /  {{ getAnnee(0) ?? '' }}        
+        </td>
+        <td style="font-size: 13px;">
+          Page : <br>
+          
+        </td>
+      </tr>
+  </table>
+   
+    </div>
+      <div id="idHauteurCote1">
+        <span id="text"> Hauteur Sertissage :<br>&nbsp;&nbsp;&nbsp;&nbsp; Coté 1</span>
+        <apx-chart 
+        [series]="chartCote1Hauteur.series"
+        [chart]="chartCote1Hauteur.chart"
+        [xaxis]="chartCote1Hauteur.xaxis"
+        [yaxis]="chartCote1Hauteur.yaxis"
+        [stroke]="chartCote1Hauteur.stroke"
+        [dataLabels]="chartCote1Hauteur.dataLabels"
+        [markers]="chartCote1Hauteur.markers"
+        [tooltip]="chartCote1Hauteur.tooltip"
+        [annotations]="chartCote1Hauteur.annotations"
+        [fill]="chartCote1Hauteur.fill"
+        [legend]="chartCote1Hauteur.legend"
+          style="margin-left: 80px;
+                  position: absolute;
+                  width: 1171px;
+                  margin-top: -40px;" 
+        ></apx-chart>
+      </div>
+      <div id="idHauteurCote1">
+        <span id="text"> Hauteur Sertissage :<br> &nbsp;&nbsp;&nbsp;&nbsp;Coté 2</span>
+        <apx-chart 
+        [series]="chartCote1Hauteur.series"
+        [chart]="chartCote1Hauteur.chart"
+        [xaxis]="chartCote1Hauteur.xaxis"
+        [yaxis]="chartCote1Hauteur.yaxis"
+        [stroke]="chartCote1Hauteur.stroke"
+        [dataLabels]="chartCote1Hauteur.dataLabels"
+        [markers]="chartCote1Hauteur.markers"
+        [tooltip]="chartCote1Hauteur.tooltip"
+        [annotations]="chartCote1Hauteur.annotations"
+        [fill]="chartCote1Hauteur.fill"
+        [legend]="chartCote1Hauteur.legend"
+          style="margin-left: 80px;
+                  position: absolute;
+                  width: 1171px;
+                  margin-top: -40px;" 
+        ></apx-chart>
+      </div>
+      <div id="idHauteurCote2">
+        <span id="text"> Force de traction :<br>&nbsp;&nbsp;&nbsp;&nbsp;Coté 1</span>
+        <apx-chart 
+        [series]="chartCote1Traction.series"
+        [chart]="chartCote1Traction.chart"
+        [xaxis]="chartCote1Traction.xaxis"
+        [yaxis]="chartCote1Traction.yaxis"
+        [stroke]="chartCote1Traction.stroke"
+        [dataLabels]="chartCote1Traction.dataLabels"
+        [markers]="chartCote1Traction.markers"
+        [tooltip]="chartCote1Traction.tooltip"
+        [annotations]="chartCote1Traction.annotations"
+        [fill]="chartCote1Traction.fill"
+        [legend]="chartCote1Traction.legend"
+          style="margin-left: 80px;
+                  position: absolute;
+                  width: 1171px;
+                  margin-top: -40px;"
+        ></apx-chart>
+      </div>
+    <div id="idHauteurCote2">
+        <span id="text"> Force de traction :<br> 
+          &nbsp;&nbsp;&nbsp;&nbsp;Coté 2</span>
+        <apx-chart 
+        [series]="chartCote2Traction.series"
+        [chart]="chartCote2Traction.chart"
+        [xaxis]="chartCote2Traction.xaxis"
+        [yaxis]="chartCote2Traction.yaxis"
+        [stroke]="chartCote2Traction.stroke"
+        [dataLabels]="chartCote2Traction.dataLabels"
+        [markers]="chartCote2Traction.markers"
+        [tooltip]="chartCote2Traction.tooltip"
+        [annotations]="chartCote2Traction.annotations"
+        [fill]="chartCote2Traction.fill"
+        [legend]="chartCote2Traction.legend"
+          style="margin-left: 80px;
+                  position: absolute;
+                  width: 1171px;
+                  margin-top: -40px;"
+        ></apx-chart>
+      </div>
+   
+      <div class="tables-wrapper" >
+       <!-- TABLEAU PRINCIPAL -->
+<table class="main-table">
+  <thead>
+    <tr>
+      <th *ngFor="let _ of [].constructor(8)" style="border: none; background: transparent;"></th>
+      <ng-container *ngFor="let group of eight; let groupIndex = index">
+        <th><span style="margin-left:-7px;">Ech 1</span></th>
+        <th><span style="margin-left:-7px;">Ech 2</span></th>
+        <th><span style="margin-left:-7px;">Ech 3</span></th>
+        <th><span style="margin-left:-7px;">Fin</span></th>
+      </ng-container>
+    </tr>
+  </thead>
+  
+  
+  <tbody>
+    <!-- Première ligne : Titre des échantillons -->
+
+  
+    <!-- Deuxième ligne : Valeurs de C1 -->
+    <tr>
+      <th id="gras">C1</th>
+      <th colspan="7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hauteur de sertissage (mm)</th>
+      <ng-container *ngFor="let group of eight; let col = index">
+        <td>{{ getValeurC1(0, col) ?? '' }}</td>
+        <td>{{ getValeurC1(1, col) ?? '' }}</td>
+        <td>{{ getValeurC1(2, col) ?? '' }}</td>
+        <td>{{ getValeurC1( 3, col) ?? '' }}</td>
+      </ng-container>
+    </tr>
+  
+    <!-- Troisième ligne : Valeurs de C2 (si besoin) -->
+    <tr>
+      <th id="gras">C2</th>
+      <th colspan="7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hauteur de sertissage (mm)</th>
+      <ng-container *ngFor="let group of eight; let col = index">
+        <td>{{ getValeurC2( 0, col) ?? '' }}</td>
+        <td>{{ getValeurC2( 1, col) ?? '' }}</td>
+        <td>{{ getValeurC2( 2, col) ?? '' }}</td>
+        <td>{{ getValeurC2( 3, col) ?? '' }}</td>
+      </ng-container>
+    </tr>
+  
+    <tr>
+      <th id="gras">C1</th>
+      <th colspan="7">&nbsp;Force de traction N</th>
+      <ng-container *ngFor="let group of eight; let col = index">
+        <td>{{ getTractionC1(0, col) ?? '' }}</td>
+        <td>{{ getTractionC1( 1, col) ?? '' }}</td>
+        <td>{{ getTractionC1( 2, col) ?? '' }}</td>
+        <td>{{ getTractionC1( 3, col) ?? '' }}</td>
+      </ng-container>
+    </tr>
+  
+    <!-- Troisième ligne : Valeurs de C2 (si besoin) -->
+    <tr>
+      <th id="gras">C2</th>
+      <th colspan="7">&nbsp;Force de traction N</th>
+      <ng-container *ngFor="let group of eight; let col = index">
+        <td>{{ getTractionC2(page, 0, col) ?? '' }}</td>
+        <td>{{ getTractionC2(page, 1, col) ?? '' }}</td>
+        <td>{{ getTractionC2(page, 2, col) ?? '' }}</td>
+        <td>{{ getTractionC2(page, 3, col) ?? '' }}</td>
+      </ng-container>
+    </tr>
+ 
+    
+  <tr class="gris-background">
+    <th id="gras" colspan="8">N° de Cycle</th>
+    <td *ngFor="let i of [].constructor(8); let idx = index" colspan="4" id="gras">
+      {{ idx + 1 }}
+    </td>
+  </tr>
+
+  <tr>
+    <th id="gras" colspan="8">Code </th>
+    <td *ngFor="let i of eight; let col = index" colspan="4">
+      {{ getCode( col) ?? '' }}
+    </td>
+  </tr>
+
+  <tr>
+    <th  id="gras" colspan="8">Produit </th>
+    <td *ngFor="let i of eight; let col = index" colspan="4">
+      {{ getProduit(col) ?? '' }}
+    </td>
+  </tr>
+
+  <tr>
+    <th id="gras" colspan="8">Série Produit</th>
+    <td *ngFor="let i of eight; let col = index" colspan="4">
+      {{ getSerieProduit(col) ?? '' }}
+    </td>
+  </tr>
+
+  <tr>
+    <th id="gras" colspan="8">Quantité Cycle</th>
+    <td *ngFor="let i of eight; let col = index" colspan="4">
+      {{ getQuantiteCycle( col) ?? '' }}
+    </td>
+  </tr>
+
+  <tr>
+    <th id="gras" colspan="8">N° machine</th>
+    <td *ngFor="let i of eight; let col = index" colspan="4">
+      {{ getNumMachine( col) ?? '' }}
+    </td>
+  </tr>
+
+  <tr>
+    <th id="gras" colspan="8">Date </th>
+    <td *ngFor="let i of eight; let col = index" colspan="4">
+      {{ getDate(col) ?? '' }}
+    </td>
+  </tr>
+  <tr>
+    <th id="gras" colspan="8">Opérateur </th>
+    <td *ngFor="let i of eight; let col = index" colspan="4">
+      <ng-container *ngIf="sertissages[col] as sertissage">
+        <button 
+          (click)="onValiderSertissage(sertissage.id)" 
+          *ngIf="sertissage.decision === 0 && !pistoletsValides.has(sertissage.id)" 
+          class="custom-check-button">
+          <i class="fa fa-check"></i>
+        </button>
+        <span *ngIf="sertissage.decision === 1 || pistoletsValides.has(sertissage.id)">
+          {{ getOperateur( col) ?? '' }}
+        </span>
+      </ng-container>
+    </td>
+    
+  </tr>
+  </tbody>
+</table>
+       </div>
+       <br>
+       <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
+       (click)="naviger()">Retour à la liste des PDEKs</button>
+    </div>
+    <br>

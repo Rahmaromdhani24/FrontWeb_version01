@@ -102,7 +102,7 @@
                 </mat-header-cell>
                 <mat-cell style="width: 300px;" *matCellDef="let row">
                   <ng-container *ngIf="row.planAction; else noPlan">
-                    <span class="plan-badge" (click)="viewPlanAction(row.planAction.id)">
+                    <span class="plan-badge" (click)="viewPlanAction(row)">
                       <mat-icon>description</mat-icon>
                       Voir
                     </span>
