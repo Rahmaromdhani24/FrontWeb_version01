@@ -21,6 +21,10 @@ import { Soudure } from 'src/app/Modeles/Soudure';
 import { TorsadageService } from 'src/app/services/Agent Qualite Operation Torsadage/torsadage.service';
 import { forkJoin } from 'rxjs';
 import { Torsadage } from 'src/app/Modeles/Torsadage';
+import { SertissageIDC } from 'src/app/Modeles/SertissageIDC';
+import { SertissageNormal } from 'src/app/Modeles/SertissageNormal';
+import { SertissageIDCService } from 'src/app/services/Agent Qualite Operation Sertissage/sertissage-idc.service';
+import { SertissageNormalService } from 'src/app/services/Agent Qualite Operation Sertissage/sertissage-normal.service';
 
 
 @Component({
@@ -42,7 +46,9 @@ export class PageTousNotificationsAllProcessComponent implements OnInit {
 
 constructor(private router : Router , private servicePistolet : PistoletGeneralService ,
   public serviceSoudure : SoudureService ,  public  serviceGeneral : GeneralService ,
-  public serviceTorsadage : TorsadageService ){}
+  public serviceTorsadage : TorsadageService   ,
+  public serviceSertissageIDC : SertissageIDCService  ,
+  public serviceSertissageNormal : SertissageNormalService ){}
 
   matriculeAgentQualite : number ; 
   pistolets: Pistolet[] = [];
@@ -64,14 +70,18 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
     this.serviceGeneral.nbrNotifications=0 ; 
     this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
     this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
-    this.recupererNombreNotificationsTousProcessSaufPistolet() ;  
+    this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesAgentQualite() ;
+    this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesAgentQualite() ;
+    this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet() ;  
   }
   if( this.role =="CHEF_DE_LIGNE"){
       this.serviceGeneral.donnees = [];
       this.serviceGeneral.nbrNotifications=0 ; 
       this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
       this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
-      this.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;   
+      this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesChefDeLigne();
+      this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesChefDeLigne();
+      this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;   
   }
   this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
       
@@ -83,13 +93,10 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
     if (p.typeOperation === 'Soudure') {
       const soudure: Soudure = p as Soudure; // 👈 Pas besoin de passer par JSON
       console.log('Objet Soudure :', soudure);
-  
       const response = {
         pdekId: p.pdekId,
-        pageNumber: p.numPage
-      };
+        pageNumber: p.numPage };     
       console.log('Objet responseApi, id pdek :', response.pdekId, ", numéro de page :", response.pageNumber);
-  
       localStorage.setItem("reponseApi", JSON.stringify(response));
       localStorage.setItem("soudure", JSON.stringify(soudure)); // Ici on stringify directement
       this.router.navigate(['/pdekSoudure']);
@@ -98,16 +105,35 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
     if (p.typeOperation === 'Torsadage') {
       const torsadage: Torsadage = p as Torsadage; // 👈 Pas besoin de passer par JSON
       console.log('Objet Torsadage :', torsadage);
-  
       const response = {
         pdekId: p.pdekId,
-        pageNumber: p.numPage
-      };
+        pageNumber: p.numPage };   
       console.log('Objet responseApi, id pdek :', response.pdekId, ", numéro de page :", response.pageNumber);
-  
       localStorage.setItem("reponseApi", JSON.stringify(response));
       localStorage.setItem("torsadage", JSON.stringify(torsadage)); // Ici on stringify directement
       this.router.navigate(['/pdekTorsadage']);
+    }
+    if (p.typeOperation === 'SertissageIDC') {
+      const sertissage: SertissageIDC = p as SertissageIDC; // 👈 Pas besoin de passer par JSON
+      console.log('Objet sertissage :', sertissage);
+      const response = {
+        pdekId: p.pdekId,
+        pageNumber: p.numPage };   
+      console.log('Objet responseApi, id pdek :', response.pdekId, ", numéro de page :", response.pageNumber);
+      localStorage.setItem("reponseApi", JSON.stringify(response));
+      localStorage.setItem("sertissage", JSON.stringify(sertissage)); // Ici on stringify directement
+      this.router.navigate(['/pdekSertissageIDC']);
+    }
+    if (p.typeOperation === 'SertissageNormal') {
+      const sertissage: SertissageNormal= p as SertissageNormal; // 👈 Pas besoin de passer par JSON
+      console.log('Objet sertissage :', sertissage);
+      const response = {
+        pdekId: p.pdekId,
+        pageNumber: p.numPage };   
+      console.log('Objet responseApi, id pdek :', response.pdekId, ", numéro de page :", response.pageNumber);
+      localStorage.setItem("reponseApi", JSON.stringify(response));
+      localStorage.setItem("sertissage", JSON.stringify(sertissage)); // Ici on stringify directement
+      this.router.navigate(['/pdekSertissage']);
     }
   }
   
@@ -116,7 +142,100 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
           if(donnee.typeOperation ==='Soudure'){
           this.serviceSoudure.validerSoudure (donnee.id, this.matriculeAgentQualite).subscribe({
             next: () => {
-              this.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              console.log('Pdek validé avec succès');
+              this.pistoletsValides.add(donnee.id); 
+             this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
+
+              Swal.fire({
+                title: 'Confirmation !',
+                text: 'Pdek validé avec succès.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                  popup: 'custom-popup',
+                  title: 'custom-title',
+                  confirmButton: 'custom-confirm-button'
+                }
+              });
+            },
+            error: (err) => {
+              console.error('Erreur lors de la validation :', err);
+              Swal.fire({
+                title: 'Erreur',
+                text: 'Erreur lors de la validation',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          });
+        }
+        if(donnee.typeOperation ==='Torsadage'){
+          this.serviceTorsadage.validerTorsadage (donnee.id, this.matriculeAgentQualite).subscribe({
+            next: () => {
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              console.log('Pdek validé avec succès');
+              this.pistoletsValides.add(donnee.id); 
+             this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
+
+              Swal.fire({
+                title: 'Confirmation !',
+                text: 'Pdek validé avec succès.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                  popup: 'custom-popup',
+                  title: 'custom-title',
+                  confirmButton: 'custom-confirm-button'
+                }
+              });
+            },
+            error: (err) => {
+              console.error('Erreur lors de la validation :', err);
+              Swal.fire({
+                title: 'Erreur',
+                text: 'Erreur lors de la validation',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          });
+        }
+        if(donnee.typeOperation ==='SertissageIDC'){
+          this.serviceSertissageIDC.validerSertissageIDC (donnee.id, this.matriculeAgentQualite).subscribe({
+            next: () => {
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              console.log('Pdek validé avec succès');
+              this.pistoletsValides.add(donnee.id); 
+             this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
+
+              Swal.fire({
+                title: 'Confirmation !',
+                text: 'Pdek validé avec succès.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                  popup: 'custom-popup',
+                  title: 'custom-title',
+                  confirmButton: 'custom-confirm-button'
+                }
+              });
+            },
+            error: (err) => {
+              console.error('Erreur lors de la validation :', err);
+              Swal.fire({
+                title: 'Erreur',
+                text: 'Erreur lors de la validation',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          });
+        }
+        if(donnee.typeOperation ==='SertissageNormal'){
+          this.serviceSertissageNormal.validerSertissageNormal(donnee.id, this.matriculeAgentQualite).subscribe({
+            next: () => {
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
               console.log('Pdek validé avec succès');
               this.pistoletsValides.add(donnee.id); 
              this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
@@ -211,78 +330,43 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
       });
     }
    
-   recupererNombreNotificationsTousProcessSaufPistoletAgentQualite() {
-      forkJoin([
-        this.serviceSoudure.getNombreNotificationsAgentQualitePourValidation(),
-        this.serviceTorsadage.getNombreNotificationsAgentQualitePourValidation()
-      ]).subscribe({
-        next: ([countSoudure, countTorsadage]) => {
-          this.serviceGeneral.nbrNotifications = countSoudure + countTorsadage;
-          console.log('Total notifications :', this.serviceGeneral.nbrNotifications);
-        },
-        error: (err: any) => {
-          console.error('Erreur lors de la récupération des notifications :', err);
-        }
-      });
-    }
-  
+   
     genererMessageEtatAllProcess(etat: string): string {
       switch (etat) {
         case 'vert':
-          return 'Attente de votre validation immédiate.';
+          return ', Attente de votre validation immédiate.';
         case 'jaune':
-          return 'Zone jaune détectée : une vérification peut être nécessaire.';
+          return ' , Zone jaune détectée : une vérification peut être nécessaire.';
         case 'rouge':
-          return 'Zone rouge détectée : intervention immédiate requise.';
+          return ' , Zone rouge détectée : intervention immédiate requise.';
         default:
           return 'État inconnu.';
       }
     }
 
-        creerPlanActionAllProcess(p: any) {
-          if (p.typeOperation === 'Soudure') {
-          const soudure: Soudure = p as Soudure;
-          localStorage.setItem("DonneePlanAction", JSON.stringify(soudure));    
-          this.router.navigate(['/ui-components/addPlanActionSoudure']);
-        }
-        if (p.typeOperation === 'Torsadage') {
-          const torsadage: Torsadage = p as Torsadage;
-          localStorage.setItem("DonneePlanAction", JSON.stringify(torsadage));    
-          this.router.navigate(['/ui-components/addPlanActionTorsadage']);
-        }
+  creerPlanActionAllProcess(p: any) {
+  if (p.typeOperation === 'Soudure') {
+        const soudure: Soudure = p as Soudure;
+        localStorage.setItem("DonneePlanAction", JSON.stringify(soudure));    
+        this.router.navigate(['/ui-components/addPlanActionSoudure']);
       }
+      if (p.typeOperation === 'Torsadage') {
+        const torsadage: Torsadage = p as Torsadage;
+        localStorage.setItem("DonneePlanAction", JSON.stringify(torsadage));    
+        this.router.navigate(['/ui-components/addPlanActionTorsadage']);
+      }
+      if (p.typeOperation === 'SertissageIDC') {
+        const sertissage: SertissageIDC = p as SertissageIDC;
+        localStorage.setItem("DonneePlanAction", JSON.stringify(sertissage));    
+        this.router.navigate(['/ui-components/addPlanActionSertissageIDC']);
+      }
+      if (p.typeOperation === 'SertissageNormal') {
+        const sertissage: SertissageNormal = p as SertissageNormal;
+        localStorage.setItem("DonneePlanAction", JSON.stringify(sertissage));    
+        this.router.navigate(['/ui-components/addPlanActionSertissageNormal']);
+      }
+}
 
-      
-        recupererNombreNotificationsTousProcessSaufPistoletChefLigne(){
-          forkJoin([
-            this.serviceSoudure.getNombreNotificationsChefDeLigne(),
-            this.serviceTorsadage.getNombreNotificationsChefDeLigne()
-          ]).subscribe({
-            next: ([countSoudure, countTorsadage]) => {
-              this.serviceGeneral.nbrNotifications = countSoudure + countTorsadage;
-              console.log('Total notifications :', this.serviceGeneral.nbrNotifications);
-            },
-            error: (err: any) => {
-              console.error('Erreur lors de la récupération des notifications :', err);
-            }
-          });
-        }
-        recupererNombreNotificationsTousProcessSaufPistolet() {
-          forkJoin([
-            this.serviceSoudure.getNombreNotificationsAgentQualitePourValidation(),
-            this.serviceTorsadage.getNombreNotificationsAgentQualitePourValidation()
-          ]).subscribe({
-            next: ([countSoudure, countTorsadage]) => {
-              this.serviceGeneral.nbrNotifications = countSoudure + countTorsadage;
-              console.log('Total notifications :', this.serviceGeneral.nbrNotifications);
-            },
-            error: (err: any) => {
-              console.error('Erreur lors de la récupération des notifications :', err);
-            }
-          });
-        }
-
-          
         
     logout(){
       localStorage.clear() ;

@@ -42,5 +42,35 @@ export class ChefLigneService {
   
     return this.http.post(url, details, { headers });
   }
+
+
+  private baseUrlAjouterPlanActionSertissage = 'http://localhost:8281/planAction/addPlanActionSertissageNormal';
+  ajouterPlanActionSertissageNormal(pdekId: number, numeroPage: number, userId: number, 
+                    id: number, details: DetailsPlanAction): Observable<any> {
+    const url = `${this.baseUrlAjouterPlanActionSertissage}/${pdekId}/${numeroPage}/${userId}/${id}`;
+    const token = localStorage.getItem('token'); // Assure-toi que le token est bien stocké
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(url, details, { headers });
+  }
+
+
+  private baseUrlAjouterPlanActionSertissageIDC= 'http://localhost:8281/planAction/addPlanActionSertissageIDC';
+  ajouterPlanActionSertissageIDC(pdekId: number, numeroPage: number, userId: number, 
+                    id: number, details: DetailsPlanAction): Observable<any> {
+    const url = `${this.baseUrlAjouterPlanActionSertissageIDC}/${pdekId}/${numeroPage}/${userId}/${id}`;
+    const token = localStorage.getItem('token'); // Assure-toi que le token est bien stocké
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  
+    return this.http.post(url, details, { headers });
+  }
   
 }

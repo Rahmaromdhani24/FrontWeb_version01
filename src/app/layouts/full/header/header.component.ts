@@ -24,6 +24,10 @@ import { GeneralService } from 'src/app/services/Géneral/general.service';
 import { SoudureService } from 'src/app/services/Agent Qualité Operation Soudure/soudure.service';
 import { TorsadageService } from 'src/app/services/Agent Qualite Operation Torsadage/torsadage.service';
 import { forkJoin } from 'rxjs';
+import { SertissageNormal } from 'src/app/Modeles/SertissageNormal';
+import { SertissageIDC } from 'src/app/Modeles/SertissageIDC';
+import { SertissageIDCService } from 'src/app/services/Agent Qualite Operation Sertissage/sertissage-idc.service';
+import { SertissageNormalService } from 'src/app/services/Agent Qualite Operation Sertissage/sertissage-normal.service';
 
 export interface Notification {
     processName: string;  
@@ -58,7 +62,9 @@ export class HeaderComponent  implements OnInit{
 
   constructor(private router : Router , private servicePistolet : PistoletGeneralService , 
               public  serviceGeneral : GeneralService , public serviceSoudure : SoudureService ,
-              public serviceTorsadage : TorsadageService ){}
+              public serviceTorsadage : TorsadageService  , 
+              public serviceSertissageIDC : SertissageIDCService  ,
+              public serviceSertissageNormal : SertissageNormalService ){}
   matriculeAgentQualite : number ; 
   pistolets: Pistolet[] = [];
   role : string | null ; 
@@ -121,14 +127,18 @@ export class HeaderComponent  implements OnInit{
       this.serviceGeneral.nbrNotifications=0 ; 
       this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
       this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
-      this.recupererNombreNotificationsTousProcessSaufPistolet() ;  
+      this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesAgentQualite() ;
+      this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesAgentQualite() ;
+      this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet() ;  
     }
     if( this.role =="CHEF_DE_LIGNE"){
-      this.serviceGeneral.donnees = [];
-      this.serviceGeneral.nbrNotifications=0 ; 
-      this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
-      this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
-      this.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;   
+        this.serviceGeneral.donnees = [];
+        this.serviceGeneral.nbrNotifications=0 ; 
+        this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
+        this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
+        this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesChefDeLigne();
+        this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesChefDeLigne();
+        this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;   
     }
     this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
    
@@ -153,21 +163,7 @@ export class HeaderComponent  implements OnInit{
     });
   }
 
-  
-  recupererNombreNotificationsTousProcessSaufPistoletChefLigne(){
-    forkJoin([
-      this.serviceSoudure.getNombreNotificationsChefDeLigne(),
-      this.serviceTorsadage.getNombreNotificationsChefDeLigne()
-    ]).subscribe({
-      next: ([countSoudure, countTorsadage]) => {
-        this.serviceGeneral.nbrNotifications = countSoudure + countTorsadage;
-        console.log('Total notifications :', this.serviceGeneral.nbrNotifications);
-      },
-      error: (err: any) => {
-        console.error('Erreur lors de la récupération des notifications :', err);
-      }
-    });
-  }
+
 
   recupererNombreNotificationsTechnicien(){
     this.servicePistolet.getNombreNotificationsTechniciens().subscribe({
@@ -181,20 +177,6 @@ export class HeaderComponent  implements OnInit{
     });
   }
 
-  recupererNombreNotificationsTousProcessSaufPistolet() {
-    forkJoin([
-      this.serviceSoudure.getNombreNotificationsAgentQualitePourValidation(),
-      this.serviceTorsadage.getNombreNotificationsAgentQualitePourValidation()
-    ]).subscribe({
-      next: ([countSoudure, countTorsadage]) => {
-        this.serviceGeneral.nbrNotifications = countSoudure + countTorsadage;
-        console.log('Total notifications :', this.serviceGeneral.nbrNotifications);
-      },
-      error: (err: any) => {
-        console.error('Erreur lors de la récupération des notifications :', err);
-      }
-    });
-  }
 
   get pistoletsNonValides() {
     return this.serviceGeneral.pistolets.filter(p => !this.pistoletsValides.has(p.id));
@@ -216,11 +198,11 @@ export class HeaderComponent  implements OnInit{
   genererMessageEtatAllProcess(etat: string): string {
     switch (etat) {
       case 'vert':
-        return 'Attente de votre validation immédiate.';
+        return ', Attente de votre validation immédiate.';
       case 'jaune':
-        return 'Zone jaune détectée : une vérification peut être nécessaire.';
+        return ' , Zone jaune détectée : une vérification peut être nécessaire.';
       case 'rouge':
-        return 'Zone rouge détectée : intervention immédiate requise.';
+        return ' , Zone rouge détectée : intervention immédiate requise.';
       default:
         return 'État inconnu.';
     }
@@ -343,6 +325,28 @@ export class HeaderComponent  implements OnInit{
            localStorage.setItem("torsadage", JSON.stringify(torsadage)); // Ici on stringify directement
            this.router.navigate(['/pdekTorsadage']);
          }
+  if (p.typeOperation === 'SertissageIDC') {
+        const sertissage: SertissageIDC = p as SertissageIDC; // 👈 Pas besoin de passer par JSON
+        console.log('Objet sertissage :', sertissage);
+        const response = {
+          pdekId: p.pdekId,
+          pageNumber: p.numPage };   
+        console.log('Objet responseApi, id pdek :', response.pdekId, ", numéro de page :", response.pageNumber);
+        localStorage.setItem("reponseApi", JSON.stringify(response));
+        localStorage.setItem("sertissage", JSON.stringify(sertissage)); // Ici on stringify directement
+        this.router.navigate(['/pdekSertissageIDC']);
+      }
+      if (p.typeOperation === 'SertissageNormal') {
+        const sertissage: SertissageNormal= p as SertissageNormal;
+        console.log('Objet sertissage :', sertissage);
+        const response = {
+          pdekId: p.pdekId,
+          pageNumber: p.numPage };   
+        console.log('Objet responseApi, id pdek :', response.pdekId, ", numéro de page :", response.pageNumber);
+        localStorage.setItem("reponseApi", JSON.stringify(response));
+        localStorage.setItem("sertissage", JSON.stringify(sertissage)); // Ici on stringify directement
+        this.router.navigate(['/pdekSertissage']);
+      }
     }
     creerPlanActionAllProcess(p: any) {
       if (p.typeOperation === 'Soudure') {
@@ -354,6 +358,16 @@ export class HeaderComponent  implements OnInit{
       const torsadage: Torsadage = p as Torsadage;
       localStorage.setItem("DonneePlanAction", JSON.stringify(torsadage));    
       this.router.navigate(['/ui-components/addPlanActionTorsadage']);
+    }
+    if (p.typeOperation === 'SertissageIDC') {
+      const sertissage: SertissageIDC = p as SertissageIDC;
+      localStorage.setItem("DonneePlanAction", JSON.stringify(sertissage));    
+      this.router.navigate(['/ui-components/addPlanActionSertissageIDC']);
+    }
+    if (p.typeOperation === 'SertissageNormal') {
+      const sertissage: SertissageNormal = p as SertissageNormal;
+      localStorage.setItem("DonneePlanAction", JSON.stringify(sertissage));    
+      this.router.navigate(['/ui-components/addPlanActionSertissageNormal']);
     }
   }
       validerPdekPistolet(pistoletId: number) {
@@ -432,7 +446,7 @@ export class HeaderComponent  implements OnInit{
            if(donnee.typeOperation ==='Soudure'){
            this.serviceSoudure.validerSoudure (donnee.id, this.matriculeAgentQualite).subscribe({
              next: () => {
-               this.recupererNombreNotificationsTousProcessSaufPistolet();
+               this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
                console.log('Pdek validé avec succès');
                this.pistoletsValides.add(donnee.id); 
               this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
@@ -460,6 +474,99 @@ export class HeaderComponent  implements OnInit{
              }
            });
          }
+         if(donnee.typeOperation ==='Torsadage'){
+          this.serviceTorsadage.validerTorsadage (donnee.id, this.matriculeAgentQualite).subscribe({
+            next: () => {
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              console.log('Pdek validé avec succès');
+              this.pistoletsValides.add(donnee.id); 
+             this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
+
+              Swal.fire({
+                title: 'Confirmation !',
+                text: 'Pdek validé avec succès.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                  popup: 'custom-popup',
+                  title: 'custom-title',
+                  confirmButton: 'custom-confirm-button'
+                }
+              });
+            },
+            error: (err) => {
+              console.error('Erreur lors de la validation :', err);
+              Swal.fire({
+                title: 'Erreur',
+                text: 'Erreur lors de la validation',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          });
+        }
+        if(donnee.typeOperation ==='SertissageIDC'){
+          this.serviceSertissageIDC.validerSertissageIDC (donnee.id, this.matriculeAgentQualite).subscribe({
+            next: () => {
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              console.log('Pdek validé avec succès');
+              this.pistoletsValides.add(donnee.id); 
+             this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
+
+              Swal.fire({
+                title: 'Confirmation !',
+                text: 'Pdek validé avec succès.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                  popup: 'custom-popup',
+                  title: 'custom-title',
+                  confirmButton: 'custom-confirm-button'
+                }
+              });
+            },
+            error: (err) => {
+              console.error('Erreur lors de la validation :', err);
+              Swal.fire({
+                title: 'Erreur',
+                text: 'Erreur lors de la validation',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          });
+        }
+        if(donnee.typeOperation ==='SertissageNormal'){
+          this.serviceSertissageNormal.validerSertissageNormal (donnee.id, this.matriculeAgentQualite).subscribe({
+            next: () => {
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              console.log('Pdek validé avec succès');
+              this.pistoletsValides.add(donnee.id); 
+             this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
+
+              Swal.fire({
+                title: 'Confirmation !',
+                text: 'Pdek validé avec succès.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                customClass: {
+                  popup: 'custom-popup',
+                  title: 'custom-title',
+                  confirmButton: 'custom-confirm-button'
+                }
+              });
+            },
+            error: (err) => {
+              console.error('Erreur lors de la validation :', err);
+              Swal.fire({
+                title: 'Erreur',
+                text: 'Erreur lors de la validation',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          });
+        }
          }
     logout(){
       localStorage.clear() ;

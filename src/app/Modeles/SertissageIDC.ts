@@ -29,4 +29,7 @@ export interface SertissageIDC{
     rempliePlanAction: number;
     pdekId : number ;
     numPage : number ; 
+    zone : string ; 
+    heureCreation  : string ;
+
 }  

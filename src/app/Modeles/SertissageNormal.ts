@@ -5,6 +5,7 @@ export interface SertissageNormal{
   numOutil: string;
   numContact: string;
   date: string;
+  heureCreation: string;
   numCycle: number;
   userSertissageNormal: number;
   hauteurSertissageEch1: number;
@@ -28,4 +29,6 @@ export interface SertissageNormal{
   rempliePlanAction: number;
   pdekId : number ;
   numPage : number ; 
+  PGD : string ; 
+  zone : string ; 
 }

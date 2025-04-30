@@ -722,7 +722,7 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
   }
    naviger(){
     localStorage.removeItem('reponseApi')
-    this.router.navigate(['/ui-components/listePdekTousProcess']);
+    this.router.navigate(['/dashboard']);
   }
 
   extraireValeurNumerique(spec: string): number {

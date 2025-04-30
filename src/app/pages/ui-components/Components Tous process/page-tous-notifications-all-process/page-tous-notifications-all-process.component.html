@@ -11,28 +11,54 @@
         <div *ngFor="let p of serviceGeneral.donnees; let last = last">
           <div class="notification-row">
             <div class="message">
-              <p>
-                  Dans le processus <strong style="color:red">{{p.typeOperation}}</strong>,
-                  le PDEK de la section <strong style="color: rgb(9, 155, 9);">{{p.sectionFil}}</strong> 
-                  sur la machine <strong>{{p.numeroMachine}} </strong> ,
-                  dans la segment <strong>{{ p.segment}}</strong> de plant
-                  <strong>{{p.plant}}</strong>  , 
-                  est en attente de votre validation immédiate.  
-                </p>
-                <small class="time">{{ getDifferenceFromNowAll(p) }}</small>
-              </div>
-              <div class="actions">
-                <button mat-flat-button color="primary" (click)="voirPdek(p)">
-                  Voir PDEK
-                </button>
-                <button
-                  mat-flat-button
-                  color="accent"
-                  class="bg-success text-white"
-                  (click)="valider(p)">
-                  Valider PDEK
-                </button>
-              </div>
+              
+          <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Soudure'">
+            Dans le processus <strong style="color:red;">Soudure </strong>,le PDEK de la section
+            <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+            sur la machine<strong>{{p.numeroMachine}} </strong> ,
+            dans la segment<strong>{{ p.segment}}</strong> de plant
+            <strong>{{p.plant}}</strong>   
+            <span>, est en attente de votre validation immédiate.</span>
+          </p>
+          <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Torsadage'">
+            Dans le processus <strong style="color:red;"> Torsadage</strong>,le PDEK de la 
+            spécification de mesure <strong style="color: rgb(12, 160, 12);">
+          {{ p.sectionFil }}&nbsp;&nbsp;</strong> 
+          sur la machine<strong>{{p.numeroMachine}}</strong> ,
+          dans la segment<strong>{{ p.segment}}</strong> de plant
+          <strong>{{p.plant}}</strong> <span>, est en attente de votre validation immédiate.</span>
+          </p>
+          <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'SertissageIDC'">
+            Dans le processus <strong style="color:red;">Sertissage IDC </strong>,le PDEK de la section
+            <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+            sur la machine<strong>{{p.numeroMachine}} </strong> ,
+            dans la segment<strong>{{ p.segment}}</strong> de plant
+            <strong>{{p.plant}}</strong>  
+            <span>, est en attente de votre validation immédiate.</span>
+          </p>
+          <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'SertissageNormal'">
+            Dans le processus <strong style="color:red;">Sertissage  </strong> , le PDEK de la section
+            <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+            sur la machine<strong>{{p.numeroMachine}} </strong> ,
+            dans la segment<strong>{{ p.segment}}</strong> de plant
+            <strong>{{p.plant}}</strong>  
+            <span>, est en attente de votre validation immédiate.</span>
+          </p>
+
+          <small class="time">{{ getDifferenceFromNowAll(p) }}</small>
+        </div>
+        <div class="actions">
+          <button mat-flat-button color="primary" (click)="voirPdek(p)">
+            Voir PDEK
+          </button>
+          <button
+            mat-flat-button
+            color="accent"
+            class="bg-success text-white"
+            (click)="valider(p)">
+            Valider PDEK
+          </button>
+        </div>
             </div> <!-- Fermeture de notification-row -->
   
             <hr *ngIf="!last" />
@@ -66,16 +92,49 @@
           <div *ngFor="let p of serviceGeneral.donnees; let last = last">
             <div class="notification-row">
               <div class="message">
-                <p>
+                <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Soudure'">
+                  Dans le processus  <strong style="color:red;">{{ p.typeOperation }}</strong> , le PDEK de la section 
+                  <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+                  sur la machine <strong>{{p.numeroMachine}} </strong> ,
+                  dans la segment <strong>{{ p.segment}}</strong> de plant
+                  <strong>{{p.plant}}</strong>   
+                  <span>{{ genererMessageEtatAllProcess(p.zone) }}</span>
+                </p>
+                <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Torsadage'">
+                  Dans le processus  <strong style="color:red;">Torsadage</strong> , le PDEK de la spécification de mesure 
+                  <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+                  sur la machine <strong>{{p.numeroMachine}} </strong> ,
+                  dans la segment <strong>{{ p.segment}}</strong> de plant
+                  <strong>{{p.plant}}</strong>  
+                  <span>{{ genererMessageEtatAllProcess(p.zone) }}</span>
+                </p>
+                <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'SertissageNormal' ">
+                  Dans le processus  <strong style="color:red;">Sertissage</strong>, le PDEK de la section 
+                  <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}</strong>
+                  sur la machine <strong>{{p.numeroMachine}} </strong> ,
+                  dans la segment <strong>{{ p.segment}}</strong> de plant
+                  <strong>{{p.plant}}</strong>  
+                  <span>{{ genererMessageEtatAllProcess(p.zone) }}</span>
+                </p>
+                <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'SertissageIDC' ">
+                  Dans le processus  <strong style="color:red;">Sertissage IDC</strong>, le PDEK de la section 
+                  <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}</strong>
+                  sur la machine <strong>{{p.numeroMachine}} </strong> ,
+                  dans la segment <strong>{{ p.segment}}</strong> de plant
+                  <strong>{{p.plant}}</strong>  
+                  <span>{{ genererMessageEtatAllProcess(p.zone) }}</span>
+                </p>
+                <!--p>
                   Dans le processus <strong style="color:red">{{p.typeOperation}}</strong>,
                   le PDEK <span *ngIf="p.typeOperation =='Soudure'">de la section</span>
+                  <span *ngIf="p.typeOperation =='Sertissage_IDC'"> de la section</span>
                   <span *ngIf="p.typeOperation =='Torsadage'">de la spécification de mesure</span>
                     <strong style="color: rgb(9, 155, 9);">{{p.sectionFil}}</strong> 
                   sur la machine <strong>{{p.numeroMachine}} </strong> ,
                   dans la segment <strong>{{ p.segment}}</strong> de plant
                   <strong>{{p.plant}}</strong>  , 
                  <span>{{genererMessageEtatAllProcess(p.zone)}}</span>
-                </p>
+                </p-->
                 <small class="time">{{ getDifferenceFromNowAll(p) }}</small>
               </div>
               <div class="actions">

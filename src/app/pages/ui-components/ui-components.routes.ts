@@ -28,6 +28,8 @@ import { PageTousNotificationsAllProcessComponent } from './Components Tous proc
 import { AddPlanActionSoudureComponent } from './Operation Soudure/add-plan-action-soudure/add-plan-action-soudure.component';
 import { AddPlanActionTorsadageComponent } from './Operation torsadage/add-plan-action-torsadage/add-plan-action-torsadage.component';
 import { ListsPlanActionsTousProcessComponent } from './Components Tous process/lists-plan-actions-tous-process/lists-plan-actions-tous-process.component';
+import { AddPlanActionSertissageNormalComponent } from './Sertissage Normal/add-plan-action-sertissage-normal/add-plan-action-sertissage-normal.component';
+import { AddPlanActionSertissageIDCComponent } from './Sertissage IDC/add-plan-action-sertissage-idc/add-plan-action-sertissage-idc.component';
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -102,6 +104,14 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'addPlanActionTorsadage',
         component: AddPlanActionTorsadageComponent,
+      },
+      {
+        path: 'addPlanActionSertissageIDC',
+        component: AddPlanActionSertissageIDCComponent,
+      },
+      {
+        path: 'addPlanActionSertissageNormal',
+        component: AddPlanActionSertissageNormalComponent,
       },
      /*
       {

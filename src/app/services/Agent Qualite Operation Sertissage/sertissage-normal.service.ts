@@ -1,15 +1,26 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError  , map} from 'rxjs/operators';
 import { NonNullableFormBuilder } from '@angular/forms';
+import { GeneralService } from '../Géneral/general.service';
+import { SertissageNormal } from 'src/app/Modeles/SertissageNormal';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SertissageNormalService {
-  constructor(private http: HttpClient) { }
-
+  private _generalService: GeneralService;
+  
+    constructor(private http: HttpClient ,
+                private injector: Injector ) {}
+  
+  private get general(): GeneralService {
+    if (!this._generalService) {
+      this._generalService = this.injector.get(GeneralService);
+    }
+    return this._generalService;
+  }
   validerSertissageNormal(id: number, matriculeAgent: number) {
       const token = localStorage.getItem('token');
     
@@ -138,5 +149,105 @@ getLargeurIsolant(numeroOutil: string, numeroContact: string, sectionFil: string
   return this.http.get<number>(this.urlChargerTraction + '/largeurSertissage', {headers , params });
 }
 
+   getSertissagesParPdekEtPage(pdekId: number, pageNumber: number): Observable<SertissageNormal[]> {
+              const token = localStorage.getItem('token');   
+              const headers = new HttpHeaders({
+                'Authorization': `Bearer ${token}`  });
+              const params = new HttpParams()
+                .set('pdekId', pdekId)
+                .set('pageNumber', pageNumber);           
+              return this.http.get<SertissageNormal[]>(
+                'http://localhost:8281/operations/SertissageNormal/sertissages-par-pdek-et-page',
+                { headers, params }
+              );
+            }
+            
+  getNombreNotificationsAgentQualitePourValidation(): Observable<number> {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<number>('http://localhost:8281/operations/SertissageNormal/nbrNotificationsAgentsQualite',
+          { headers }
+        );
+      }
+      getNombreNotificationsChefDeLigne(): Observable<number> {
+        const token = localStorage.getItem('token');
+        
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<number>('http://localhost:8281/operations/SertissageNormal/nbrNotificationsChefLigne',
+          { headers }
+        );
+      }
 
+      getSertissagesNormalNonValideesAgentsQualite(): Observable<SertissageNormal[]> {
+        const token = localStorage.getItem('token'); 
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<SertissageNormal[]>('http://localhost:8281/operations/SertissageNormal/sertissages-non-validees-agents-Qualite', { headers });
+      }
+            
+      getSertissagesNormalNonValideesChefDeLigne(): Observable<SertissageNormal[]> {
+        const token = localStorage.getItem('token'); 
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<SertissageNormal[]>('http://localhost:8281/operations/SertissageNormal/sertissages-non-validees-plan-action', { headers });
+      }
+    
+        recupererListeSertissagesIDCNonValidesAgentQualite() {
+          this.getSertissagesNormalNonValideesAgentsQualite().subscribe({
+            next: (data) => {
+              this.general.donnees = this.general.donnees.concat(data);
+              console.error('liste dans service sertissages  :', data);   
+            },
+            error: (err) => {
+              console.error('Erreur lors de la récupération des sertissages :', err);
+            }
+          });
+        }
+
+        recupererListeSertissagesIDCNonValidesChefDeLigne() {
+          this.getSertissagesNormalNonValideesChefDeLigne().subscribe({
+            next: (data) => {
+              this.general.donnees = this.general.donnees.concat(data);
+            },
+            error: (err) => {
+              console.error('Erreur lors de la récupération des sertissages :', err);
+            }
+          });
+        }
+ getSertissagessIDCParPdekEtPage(pdekId: number, pageNumber: number): Observable<SertissageNormal[]> {
+          const token = localStorage.getItem('token'); 
+        
+          const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+          });
+        
+          const params = new HttpParams()
+            .set('pdekId', pdekId.toString())
+            .set('pageNumber', pageNumber.toString());
+        
+          return this.http.get<SertissageNormal[]>(
+            'http://localhost:8281/operations/SertissageNormal/sertissages-par-pdek-et-page',
+            { headers, params }
+          );
+        }
+        
+                       
+              genererMessageEtatAllProcess(etat: string): string {
+                switch (etat) {
+                  case 'vert':
+                    return 'Attente de votre validation immédiate.';
+                  case 'jaune':
+                    return 'Zone jaune détectée : une vérification peut être nécessaire.';
+                  case 'rouge':
+                    return 'Zone rouge détectée : intervention immédiate requise.';
+                  default:
+                    return 'État inconnu.';
+                }
+              }
 }

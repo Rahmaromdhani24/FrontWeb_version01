@@ -277,7 +277,7 @@ export const navItems: NavItem[] = [
     iconName: 'file-text',
     route: '/ui-components/listePlanAction',
     bgcolor: 'primary',
-    roles: ['AGENT_QUALITE_PISTOLET' ,'TECHNICIEN' ,'AGENT_QUALITE'], 	
+    roles: ['AGENT_QUALITE_PISTOLET' ,'TECHNICIEN' ,], 	
 
   }, 
   {

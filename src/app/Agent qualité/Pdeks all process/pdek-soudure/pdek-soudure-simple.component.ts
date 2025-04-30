@@ -723,7 +723,7 @@ public chartOptionsMoyenne: {
   naviger(){
     localStorage.removeItem('reponseApi')
     localStorage.removeItem('soudure')
-    this.router.navigate(['/ui-components/pagesNotificationsAllProcess']);
+    this.router.navigate(['/dashboard']);
   }
 
  }

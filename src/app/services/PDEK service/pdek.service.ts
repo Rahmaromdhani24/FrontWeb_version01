@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ContenuPagePdekDTO } from 'src/app/Modeles/ContenuPagePdekDTO';
 
 @Injectable({
@@ -27,4 +27,14 @@ export class PdekService {
     });
     return this.http.get<any>(`${this.uriPdekGeneral}/${id}`, { headers });
   }
+
+  getContenuParNumeroPage(pdekId: number, numeroPage: number): Observable<ContenuPagePdekDTO[]> {
+    return this.getContenuParPage(pdekId).pipe(
+      map((pages) => {
+        const pageTrouvee = pages.find(page => page.numeroPage === numeroPage);
+        return pageTrouvee ? pageTrouvee.contenu : [];
+      })
+    );
+  }
+  
 }

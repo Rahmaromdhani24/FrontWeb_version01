@@ -5,6 +5,8 @@ import { Pistolet } from 'src/app/Modeles/Pistolet';
 import { forkJoin } from 'rxjs';
 import { TorsadageService } from '../Agent Qualite Operation Torsadage/torsadage.service';
 import { SoudureService } from '../Agent Qualité Operation Soudure/soudure.service';
+import { SertissageIDCService } from '../Agent Qualite Operation Sertissage/sertissage-idc.service';
+import { SertissageNormalService } from '../Agent Qualite Operation Sertissage/sertissage-normal.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,9 @@ export class GeneralService {
 
   constructor(private http: HttpClient ,
               public serviceSoudure : SoudureService , 
-              public serviceTorsadage : TorsadageService) { }
+              public serviceTorsadage : TorsadageService ,
+              public serviceSertissageIDC : SertissageIDCService , 
+              public serviceSertissageNormal : SertissageNormalService ) { }
   nbrNotifications: number ; 
   pistolets: Pistolet[] = [];
   donnees: any[] = [];
@@ -48,26 +52,31 @@ getToken(): string | null {
 
 /*****************************************************************************************************/
 recupererNombreNotificationsTousProcessSaufPistolet() {
-  forkJoin([
-    this.serviceSoudure.getNombreNotificationsAgentQualitePourValidation(),
-    this.serviceTorsadage.getNombreNotificationsAgentQualitePourValidation()
-  ]).subscribe({
-    next: ([countSoudure, countTorsadage]) => {
-      this.nbrNotifications = countSoudure + countTorsadage;
-      console.log('Total notifications :', this.nbrNotifications);
-    },
-    error: (err: any) => {
-      console.error('Erreur lors de la récupération des notifications :', err);
-    }
-  });
-}
+    forkJoin([
+      this.serviceSoudure.getNombreNotificationsAgentQualitePourValidation(),
+      this.serviceTorsadage.getNombreNotificationsAgentQualitePourValidation() ,
+      this.serviceSertissageIDC.getNombreNotificationsAgentQualitePourValidation() ,
+      this.serviceSertissageNormal.getNombreNotificationsAgentQualitePourValidation()
+    ]).subscribe({
+      next: ([countSoudure, countTorsadage , countSertissageIDC , countSertissageNormal]) => {
+        this.nbrNotifications = countSoudure + countTorsadage +countSertissageIDC +countSertissageNormal;
+        console.log('Total notifications :', this.nbrNotifications);
+      },
+      error: (err: any) => {
+        console.error('Erreur lors de la récupération des notifications :', err);
+      }
+    });
+  }
+
 recupererNombreNotificationsTousProcessSaufPistoletChefLigne(){
     forkJoin([
       this.serviceSoudure.getNombreNotificationsChefDeLigne(),
-      this.serviceTorsadage.getNombreNotificationsChefDeLigne()
+      this.serviceTorsadage.getNombreNotificationsChefDeLigne(),
+      this.serviceSertissageIDC.getNombreNotificationsChefDeLigne() ,
+      this.serviceSertissageNormal.getNombreNotificationsChefDeLigne() 
     ]).subscribe({
-      next: ([countSoudure, countTorsadage]) => {
-        this.nbrNotifications = countSoudure + countTorsadage;
+      next: ([countSoudure, countTorsadage , countSertissageIDC ,countSertissageNormal ]) => {
+        this.nbrNotifications = countSoudure + countTorsadage + countSertissageIDC +countSertissageNormal;
         console.log('Total notifications :', this.nbrNotifications);
       },
       error: (err: any) => {

@@ -1,0 +1,364 @@
+body {
+    font-size: 15px; 
+  }
+  .pdf-scroll-wrapper {
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: #f5f5f5;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    
+    .pdf-container {
+      font-size: 10px;
+      position: relative;
+      top: -5px;
+      font-family: Arial, sans-serif;
+      min-width: 1328px;
+      width: 100%;
+      max-width: 100%;
+      min-height: 900px;
+      background: white;
+      padding: 10px;
+      box-sizing: border-box;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    
+    .header {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    
+    .main-title {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
+      position: relative;
+      top: 20px;
+    }
+    
+    .tables-wrapper {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .main-table {
+      border-collapse: collapse;
+      font-size: 10px;
+      min-width: 1306px;
+      width: 1186px;
+      max-width: 100%;
+      height: 265px;
+      min-height: 265px;
+      max-height: 100%;
+      margin-top: 26px;
+      margin-left: 1px;
+    }
+    
+    .main-table th,
+    .main-table td {
+      border: 1px solid #000;
+      width: 30px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    
+    .main-table th {
+      font-weight: bold;
+      width: 50px;
+    }
+    
+    /* Hauteurs personnalisées */
+    .main-table tr:nth-child(1) th,
+    .main-table tr:nth-child(1) td { height: 10px;  width: 230px; }
+    .main-table tr:nth-child(2) td,
+    .main-table tr:nth-child(2) th { height: 22px; }
+    .main-table tr:nth-child(3) td,
+    .main-table tr:nth-child(3) th { height: 22px; }
+    
+    /* Lignes X (5 lignes) */
+    .main-table tr:nth-child(4),
+    .main-table tr:nth-child(5),
+    .main-table tr:nth-child(6),
+    .main-table tr:nth-child(7),
+    .main-table tr:nth-child(8) {
+      height: 18px;
+    }
+    
+    /* Moyenne et étendue */
+    .main-table tr:nth-child(9),
+    .main-table tr:nth-child(10),
+    .main-table tr:nth-child(11) {
+      height: 22px;
+    }
+    
+    /* Numéros */
+    .main-table tr:nth-child(12) {
+      height: 22px;
+    }
+    
+    /*.side-table {
+      border-collapse: collapse;
+      font-size: 10px;
+      margin-top: -649px;
+      height: 701px;
+      margin-left: -1px;
+    }
+    
+    .side-table th,
+    .side-table td {
+      border: 1px solid #000;
+      padding: 3px;
+      text-align: center;
+    }
+    
+    .side-table th {
+      font-weight: bold;
+    }*/
+    #idBorderEtendu{
+      margin-left: 100px;
+      top: 25px;
+      position: relative;
+      border-color: black;
+      border-width: 1px;
+      left: -100px;
+      border-style: solid;
+      width: 1088px;
+      height: 225px;
+     
+    }
+  
+    #idHauteurCote1{
+      margin-left: 100px;
+      top: 27px;
+      position: relative;
+      border-color: black;
+      border-width: 1px;
+      left: -100px;
+      border-style: solid;
+      width: 1308px;
+      height: 383px;
+    } 
+     #idHauteurCote2{
+      margin-left: 100px;
+      top: 27px;
+      position: relative;
+      border-color: black;
+      border-width: 1px;
+      left: -100px;
+      border-style: solid;
+      width: 1308px;
+      height: 180px;
+    }
+    #tableTitre {
+      border-collapse: collapse;
+      width: 100%;
+      text-align: center;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 12px;
+      border: 2px solid black; /* Bordure externe du tableau */
+    }
+    
+    #tableTitre td {
+      border: 2px solid black; /* Bordures internes */
+      padding: 5px;             /* Un peu d’espace pour le texte */
+    }
+    
+    .custom-check-button {
+      background-color: #28a745; /* Vert Bootstrap */
+      border: none;
+      padding: 3px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .custom-check-button i {
+      color: white;
+      font-size: 16px;
+    }
+    
+    .custom-check-button:hover {
+      background-color: #218838; /* Vert plus foncé au survol */
+    }
+    
+    /*******************************************************************************/
+    .loading {
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Loader style */
+    .loader {
+      width: 48px;
+      height: 48px;
+      display: block;
+      margin: 15px auto;
+      position: relative;
+      color: #2c8eec;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite; /* Augmentation de la durée de l'animation rotation à 3 secondes */
+    }
+    .loader::after,
+    .loader::before {
+      content: '';  
+      box-sizing: border-box;
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      top: 50%;
+      left: 50%;
+      transform: scale(0.5) translate(0, 0);
+      background-color: #2c8eec;
+      border-radius: 50%;
+      animation: animloader 3s infinite ease-in-out; /* Augmentation de la durée de l'animation animloader à 3 secondes */
+    }
+    .loader::before {
+      background-color: #000;
+      transform: scale(0.5) translate(-48px, -48px);
+    }
+    
+    @keyframes rotation {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    } 
+    
+    @keyframes animloader {
+      50% {
+        transform: scale(1) translate(-50%, -50%);
+      }
+    }
+    /* END Loader style */
+    #idBorderTableau{
+      position: relative;
+      top: 28px;
+    }
+    
+    #text {
+      font-size: 14px;
+      font-weight: bold;
+      position: relative;
+      top: 50px;
+    }
+    
+    #retourBtn{
+      margin-left: 600px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .styleSpecidication{
+      color: rgb(5, 5, 5);font-weight: bold;
+    }
+    .styleLogoLeoni{
+      font-weight: bold;
+      font-size: 46px;
+      color: #005c96;
+      position: relative;
+      left: 330px;
+      top: 17px;
+    }
+  
+    /***************************************************/
+    /* Wrapper pour le bloc Remarque + tableau */
+  .side-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* Bloc Remarque */
+  #idBorderRemarque {
+    border: 2px solid black;
+    padding: 5px 10px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    height: 110px;
+  }
+  
+  /* Tableau latéral */
+  .side-table {
+    border-collapse: collapse;
+    font-size: 10px;
+    height: 701px;
+    width: 100%;
+    margin-top: -569px;
+    margin-left: -1px;
+    width: 221px;
+  }
+  
+  .side-table th,
+  .side-table td {
+    border: 1px solid #000;
+    padding: 3px;
+    text-align: center;
+    height: 35px;
+  }
+  
+  .side-table th {
+    font-weight: bold;
+  }
+  .highlight {
+    background-color: yellow;
+    font-weight: bold;
+    color: black;  /* Assure-toi que le texte est bien visible avec un bon contraste. */
+  }
+  
+  #gras{
+    font-weight: bold;
+    font-size: 12px;
+  }
+  #deplacement{
+    margin-left: 10px;
+  }
+  .shift-left {
+    margin-left: 10px; /* tu peux ajuster la valeur */
+  }
+  .main-table thead th {
+    padding-left: 10px; /* ajuste ici */
+  }
+  .vertical-text-moyenne {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-weight: bold;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 285px;
+    font-size: 17px;
+    position: relative;
+    top: 53px;
+    left: 25px;
+  }
+  .gris-background {
+    background-color: #f0f0f0;  /* Gris clair */
+  }
+  
+  #grasLabel{
+    font-size: 12px;
+  }
+  
+  #grasTitre{
+    font-size: 13px;
+    font-weight: bold;
+    width: 60px;
+  }
+  
+  #grasCellule{
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 2;
+  }

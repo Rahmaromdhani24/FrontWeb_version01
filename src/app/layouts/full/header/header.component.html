@@ -85,6 +85,16 @@
         <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
         <span>, est en attente de votre validation immédiate.</span>
       </p>
+      <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'SertissageIDC' ">
+        Dans le processus  <strong style="color:red;">Sertissage IDC </strong> , le PDEK de la section
+        <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+        <span>, est en attente de votre validation immédiate.</span>
+      </p>
+      <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'SertissageNormal' ">
+        Dans le processus  <strong style="color:red;">Sertissage  </strong> , le PDEK de la section
+        <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+        <span>, est en attente de votre validation immédiate.</span>
+      </p>
       <small class="time">{{ getDifferenceFromNowAll(p) }}</small>
       <div>
         <button mat-button color="primary" (click)="voirPdek(p)">Voir le PDEK</button>
@@ -107,12 +117,22 @@
       <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Soudure' ">
         Dans le processus  <strong style="color:red;">{{ p.typeOperation }}</strong> , le PDEK de la section 
         <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
-        <span>{{ genererMessageEtatAllProcess(p.zone) }}</span>
+        <span>  {{ genererMessageEtatAllProcess(p.zone) }}</span>
       </p>
       <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'Torsadage' ">
         Dans le processus  <strong style="color:red;">Torsadage</strong> , le PDEK de la spécification de mesure 
         <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
-        <span>{{ genererMessageEtatAllProcess(p.zone) }}</span>
+        <span>  {{ genererMessageEtatAllProcess(p.zone) }}</span>
+      </p>
+      <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'SertissageNormal' ">
+        Dans le processus  <strong style="color:red;">Sertissage</strong> , le PDEK de la section 
+        <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }} &nbsp;&nbsp;</strong>
+        <span>  {{ genererMessageEtatAllProcess(p.zone) }}</span>
+      </p>
+      <p style="margin-left: 9px;" *ngIf="p.typeOperation === 'SertissageIDC' ">
+        Dans le processus  <strong style="color:red;">Sertissage IDC</strong> , le PDEK de la section 
+        <strong style="color: rgb(12, 160, 12);">{{ p.sectionFil }}&nbsp;&nbsp;</strong>
+        <span>  {{ genererMessageEtatAllProcess(p.zone) }}</span>
       </p>
       <small class="time">{{ getDifferenceFromNowAll(p) }}</small>
       <div>
