@@ -1,214 +1,214 @@
 <div class="loading" *ngIf="showLoader">
-    <span id="loader" class="loader"></span>
+  <span id="loader" class="loader"></span>
+</div>
+
+<div class="pdf-scroll-wrapper" *ngIf="!showLoader">
+  <div class="pdf-container" *ngFor="let page of pages ; let pageIndex = index">
+    <!-- En-tête -->
+  <div class="header">
+    <!-- Titre principal -->
+    <div class="main-title" style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">
+      Carte d'enregistrement des données de processus (PDCC)
+    </div>
+    <div class="styleLogoLeoni"> LEONI </div>
   </div>
-  
-  <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
-    <div class="pdf-container" *ngFor="let page of pages ; let pageIndex = index">
-      <!-- En-tête -->
-    <div class="header">
-      <!-- Titre principal -->
-      <div class="main-title" style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">
-        Carte d'enregistrement des données de processus (PDCC)
-      </div>
-      <div class="styleLogoLeoni"> LEONI </div>
-    </div>
-      <!-- Tableau -->
-    <div id="idBorderTableau">
-    <table border="2" id="tableTitre">
-      <tr>
-        <td style="font-size: 13px;">Type de l'opération  :
-          <br><strong style="color: black;font-size: 18px;">Sertissage </strong>
-        </td>
-  
-        <td style="font-size: 13px;">Numéro Contact  :
-          <br><strong style="color: rgb(6, 184, 6);font-size: 18px;">{{ getNumContact(page,0) ?? '' }}   </strong>
-        </td>
-  
-        <td style="font-size: 13px;">LGD  :
-          <br><strong style="color: red;font-size: 18px;"> {{valeurLGDPdek}}   </strong>
-        </td>
-  
-        <td style="font-size: 13px;">Section du fil  :
-            <br><strong style="color: rgb(6, 184, 6);font-size: 18px;">{{ getSectionFil(page,0) ?? '' }}  mm²</strong>
-          </td>
-  
-          <td style="font-size: 13px;">Numéro d'outil  :
-            <br><strong style="color: rgb(6, 184, 6);font-size: 18px;">{{ getNumOutil(page,0) ?? '' }}</strong>
-          </td>
-  
-        <td style="font-size: 13px;"> Fréquence de contole  :<br>
-          <strong style="color: red;font-size: 13px;"> Voir AA 3117 (5 pcs) </strong>
-        </td>
-      
-        <td style="font-size: 13px;">
-          Segment :<br>
-         SEG  {{segmentUser}}     
-        </td>
-        <td style="font-size: 13px;">
-          Page : <br>
-          {{ pageIndex + 1 }} / {{ pages.length }}
-        </td>
-      </tr>
-  </table>
-   
-    </div>
-      <div id="idHauteurCote1">
-        <div class="vertical-text-moyenne">Hauteur de sertissage sur cuivre</div>
-        <apx-chart 
-        [series]="page.chartHauteur.series"
-        [chart]="page.chartHauteur.chart"
-        [xaxis]="page.chartHauteur.xaxis"
-        [yaxis]="page.chartHauteur.yaxis"
-        [stroke]="page.chartHauteur.stroke"
-        [dataLabels]="page.chartHauteur.dataLabels"
-        [markers]="page.chartHauteur.markers"
-        [tooltip]="page.chartHauteur.tooltip"
-        [annotations]="page.chartHauteur.annotations"
-        [fill]="page.chartHauteur.fill"
-        [legend]="page.chartHauteur.legend"
-          style="margin-left: 99px;
-                position: absolute;
-                width: 1210px;
-                margin-top: -320px;" 
-        ></apx-chart>
-      </div>
-     
-   
-      <div class="tables-wrapper" >
-       <!-- TABLEAU PRINCIPAL -->
-  <table class="main-table">
-  <thead>
+    <!-- Tableau -->
+  <div id="idBorderTableau">
+  <table border="2" id="tableTitre">
     <tr>
-      <th *ngFor="let _ of [].constructor(8)" style="border: none; background: transparent;"></th>
-      <ng-container *ngFor="let group of eight; let groupIndex = index">
-        <th id="grasTitre"><span style="margin-left: -7px;">Ech1</span></th>
-        <th id="grasTitre"><span style="margin-left: -7px;">Ech2</span></th>
-        <th id="grasTitre"><span style="margin-left: -7px;">Ech3</span></th>
-        <th id="grasTitre"><span style="margin-left: -7px;">Fin</span></th>
-      </ng-container>
-    </tr>
-  </thead>
-  
-  
-  <tbody>
-  
-    <tr>
-      <th colspan="8" id="grasCellule">Haut Sertissage<br> /Tol : {{hauteurSertissage}}/±0.05</th>
-      <ng-container *ngFor="let group of eight; let col = index">
-        <td id="grasLabel">{{ getHauteurSertissage(page, 0, col) ?? '' }}</td>
-        <td id="grasLabel">{{ getHauteurSertissage(page, 1, col) ?? '' }}</td>
-        <td id="grasLabel">{{ getHauteurSertissage(page, 2, col) ?? '' }}</td>
-        <td id="grasLabel">{{ getHauteurSertissage(page, 3, col) ?? '' }}</td>
-      </ng-container>
-    </tr>
-    <tr>
-      <th colspan="8" id="grasCellule">Larg Sertissage <br> /Tol :{{largeurSertissage}} /± {{toleranceLargeurSertissage}}</th>
-      <ng-container *ngFor="let group of eight; let col = index">
-        <td colspan="3" id="grasLabel">{{ getLargeurSertissage(page, 0, col) ?? '' }}</td>
-        <td id="grasLabel">{{ getLargeurSertissage(page, 1, col) ?? '' }}</td>
-       
-      </ng-container>
-    </tr>
-  
-    <!-- Troisième ligne : Valeurs de C2 (si besoin) -->
-    <tr>
-      <th colspan="8" id="grasCellule">Haut Isol<br> /Tol :{{hauteurIsolant}} /± {{toleranceHauteurIsolant}}</th>
-      <ng-container *ngFor="let group of eight; let col = index">
-        <td colspan="3" id="grasLabel">{{ getHauteurIsolant(page, 0, col) ?? '' }}</td>
-        <td id="grasLabel">{{ getHauteurIsolant(page, 1, col) ?? '' }}</td>
-        
-      </ng-container>
-    </tr>
-  
-    <tr>
-      <th colspan="8" id="grasCellule">Larg Isol <br> {{largeurIsolant}} /± {{toleranceLargeurIsolant}}</th>
-      <ng-container *ngFor="let group of eight; let col = index">
-        <td colspan="3" id="grasLabel">{{ getLargeurIsolant(page, 0, col) ?? '' }}</td>
-        <td id="grasLabel"> {{ getLargeurIsolant(page, 1, col) ?? '' }}</td>
-       
-      </ng-container>
-    </tr>
-  
-    <tr>
-      <th colspan="8" id="grasCellule">Traction:<br> Minimum : <span [innerHTML]="tractionValeur"></span> </th>
-      <ng-container *ngFor="let group of eight; let col = index">
-        <td colspan="3" id="grasLabel">{{ getTraction(page, 0, col) ?? '' }}</td>
-        <td id="grasLabel">{{ getTraction(page, 1, col) ?? '' }}</td>
-      </ng-container>
-    </tr>
-  
-  
-    <tr class="gris-background">
-      <th id="grasCellule" colspan="8">N° de Cycle</th>
-      <td *ngFor="let i of [].constructor(8); let idx = index" colspan="4" id="gras">
-        {{ idx + 1 }}
+      <td style="font-size: 13px;">Type de l'opération  :
+        <br><strong style="color: black;font-size: 18px;">Sertissage </strong>
+      </td>
+
+      <td style="font-size: 13px;">Numéro Contact  :
+        <br><strong style="color: rgb(6, 184, 6);font-size: 18px;">{{ getNumContact(page,0) ?? '' }}   </strong>
+      </td>
+
+      <td style="font-size: 13px;">LGD  :
+        <br><strong style="color: red;font-size: 18px;"> {{valeurLGDPdek}}   </strong>
+      </td>
+
+      <td style="font-size: 13px;">Section du fil  :
+          <br><strong style="color: rgb(6, 184, 6);font-size: 18px;">{{ getSectionFil(page,0) ?? '' }}  mm²</strong>
+        </td>
+
+        <td style="font-size: 13px;">Numéro d'outil  :
+          <br><strong style="color: rgb(6, 184, 6);font-size: 18px;">{{ getNumOutil(page,0) ?? '' }}</strong>
+        </td>
+
+      <td style="font-size: 13px;"> Fréquence de contole  :<br>
+        <strong style="color: red;font-size: 13px;"> Voir AA 3117 (5 pcs) </strong>
+      </td>
+    
+      <td style="font-size: 13px;">
+        Segment :<br>
+       SEG  {{segmentUser}}     
+      </td>
+      <td style="font-size: 13px;">
+        Page : <br>
+        {{ pageIndex + 1 }} / {{ pages.length }}
       </td>
     </tr>
-    
-  
-  <tr>
-    <th id="grasCellule" colspan="8">Code </th>
-    <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
-      {{ getCode(page, col) ?? '' }}
-    </td>
-  </tr>
-  
-  <tr>
-    <th  id="grasCellule" colspan="8">Produit </th>
-    <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
-      {{ getProduit(page, col) ?? '' }}
-    </td>
-  </tr>
-  
-  <tr>
-    <th id="grasCellule" colspan="8">Série Produit</th>
-    <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
-      {{ getSerieProduit(page, col) ?? '' }}
-    </td>
-  </tr>
-  
-  <tr>
-    <th id="grasCellule" colspan="8">Quantité Cycle</th>
-    <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
-      {{ getQuantiteCycle(page, col) ?? '' }}
-    </td>
-  </tr>
-  
-  <tr>
-    <th id="grasCellule" colspan="8">N° machine</th>
-    <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
-      {{ getNumMachine(page, col) ?? '' }}
-    </td>
-  </tr>
-  
-  <tr>
-    <th id="grasCellule" colspan="8">Date </th>
-    <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
-      {{ getDate(page, col) ?? '' }}
-    </td>
-  </tr>
-  <tr>
-    <th id="grasCellule" colspan="8">Opérateur </th>
-    <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
-      <ng-container *ngIf="page.sertissages[col] as sertissage">
-        <!--button 
-          (click)="onValiderSertissage(sertissage.id)" 
-          *ngIf="sertissage.decision === 0 && !pistoletsValides.has(sertissage.id)" 
-          class="custom-check-button">
-          <i class="fa fa-check"></i>
-        </button>
-        <span *ngIf="sertissage.decision === 1 || pistoletsValides.has(sertissage.id)"-->
-          {{ getOperateur(page, col) ?? '' }}
-        <!--/span-->
-      </ng-container>
-    </td>
-    
-  </tr>
-  </tbody>
-  </table>
-       </div>
-       <br>
-       <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
-       (click)="naviger()">Retour</button>
+</table>
+ 
+  </div>
+    <div id="idHauteurCote1">
+      <div class="vertical-text-moyenne">Hauteur de sertissage sur cuivre</div>
+      <apx-chart 
+      [series]="page.chartHauteur.series"
+      [chart]="page.chartHauteur.chart"
+      [xaxis]="page.chartHauteur.xaxis"
+      [yaxis]="page.chartHauteur.yaxis"
+      [stroke]="page.chartHauteur.stroke"
+      [dataLabels]="page.chartHauteur.dataLabels"
+      [markers]="page.chartHauteur.markers"
+      [tooltip]="page.chartHauteur.tooltip"
+      [annotations]="page.chartHauteur.annotations"
+      [fill]="page.chartHauteur.fill"
+      [legend]="page.chartHauteur.legend"
+        style="margin-left: 99px;
+              position: absolute;
+              width: 1210px;
+              margin-top: -320px;" 
+      ></apx-chart>
     </div>
-    <br>
+   
+ 
+    <div class="tables-wrapper" >
+     <!-- TABLEAU PRINCIPAL -->
+<table class="main-table">
+<thead>
+  <tr>
+    <th *ngFor="let _ of [].constructor(8)" style="border: none; background: transparent;"></th>
+    <ng-container *ngFor="let group of eight; let groupIndex = index">
+      <th id="grasTitre"><span style="margin-left: -7px;">Ech1</span></th>
+      <th id="grasTitre"><span style="margin-left: -7px;">Ech2</span></th>
+      <th id="grasTitre"><span style="margin-left: -7px;">Ech3</span></th>
+      <th id="grasTitre"><span style="margin-left: -7px;">Fin</span></th>
+    </ng-container>
+  </tr>
+</thead>
+
+
+<tbody>
+
+  <tr>
+    <th colspan="8" id="grasCellule">Haut Sertissage<br> /Tol : {{hauteurSertissage}}/±0.05</th>
+    <ng-container *ngFor="let group of eight; let col = index">
+      <td id="grasLabel">{{ getHauteurSertissage(page, 0, col) ?? '' }}</td>
+      <td id="grasLabel">{{ getHauteurSertissage(page, 1, col) ?? '' }}</td>
+      <td id="grasLabel">{{ getHauteurSertissage(page, 2, col) ?? '' }}</td>
+      <td id="grasLabel">{{ getHauteurSertissage(page, 3, col) ?? '' }}</td>
+    </ng-container>
+  </tr>
+  <tr>
+    <th colspan="8" id="grasCellule">Larg Sertissage <br> /Tol :{{largeurSertissage}} /± {{toleranceLargeurSertissage}}</th>
+    <ng-container *ngFor="let group of eight; let col = index">
+      <td colspan="3" id="grasLabel">{{ getLargeurSertissage(page, 0, col) ?? '' }}</td>
+      <td id="grasLabel">{{ getLargeurSertissage(page, 1, col) ?? '' }}</td>
+     
+    </ng-container>
+  </tr>
+
+  <!-- Troisième ligne : Valeurs de C2 (si besoin) -->
+  <tr>
+    <th colspan="8" id="grasCellule">Haut Isol<br> /Tol :{{hauteurIsolant}} /± {{toleranceHauteurIsolant}}</th>
+    <ng-container *ngFor="let group of eight; let col = index">
+      <td colspan="3" id="grasLabel">{{ getHauteurIsolant(page, 0, col) ?? '' }}</td>
+      <td id="grasLabel">{{ getHauteurIsolant(page, 1, col) ?? '' }}</td>
+      
+    </ng-container>
+  </tr>
+
+  <tr>
+    <th colspan="8" id="grasCellule">Larg Isol <br> {{largeurIsolant}} /± {{toleranceLargeurIsolant}}</th>
+    <ng-container *ngFor="let group of eight; let col = index">
+      <td colspan="3" id="grasLabel">{{ getLargeurIsolant(page, 0, col) ?? '' }}</td>
+      <td id="grasLabel"> {{ getLargeurIsolant(page, 1, col) ?? '' }}</td>
+     
+    </ng-container>
+  </tr>
+
+  <tr>
+    <th colspan="8" id="grasCellule">Traction:<br> Minimum : <span [innerHTML]="tractionValeur"></span> </th>
+    <ng-container *ngFor="let group of eight; let col = index">
+      <td colspan="3" id="grasLabel">{{ getTraction(page, 0, col) ?? '' }}</td>
+      <td id="grasLabel">{{ getTraction(page, 1, col) ?? '' }}</td>
+    </ng-container>
+  </tr>
+
+
+  <tr class="gris-background">
+    <th id="grasCellule" colspan="8">N° de Cycle</th>
+    <td *ngFor="let i of [].constructor(8); let idx = index" colspan="4" id="gras">
+      {{ idx + 1 }}
+    </td>
+  </tr>
+  
+
+<tr>
+  <th id="grasCellule" colspan="8">Code </th>
+  <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
+    {{ getCode(page, col) ?? '' }}
+  </td>
+</tr>
+
+<tr>
+  <th  id="grasCellule" colspan="8">Produit </th>
+  <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
+    {{ getProduit(page, col) ?? '' }}
+  </td>
+</tr>
+
+<tr>
+  <th id="grasCellule" colspan="8">Série Produit</th>
+  <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
+    {{ getSerieProduit(page, col) ?? '' }}
+  </td>
+</tr>
+
+<tr>
+  <th id="grasCellule" colspan="8">Quantité Cycle</th>
+  <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
+    {{ getQuantiteCycle(page, col) ?? '' }}
+  </td>
+</tr>
+
+<tr>
+  <th id="grasCellule" colspan="8">N° machine</th>
+  <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
+    {{ getNumMachine(page, col) ?? '' }}
+  </td>
+</tr>
+
+<tr>
+  <th id="grasCellule" colspan="8">Date </th>
+  <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
+    {{ getDate(page, col) ?? '' }}
+  </td>
+</tr>
+<tr>
+  <th id="grasCellule" colspan="8">Opérateur </th>
+  <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
+    <ng-container *ngIf="page.sertissages[col] as sertissage">
+      <!--button 
+        (click)="onValiderSertissage(sertissage.id)" 
+        *ngIf="sertissage.decision === 0 && !pistoletsValides.has(sertissage.id)" 
+        class="custom-check-button">
+        <i class="fa fa-check"></i>
+      </button>
+      <span *ngIf="sertissage.decision === 1 || pistoletsValides.has(sertissage.id)"-->
+        {{ getOperateur(page, col) ?? '' }}
+      <!--/span-->
+    </ng-container>
+  </td>
+  
+</tr>
+</tbody>
+</table>
+     </div>
+     <br>
+     <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
+     (click)="naviger()">Retour</button>
+  </div>
+  <br>

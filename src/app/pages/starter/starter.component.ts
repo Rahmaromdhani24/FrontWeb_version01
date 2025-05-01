@@ -1,11 +1,11 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { MaterialModule } from '../../material.module';
-import { AppProfitExpensesComponent } from 'src/app/components/profit-expenses/profit-expenses.component';
-import { AppTrafficDistributionComponent } from 'src/app/components/traffic-distribution/traffic-distribution.component';
-import { AppProductSalesComponent } from 'src/app/components/product-sales/product-sales.component';
+import { AppErreursProcessComponent } from 'src/app/components/erreurs-process/erreurs-process.component';
 import { AppUpcomingSchedulesComponent } from 'src/app/components/upcoming-schedules/upcoming-schedules.component';
 import { AppTopEmployeesComponent } from 'src/app/components/top-employees/top-employees.component';
 import { AppBlogComponent } from 'src/app/components/apps-blog/apps-blog.component';
+import { AppEffectifOperateursComponent } from 'src/app/components/effectif-operateurs/effectif-operateurs.component';
+import { AppPdekProcessComponent } from 'src/app/components/pdek-process/pdek-process.component';
 
 
 
@@ -13,9 +13,9 @@ import { AppBlogComponent } from 'src/app/components/apps-blog/apps-blog.compone
   selector: 'app-starter',
   imports: [
     MaterialModule,
-    AppProfitExpensesComponent,
-    AppTrafficDistributionComponent,
-    AppProductSalesComponent,
+    AppPdekProcessComponent , 
+    AppEffectifOperateursComponent,
+    AppErreursProcessComponent,
     AppUpcomingSchedulesComponent,
     AppTopEmployeesComponent,
     AppBlogComponent
