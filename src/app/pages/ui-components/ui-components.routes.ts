@@ -30,6 +30,8 @@ import { AddPlanActionTorsadageComponent } from './Operation torsadage/add-plan-
 import { ListsPlanActionsTousProcessComponent } from './Components Tous process/lists-plan-actions-tous-process/lists-plan-actions-tous-process.component';
 import { AddPlanActionSertissageNormalComponent } from './Sertissage Normal/add-plan-action-sertissage-normal/add-plan-action-sertissage-normal.component';
 import { AddPlanActionSertissageIDCComponent } from './Sertissage IDC/add-plan-action-sertissage-idc/add-plan-action-sertissage-idc.component';
+import { ErreursParProcessComponent } from './statistiques All process sauf pistolet/erreurs-par-process/erreurs-par-process.component';
+import { ErreursChefLigneComponent } from './statistiques All process sauf pistolet/erreurs-chef-ligne/erreurs-chef-ligne.component';
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -112,6 +114,14 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'addPlanActionSertissageNormal',
         component: AddPlanActionSertissageNormalComponent,
+      },
+      {
+        path: 'statAgentQualite',
+        component: ErreursParProcessComponent,
+      },
+      {
+        path: 'statChefLigne',
+        component: ErreursChefLigneComponent,
       },
      /*
       {

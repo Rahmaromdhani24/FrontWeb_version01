@@ -1,0 +1,16 @@
+<div id="styleCard">
+    <mat-card *ngIf="chartOptions" style="min-height: 450px;">
+          <apx-chart
+            #chartPdek
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [xaxis]="chartOptions.xaxis"
+            [yaxis]="chartOptions.yaxis"
+            [dataLabels]="chartOptions.dataLabels"
+            [plotOptions]="chartOptions.plotOptions"
+            [tooltip]="chartOptions.tooltip"
+            [legend]="chartOptions.legend"
+            [fill]="chartOptions.fill"
+          ></apx-chart>
+        </mat-card>
+     </div>

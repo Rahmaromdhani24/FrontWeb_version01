@@ -291,6 +291,27 @@ export const navItems: NavItem[] = [
   
   {
     navCap: 'Statistiques',
+    roles: ['AGENT_QUALITE'   ,'CHEF_DE_LIGNE' , 'ADMIN'], 
+  },
+  {
+    displayName: 'Process',
+    iconName: 'chart-line',
+    route: '/ui-components/statAgentQualite',
+    bgcolor: 'error',
+    external: false,
+    chipClass: 'bg-primary text-white',
+    roles: ['AGENT_QUALITE' ], 
+
+  },
+  {
+    displayName: 'Process',
+    iconName: 'chart-line',
+    route: '/ui-components/statChefLigne',
+    bgcolor: 'error',
+    external: false,
+    chipClass: 'bg-primary text-white',
+    roles: [ 'CHEF_DE_LIGNE', ], 
+
   },
   {
     displayName: 'Utilisateurs',
@@ -301,7 +322,7 @@ export const navItems: NavItem[] = [
     //chip: true,
     chipClass: 'bg-primary text-white',
   //  chipContent: 'PRO',
-    roles: ['ADMIN', 'AGENT_QUALITE'], 
+    roles: ['ADMIN', ], 
 
   },
   {
@@ -348,20 +369,20 @@ export const navItems: NavItem[] = [
     iconName: 'archive',
     route: '/ui-components/badge',
     bgcolor: 'warning',
-    roles: ['ADMIN', 'AGENT_QUALITE'], 
+    roles: ['ADMIN', ], 
 
   },
 
   {
     navCap: 'Historiques',
-    roles: ['ADMIN','AGENT_QUALITE'], 
+    roles: ['ADMIN',], 
   },
   {
     displayName: 'Historiques utilisateurs',
     iconName: 'history',
     route: '/ui-components/badge',
     bgcolor: 'warning',
-    roles: ['ADMIN','AGENT_QUALITE'], 
+    roles: ['ADMIN',], 
 
   },
 ];

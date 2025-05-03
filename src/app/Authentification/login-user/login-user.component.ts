@@ -38,7 +38,6 @@ export class LoginUserComponent implements OnInit {
         next: async (response) => {
           if (response.token) {   
             localStorage.setItem('token', response.token);
-            
             try {
               await this.recupererInformations(matricule);
               this.router.navigate(['/dashboard']);
@@ -100,6 +99,8 @@ export class LoginUserComponent implements OnInit {
             localStorage.setItem('matricule', user.matricule);
             localStorage.setItem('plant', user.plant);
             localStorage.setItem('segment', user.segment);
+            localStorage.setItem('operation', user.operation);
+
             resolve();
           },
           error: (err) => {

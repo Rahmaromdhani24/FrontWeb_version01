@@ -5,6 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MaterialModule } from 'src/app/material.module';
 import { OperateurErreurDTO } from 'src/app/Modeles/OperateurErreurDTO';
 import { StatistiquesService } from 'src/app/services/Statistiques/statistiques.service';
+import { StatistiquesPistoletService } from 'src/app/services/Statistiques/statistiques-pistolet.service';
+import { OperateurErreurPistolet } from 'src/app/Modeles/OperateurErreurPistolet';
 
 
 @Component({
@@ -14,12 +16,23 @@ import { StatistiquesService } from 'src/app/services/Statistiques/statistiques.
   templateUrl: './top-employees.component.html',
 })
 export class AppTopEmployeesComponent implements OnInit {
-  displayedColumns: string[] = ['nomPrenom' ,'matricule', 'poste', 'machine', 'plant', 'segment', 'typeOperation'/*, 'nombreErreurs'*/];
+  displayedColumns: string[] = ['nomPrenom' ,'matricule', 'poste', 'machine', 'plant', 'segment', 'typeOperation'];
   dataSource: OperateurErreurDTO[] = [];
-
-  constructor(private service: StatistiquesService) {}
+  dataSourcePistolet: OperateurErreurPistolet[] = [];
+  displayedColumnsPistolet: string[] = ['nomPrenom' ,'matricule', 'plant', 'typePistolet' , 'categoriePistolet', 'nombreErreurs'];
+  test : string ='' ; 
+  constructor(private service: StatistiquesService ,
+              private servicePistolet : StatistiquesPistoletService) {}
 
   ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    const operation = localStorage.getItem('operation');
+
+    if ((role === 'AGENT_QUALITE' || role === 'CHEF_DE_LIGNE') &&
+    (operation === 'undefined' || operation === 'Sertissage_IDC' ||
+     operation === 'Sertissage_Normal' || operation === 'Soudure' ||
+     operation === 'Torsadage')) {
+     this.test ='allProcess'
     this.service.getTop5OperateursErreurs().subscribe({
       next: (data) => {
         this.dataSource = data.map(item => ({
@@ -38,5 +51,28 @@ export class AppTopEmployeesComponent implements OnInit {
         console.error('Erreur lors de la récupération des opérateurs :', err);
       }
     });
+  }
+  if ( (role === 'AGENT_QUALITE_PISTOLET' || role === 'TECHNICIEN')) {
+       this.test ='pistolet'
+    this.servicePistolet.getTop5OperateursPistoletsErreurs().subscribe({
+      next: (data) => {
+        this.dataSourcePistolet = data.map(item => ({
+          matricule: item.matricule,
+          plant: item.plant,
+          segment: item.segment,
+          nomPrenom: item.nomPrenom,
+          typePistolet: item.typePistolet,
+          categoriePistolet: item.categoriePistolet,
+          nombreErreurs: item.nombreErreurs
+        }));
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des opérateurs :', err);
+      }
+    });
+  }
+  }
+  formatAttribut(input: string): string {
+    return input.toLowerCase().replace(/_/g, ' ');
   }
 }

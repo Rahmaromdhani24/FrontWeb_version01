@@ -22,6 +22,7 @@ import {
   NgApexchartsModule,
 } from 'ng-apexcharts';
 import { StatistiquesService } from 'src/app/services/Statistiques/statistiques.service';
+import { StatistiquesPistoletService } from 'src/app/services/Statistiques/statistiques-pistolet.service';
 
 export interface productsalesChart {
   series: ApexAxisChartSeries;
@@ -47,25 +48,28 @@ export interface productsalesChart {
 })
 export class AppErreursProcessComponent {
 
-  erreurs: number = 0;
-  pourcentageErreurs : number =0 ; 
   @ViewChild('chart') chart: ChartComponent = Object.create(null);
 
   public productsalesChart!: Partial<productsalesChart> | any;
-
+  erreurs: number = 0;
+  pourcentageErreurs : number =0 ; 
  
+  constructor(private statsService: StatistiquesService , private servicePistolet : StatistiquesPistoletService) { 
+    const role = localStorage.getItem('role');
+    const operation = localStorage.getItem('operation');
 
-  ngOnInit(): void {
-    forkJoin({
-      erreurs: this.statsService.getNombresErreursCetteSemaine(),
-      pourcentage: this.statsService.getPourcentagesErreursCetteSemaine()
-    }).subscribe(result => {
-      this.erreurs = result.erreurs;
-      this.pourcentageErreurs = result.pourcentage;
-    });
-  }
-
-  constructor(private statsService: StatistiquesService) { 
+if((role ==='AGENT_QUALITE' ||role ==='CHEF_DE_LIGNE')  && (operation==='undefined' ||
+  operation==='Sertissage_IDC' || operation==='Sertissage_Normal' 
+   || operation==='Soudure'|| operation==='Torsadage')){
+    this.statsService.fetchAllStatsErreursProcess() ; 
+    this.statsService.erreurs$.subscribe(erreurs => { this.erreurs = erreurs; });
+    this.statsService.pourcentageErreurs$.subscribe(pourcentageErreurs => { this.pourcentageErreurs = pourcentageErreurs; });
+}
+if((role ==='AGENT_QUALITE_PISTOLET'  ||role ==='TECHNICIEN') && (operation==='Montage_Pistolet' )){
+  this.servicePistolet.fetchAllStatsErreursProcessPistolet() ; 
+  this.servicePistolet.erreurs$.subscribe(erreurs => { this.erreurs = erreurs; });
+  this.servicePistolet.pourcentageErreurs$.subscribe(pourcentageErreurs => { this.pourcentageErreurs = pourcentageErreurs; });
+}
       this.productsalesChart = {
         series: [
           {

@@ -1,87 +1,124 @@
 <mat-card class="cardWithShadow">
-    <mat-card-content>
-        <div>
-            <div class="d-flex align-items-center justify-content-between w-100">
-                <mat-card-title style=" margin-left: 247px;
-                                        font-size: 20px;
-                                        margin-top: -29px;
-                                        color: #0085db;  ">              
-                  Top 5  Opérateurs avec le plus d'erreurs</mat-card-title>
-                <button mat-icon-button color="inherit" aria-label="Example icon-button with a menu">
-                    <mat-icon class="f-s-24 d-flex align-items-center justify-content-center">more_vert</mat-icon>
-                </button>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table mat-table [dataSource]="dataSource" class="w-100">
-                <!-- Matricule
-                <ng-container matColumnDef="nomPrenom">
-                  <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">
-                    Nom et Prénom
-                  </th>
-                  <td mat-cell *matCellDef="let element">
-                      <div class="d-flex align-items-center">
-                          <div class="m-l-16">
-                              <h6 class="text-truncate-2 f-s-14 f-w-600">
-                                  {{ element.nomPrenom }}
-                              </h6>
-                              <span class="f-s-14">{{ element.role }}</span>
-                          </div>
-                      </div>
-                  </td>
-              </ng-container> -->
-              <ng-container matColumnDef="nomPrenom">
-                <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Nom et Prénom</th>
-                <td mat-cell *matCellDef="let element">
-                  <strong style="font-size:15px;">{{ element.nomPrenom }}</strong></td>
-              </ng-container> 
-               <ng-container matColumnDef="matricule">
-                  <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Matricule</th>
-                  <td mat-cell *matCellDef="let element">{{ element.matricule }}</td>
-                </ng-container>             
-               <!--   Poste -->
-                <ng-container matColumnDef="poste">
-                  <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Poste</th>
-                  <td mat-cell *matCellDef="let element">{{ element.poste }}</td>
-                </ng-container>              
-                <!-- Machine -->
-                <ng-container matColumnDef="machine">
-                  <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Machine</th>
-                  <td mat-cell *matCellDef="let element">{{ element.machine }}</td>
-                </ng-container>              
-                <!-- Plant -->
-                <ng-container matColumnDef="plant">
-                  <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Plant</th>
-                  <td mat-cell *matCellDef="let element">
-                    &nbsp;&nbsp;&nbsp;&nbsp;{{ element.plant }}</td>
-                </ng-container>             
-                <!-- Segment -->
-                <ng-container matColumnDef="segment">
-                  <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Segment</th>
-                  <td mat-cell *matCellDef="let element">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {{ element.segment }}</td>
-                </ng-container>           
-                <!-- Type Operation -->
-                <ng-container matColumnDef="typeOperation">
-                  <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Opération</th>
-                  <td mat-cell *matCellDef="let element">
-                   {{ element.typeOperation }}</td>
-                </ng-container>            
-                <!-- Nombre d'erreurs 
-                <ng-container matColumnDef="nombreErreurs">
-                  <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Nombre d'erreurs</th>
-                  <td mat-cell *matCellDef="let element">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                     {{ element.nombreErreurs }}</td>
-                </ng-container>-->
-              
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-              
-              </table>
-              
-        </div>
-    </mat-card-content>
+  <mat-card-content>
+    <!-- Titre et bouton menu -->
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <mat-card-title style="margin-left: 247px; font-size: 20px; margin-top: -29px; color: #0085db;">
+        Top Opérateurs avec le plus d'erreurs
+      </mat-card-title>
+      <button mat-icon-button color="inherit" aria-label="Menu">
+        <mat-icon class="f-s-24 d-flex align-items-center justify-content-center">more_vert</mat-icon>
+      </button>
+    </div>
+
+    <!-- Tableau pour allProcess -->
+    <div class="table-responsive" *ngIf="test === 'allProcess'">
+      <table mat-table [dataSource]="dataSource" class="w-100">
+        <!-- Nom et Prénom -->
+        <ng-container matColumnDef="nomPrenom">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Nom et Prénom</th>
+          <td mat-cell *matCellDef="let element">
+            <strong style="font-size:15px;">{{ element.nomPrenom }}</strong>
+          </td>
+        </ng-container>
+
+        <!-- Matricule -->
+        <ng-container matColumnDef="matricule">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Matricule</th>
+          <td mat-cell *matCellDef="let element">{{ element.matricule }}</td>
+        </ng-container>
+
+        <!-- Poste -->
+        <ng-container matColumnDef="poste">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Poste</th>
+          <td mat-cell *matCellDef="let element">{{ element.poste }}</td>
+        </ng-container>
+
+        <!-- Machine -->
+        <ng-container matColumnDef="machine">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Machine</th>
+          <td mat-cell *matCellDef="let element">{{ element.machine }}</td>
+        </ng-container>
+
+        <!-- Plant -->
+        <ng-container matColumnDef="plant">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Plant</th>
+          <td mat-cell *matCellDef="let element">{{ element.plant }}</td>
+        </ng-container>
+
+        <!-- Segment 
+        <ng-container matColumnDef="segment">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Segment</th>
+          <td mat-cell *matCellDef="let element">{{ element.segment }}</td>
+        </ng-container>
+-->
+        <!-- Opération -->
+        <ng-container matColumnDef="typeOperation">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Opération</th>
+          <td mat-cell *matCellDef="let element">{{ element.typeOperation }}</td>
+        </ng-container>
+
+        <!-- Lignes -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <!-- Tableau pour pistolet -->
+    <div class="table-responsive" *ngIf="test === 'pistolet'">
+      <table mat-table [dataSource]="dataSourcePistolet" class="w-100">
+        <!-- Nom et Prénom -->
+        <ng-container matColumnDef="nomPrenom">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Nom et Prénom</th>
+          <td mat-cell *matCellDef="let element">
+            <strong style="font-size:15px;">{{ element.nomPrenom }}</strong>
+          </td>
+        </ng-container>
+
+        <!-- Matricule -->
+        <ng-container matColumnDef="matricule">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Matricule</th>
+          <td mat-cell *matCellDef="let element">{{ element.matricule }}</td>
+        </ng-container>
+
+
+        <!-- Plant -->
+        <ng-container matColumnDef="plant">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Plant</th>
+          <td mat-cell *matCellDef="let element">&nbsp; &nbsp;&nbsp; &nbsp;
+            {{ element.plant }}</td>
+        </ng-container>
+
+        <!-- Segment
+        <ng-container matColumnDef="segment">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Segment</th>
+          <td mat-cell *matCellDef="let element">{{ element.segment }}</td>
+        </ng-container> -->
+
+        <!-- Segment -->
+        <ng-container matColumnDef="typePistolet">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Couleur de Pistolet </th>
+          <td mat-cell *matCellDef="let element">&nbsp; &nbsp;&nbsp; &nbsp;
+            {{ formatAttribut(element.typePistolet) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="categoriePistolet">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Catégorie de Pistolet </th>
+          <td mat-cell *matCellDef="let element">&nbsp; &nbsp;&nbsp; &nbsp;
+            {{ element.categoriePistolet }}</td>
+        </ng-container>
+
+        <!-- Opération -->
+        <ng-container matColumnDef="nombreErreurs">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Nombre Erreurs</th>
+          <td mat-cell *matCellDef="let element">
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            {{ element.nombreErreurs }}</td>
+        </ng-container>
+
+        <!-- Lignes -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsPistolet"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsPistolet"></tr>
+      </table>
+    </div>
+  </mat-card-content>
 </mat-card>

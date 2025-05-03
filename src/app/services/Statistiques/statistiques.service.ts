@@ -1,7 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { OperateurErreurDTO } from 'src/app/Modeles/OperateurErreurDTO';
+import { OperateurErreurPistolet } from 'src/app/Modeles/OperateurErreurPistolet';
+import { StatProcessus } from 'src/app/Modeles/StatProcessus';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,8 @@ export class StatistiquesService {
   femmes$ = new BehaviorSubject<number>(0);
   total$ = new BehaviorSubject<number>(0);
   pourcentageAugmentation$ = new BehaviorSubject<number>(0);
-
+  erreurs$= new BehaviorSubject<number>(0);
+  pourcentageErreurs$ = new BehaviorSubject<number>(0);
   private apiUrl = 'http://localhost:8281/statistiques'; 
 
   constructor(private http: HttpClient) {}
@@ -69,8 +72,6 @@ export class StatistiquesService {
       this.pourcentageAugmentation$.next(pourcentage);
     });
   }
-  
-  
   getNombresErreursCetteSemaine(): Observable<number> {
     const token = localStorage.getItem('token'); 
         const headers = new HttpHeaders({
@@ -121,4 +122,69 @@ export class StatistiquesService {
     );
   }
   
+
+  getStatsParProcessus(plant: string): Observable<StatProcessus[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    const params = new HttpParams().set('plant', plant);
+    return this.http.get<StatProcessus[]>(`${this.apiUrl}/par-processus`, { params  , headers});
+  }
+
+  getStatsTorsadage(plant: string, segment: number): Observable<StatProcessus[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'}); 
+    const params = new HttpParams()
+      .set('plant', plant)
+      .set('segment', segment);
+    return this.http.get<StatProcessus[]>(`${this.apiUrl}/chart-torsadage`, { params , headers});
+  }
+
+  getStatsSoudure(plant: string, segment: number): Observable<StatProcessus[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'}); 
+    const params = new HttpParams()
+      .set('plant', plant)
+      .set('segment', segment);
+    return this.http.get<StatProcessus[]>(`${this.apiUrl}/chart-soudure`, { params , headers});
+  }
+
+  getStatsSertissageIDC(plant: string, segment: number): Observable<StatProcessus[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'}); 
+    const params = new HttpParams()
+      .set('plant', plant)
+      .set('segment', segment);
+    return this.http.get<StatProcessus[]>(`${this.apiUrl}/chart-sertissage-idc`, { params , headers});
+  }
+
+  getStatsSertissageNormal(plant: string, segment: number): Observable<StatProcessus[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'}); 
+    const params = new HttpParams()
+      .set('plant', plant)
+      .set('segment', segment);
+    return this.http.get<StatProcessus[]>(`${this.apiUrl}/chart-sertissage-normal`, { params , headers});
+  }
+
+  fetchAllStatsErreursProcess(): void {
+    forkJoin({
+      erreurs: this.getNombresErreursCetteSemaine(),
+      pourcentageErreurs: this.getPourcentagesErreursCetteSemaine(),
+    }).subscribe(({ erreurs, pourcentageErreurs }) => {
+      this.erreurs$.next(erreurs);
+      this.pourcentageErreurs$.next(pourcentageErreurs);
+    });
+  }
+
 }

@@ -53,37 +53,13 @@ export class AppEffectifOperateursComponent {
   femmes: number = 0;
   total: number = 0;
   pourcentageAugmentation: number = 0;
-/*ngOnInit(): void {
-    forkJoin({
-      hommes: this.statsService.getNombreHommes(),
-      femmes: this.statsService.getNombreFemmes(),
-      total: this.statsService.getNombreOperateurs(),
-      pourcentage: this.statsService.getPourcentatgesAugmentations()
-    }).subscribe(result => {
-      this.hommes = result.hommes;
-      this.femmes = result.femmes;
-      this.total = result.total;
-      this.pourcentatgeAugmentation = result.pourcentage;
-      this.tryInitializeChart();
-    });
-  }*/
+
   constructor(public statsService: StatistiquesService) { 
   this.statsService.fetchAllStats();
   this.statsService.hommes$.subscribe(hommes => { this.hommes = hommes; });
-  
-
-
- this.statsService.femmes$.subscribe(femmes => {
-   this.femmes = femmes;
- });
-
- this.statsService.total$.subscribe(total => {
-   this.total = total;
- });
-
- this.statsService.pourcentageAugmentation$.subscribe(pourcentage => {
-   this.pourcentageAugmentation = pourcentage;
- });
+  this.statsService.femmes$.subscribe(femmes => { this.femmes = femmes;});
+  this.statsService.total$.subscribe(total => {this.total = total;});
+  this.statsService.pourcentageAugmentation$.subscribe(pourcentage => { this.pourcentageAugmentation = pourcentage;});
 
  // private tryInitializeChart(): void {
     if (this.hommes && 
