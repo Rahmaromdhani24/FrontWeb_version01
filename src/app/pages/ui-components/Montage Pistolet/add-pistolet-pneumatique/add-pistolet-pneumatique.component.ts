@@ -81,6 +81,16 @@ export class AddPistoletPneumatiqueComponent implements OnInit{
       typePistolet: new FormControl('', Validators.required),
     });
   
+    this.myForm.get('typePistolet')?.valueChanges.subscribe((value: string) => {
+      const coupePropreControl = this.myForm.get('selectedValue');
+  
+      if (value === 'PISTOLET_JAUNE') {
+        coupePropreControl?.disable();
+        coupePropreControl?.reset(); // Efface la valeur sélectionnée
+      } else {
+        coupePropreControl?.enable();
+      }
+    });
   }
    submitForm() {
       if (this.myForm.invalid) {

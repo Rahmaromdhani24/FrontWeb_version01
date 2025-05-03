@@ -1,15 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { catchError, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
-import { 
-  LineSeriesService,
-  CategoryService,
-  LegendService,
-  TooltipService,
-  StripLineService,
-  DataLabelService,
-  ChartAnnotationService
-} from '@syncfusion/ej2-angular-charts';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ChartModule } from '@syncfusion/ej2-angular-charts';
@@ -20,7 +11,11 @@ import { Observable, of } from 'rxjs';
 import { GeneralService } from 'src/app/services/Géneral/general.service';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
-
+import {
+  ApexAxisChartSeries, ApexChart, ApexXAxis, ApexDataLabels,
+  ApexYAxis, ApexTitleSubtitle, ApexStroke, ApexTooltip, ApexMarkers, ApexFill, ApexAnnotations, ApexLegend,
+  NgApexchartsModule
+} from 'ng-apexcharts';
 
 @Component({
   selector: 'app-chart-add-pistolet-bleu',
@@ -30,18 +25,9 @@ import { CommonModule } from '@angular/common';
     MatCardModule,
     MatFormFieldModule ,
     MatButtonModule ,
-    CommonModule 
-
-  ],
-  providers: [
-    LineSeriesService,
-    CategoryService,
-    LegendService,
-    TooltipService,
-    StripLineService,
-    DataLabelService,
-    ChartAnnotationService
-  ],
+    CommonModule ,
+    NgApexchartsModule],
+  providers: [],
   templateUrl: './chart-add-pistolet-bleu.component.html',
   styleUrls: ['./chart-add-pistolet-bleu.component.scss']
 })
@@ -51,6 +37,8 @@ export class ChartAddPistoletBleuComponent implements OnInit {
   constructor(private pistoletGeneralService: PistoletGeneralService , private router : Router ,
               private route: ActivatedRoute , private cdr: ChangeDetectorRef , private general : GeneralService) {}
   
+  seriesDataEtendue: { x: string, y: number }[] = [];
+  seriesDataMoyenne: { x: string, y: number }[] = [];
   donneesMoyenne: any[] = []; 
   donneesEtendu: any[] = []; 
   numeroCourant : number; 
@@ -94,201 +82,275 @@ export class ChartAddPistoletBleuComponent implements OnInit {
     this.recupererDonneesDeFichierPdekDePageParticulier().subscribe();
 
   }
-  /***************************** Chart moyenne X *******************************************/
-    // Titre et style
-    public title: string = 'La Moyenne X̄';
-    public titleStyle: Object = {
-      fontFamily: 'Arial',
-      fontWeight: 'bold',
-      fontSize: '18px',
-      color: '#333'
-    };
-  
-    // Configuration de l'axe X
-    public primaryXAxis: Object = {
-      valueType: 'Category',
-      majorGridLines: { width: 0 },
-      labelIntersectAction: 'None',
-      labelRotation: 0,
-      labelStyle: { 
-        color: '#333',
-        fontFamily: 'Arial',
-        fontSize: '12px'
+  public chartOptionsMoyenne: {
+    series: ApexAxisChartSeries;
+    chart: ApexChart;
+    xaxis: ApexXAxis;
+    yaxis: ApexYAxis;
+    stroke: ApexStroke;
+    dataLabels: ApexDataLabels;
+    markers: ApexMarkers;
+    tooltip: ApexTooltip;
+    annotations: ApexAnnotations;
+    fill: ApexFill;
+    legend: ApexLegend;
+  } = {
+    series: [{
+      name: 'Moyenne',
+      data: [] // Rempli dynamiquement
+    }],
+    chart: {
+      type: 'line',
+      height: 400,
+      background: 'transparent',
+      animations: {
+        enabled: false,
+        easing: 'linear',
+        speed: 1,
+        animateGradually: { enabled: false },
+        dynamicAnimation: { enabled: false }
       },
-      edgeLabelPlacement: 'Shift'
-    };
+      toolbar: { show: false },
+    },
+    xaxis: {
+     type: 'category',
+     categories: Array.from({ length: 26 }, (_, i) => (i + 1).toString()),
+     tickAmount: 26,
+     labels: {
+       show: true,
+       style: {
+         colors: '#333',
+         fontSize: '12px',
+         fontFamily: 'Arial'
+       }
+     },
+     axisTicks: { show: true },
+     axisBorder: { show: true, color: '#333' },
+     title: {
+       text: 'Numéro Courant',
+       style: {
+         fontSize: '14px',
+         fontWeight: 'bold',
+         color: '#333'
+       }
+     }
+    },    
+    yaxis: {
+      min: 40,
+      max: 90,
+      tickAmount: 10,
+      labels: {
+        show: false,
+        formatter: (val: number) => {
+          const valuesToShow = [50, 56, 65, 74, 80];
+          return valuesToShow.includes(val) ? `${val}` : '';
+        }
+      }
+    },
+    stroke: {
+      curve: 'straight',
+      width: 2
+    },
+    dataLabels: {
+      enabled: false
+    },
+    markers: {
+      size: 5,
+      strokeWidth: 1,
+      strokeColors: '#000',
+      colors: ['#000']
+    },
+    tooltip: {
+      enabled: true,
+      x: {
+        formatter: (val: number) => `Numéro Courant: ${val}`
+      },
+      y: {
+        formatter: (val: number) => `${val}`
+      }
+    },   
+    fill: {
+      type: 'solid'
+    },
+    legend: {
+      show: false
+    },
+    annotations: {
+      yaxis: [
+        // 🌈 Bandes colorées
+        { y: 50, y2: 56, fillColor: '#ffff0064', opacity: 0.5 },//jaune
+        { y: 56, y2: 74, fillColor: '#00c80087', opacity: 0.4 },
+        { y: 74, y2: 80, fillColor: '#ffff0064', opacity: 0.5 },//jaune
+        { y: 40, y2: 50, fillColor: '#ff00006e', opacity: 0.4 },// rouge 
+        { y: 80, y2: 90, fillColor: '#ff00006e', opacity: 0.4 }, // rouge
   
-    // Configuration de l'axe Y
-    public primaryYAxis: Object = {
-      minimum: 40,
-      maximum: 90,
-      interval: 10,
-      majorTickLines: { width: 0 },
-      lineStyle: { width: 0 },
-      majorGridLines: { width: 1, color: '#e0e0e0' },
-      labelStyle: { 
-        // color: '#333',
-         //fontFamily: 'Arial',
-        // fontSize: '12px'
-         color: 'transparent'
-       },
-      stripLines: [
-        // Zones colorées
-        { start: 40, end: 50, color: 'rgba(255, 0, 0, 0.43)', zIndex: 'Behind' },
-        { start: 50, end: 56, color: 'rgba(255, 255, 0, 0.64)', zIndex: 'Behind' },
-        { start: 56, end: 74, color: 'rgba(0, 200, 0, 0.53)', zIndex: 'Behind' },
-        { start: 74, end: 80, color: 'rgba(255, 255, 0, 0.64)', zIndex: 'Behind' },
-        { start: 80, end: 90, color: 'rgba(255, 0, 0, 0.43)', zIndex: 'Behind' },
+        // ➕ Lignes supplémentaires
+        {
+          y: 50,
+          borderColor: 'red',
+           strokeDashArray: 0,
+           label: {
+             text: '50',
+             position: 'left',
+             style: { color: '#fff', background: 'red' }
+           }
+        },
+        {
+          y: 65,
+          borderColor: 'gray',
+          strokeDashArray: 0,
+          label: {
+           // text: '40',
+            style: {
+              color: '#fff',
+              background: 'gray'
+            }
+          }
+        },
         
-        // Lignes rouges
-        { 
-          start: 50, 
-          end: 50.1, 
-          color: 'red', 
-          zIndex: 'Over', // Important: doit être au-dessus
-          border: { color: 'red', width: 2 },
-          opacity: 1
-        },
-        { 
-          start: 80, 
-          end: 80.2, 
-          color: 'red', 
-          zIndex: 'Over', // Important: doit être au-dessus
-          border: { color: 'red', width: 2 },
-          opacity: 1
-        },
-        { 
-          start: 65, 
-          end: 65.1, 
-          color: 'black', 
-          zIndex: 'Over', // Important: doit être au-dessus
-          border: { color: 'black', width: 1 },
-          opacity: 1
+        {
+          y: 80,
+          borderColor: 'red',
+          strokeDashArray: 0,
+          label: {
+            text: '80',
+            position: 'left',
+            style: { color: '#fff', background: 'red' }
+          }
+        } ,
+        {
+          y: 74,
+          borderColor: 'yellow',
+          strokeDashArray: 0,
+          label: {
+            text: '74',
+            position: 'left',
+            style: { color: '#000', background: 'yellow' }
+          }
         },
         {
-          start: 56,
-          end: 56.1,  // Léger décalage pour s'assurer que la ligne est visible
-          color: 'black',
-          width: 1,
-          dashArray: '5,3',  // 5px de tiret, 3px d'espace
-          zIndex: 'Over'
-        },
-        {
-          start: 74,
-          end: 74.1,
-          color: 'black',
-          width: 1,
-          dashArray: '5,3',
-          zIndex: 'Over'
+          y: 56,
+          borderColor: 'yellow',
+          strokeDashArray: 0,
+          label: {
+            text: '56',
+            position: 'left',
+            style: { color: '#000', background: 'yellow' }
+          }
         }
       ]
-    };
+    }
+  };
   
-    // Données de la série
-     seriesMoyenne: { x: number, y: number }[] = [];
-
-  
-    // Configuration du tooltip
-    public tooltip: Object = {
-      enable: true,
-      format: '${point.x} : <b>${point.y}</b>',
-      fill: '#333',
-      textStyle: { color: 'white' }
-    };
-  
-    // Configuration des annotations
-    public annotations: Object[] = [
-      {
-        content: '<div style="color: #333; font-weight: bold;">Zone Critique</div>',
-        x: '90%',
-        y: 125,
-        coordinateUnits: 'Point',
-        region: 'Chart'
-      } ,
-      {
-        content: '<div style="border-top: 1px dashed black; width: 100%;"></div>',
-        x: '0%',
-        y: '56',
-        coordinateUnits: 'Point',
-        region: 'Chart'
+    /***************************** Chart étendue R *******************************************/
+    public chartOptionsEtendue: {
+      series: ApexAxisChartSeries;
+      chart: ApexChart;
+      xaxis: ApexXAxis;
+      yaxis: ApexYAxis;
+      stroke: ApexStroke;
+      dataLabels: ApexDataLabels;
+      markers: ApexMarkers;
+      tooltip: ApexTooltip;
+      annotations: ApexAnnotations;
+    } = {
+      series: [{
+        name: 'Étendue',
+        data: []
+      }],
+      chart: {
+        type: 'line',
+        height: 300,
+        background: 'transparent',
+        animations: {
+          enabled: false,
+          easing: 'linear',
+          speed: 1,
+          animateGradually: {
+            enabled: false
+          },
+          dynamicAnimation: {
+            enabled: false
+          }
+        },
+        toolbar: { show: false },
       },
-      {
-        content: '<div style="border-top: 1px dashed black; width: 100%;"></div>',
-        x: '0%',
-        y: '74',
-        coordinateUnits: 'Point',
-        region: 'Chart'
+      xaxis: {
+        type: 'category',
+        categories: Array.from({ length: 26 }, (_, i) => (i + 1).toString()), // ["1", "2", ..., "26"]
+        tickAmount: 26,
+        labels: {
+          show: true,
+          style: {
+            colors: '#333',
+            fontSize: '12px',
+            fontFamily: 'Arial'
+          }
+        },
+        axisTicks: {
+          show: true
+        },
+        axisBorder: {
+          show: true,
+          color: '#333'
+        },
+        title: {
+          text: 'Numéro Courant',
+          style: {
+            fontSize: '14px',
+            fontWeight: 'bold',
+            color: '#333'
+          }
+        }
+      },
+      yaxis: {
+        min: 0,
+        max: 10,
+        tickAmount: 10,
+        labels: {
+          show: true,
+          formatter: (val: number) => val % 2 === 0 && val !== 0 ? `${val}` : ''
+        }
+      },
+      stroke: {
+        curve: 'straight',
+        width: 2 // 👉 aucune ligne
+      },
+      dataLabels: {
+        enabled: false
+      },
+      markers: {
+        size: 5,
+        strokeColors: '#fff',
+        strokeWidth: 1,
+        colors: ['#333']
+      },    
+      tooltip: {
+        enabled: true,
+        x: {
+          formatter: (val: number) => `Numéro Courant: ${val}`
+        },
+        y: {
+          formatter: (val: number) => `${val}`
+        }
+      },
+      annotations: {
+        yaxis: [
+          {
+            y: 6,
+            borderColor: 'red',
+            strokeDashArray: 0,
+            label: {
+              position: 'right',
+              text: 'Max : 6',
+              style: { color: '#fff', background: 'red' }
+           
+        }
+          }
+        ]
       }
-    ];
-  
-    // Style du marqueur
-    public marker: Object = {
-      visible: true,
-      width: 7,
-      height: 7,
-      fill: '#007bff',
-      border: { width: 2, color: 'white' }
     };
   
-    // Style de la ligne
-    public chartArea: Object = {
-      border: { width: 0 }
-    };
-  
- /*********************** Chart d'Étendue R *******************************/
- public titleEtendue: string = 'L\'étendue R';
- public titleStyleEtendue: Object = {
-   fontFamily: 'Arial',
-   fontWeight: 'bold',
-   size: '18px'
- };
-
- public primaryXAxisEtendue: Object = {
-  minimum: 0,
-  maximum: 26, // Ajusté à 26 pour inclure le nouveau point
-  interval: 1,
-  majorGridLines: { width: 1 },
-  minorGridLines: { width: 0 },
-  majorTickLines: { width: 1 },
-  valueType: 'Double'
-};
- public primaryYAxisEtendue: Object = {
-   minimum: 0,
-   maximum: 8, // Changé de 6 à 10 comme demandé
-   interval: 1,
-   stripLines: [{
-     start: 6,
-     end: 6.1,
-     color: 'red',
-     zIndex: 'Over',
-     border: { color: 'red', width: 2 },
-     opacity: 1
-   }],
- };
- public annotationsEtendue: Object[] = [{
-  content: '<div style="border-top: 2px solid red; width:100%"></div>',
-  x: '0%',
-  y: 6,
-  coordinateUnits: 'Point',
-  region: 'Chart'
-}];
-public seriesEtendue: { x: number, y: number }[] = [];
-
- public tooltipEtendue: Object = {
-   enable: true,
-   format: 'X: ${point.x} <br/> Y: ${point.y}'
- };
-
- public markerEtendue: Object = {
-  visible: true,
-  width: 8,
-  height: 8,
-  fill: '#333',       // Couleur de remplissage
-  border: { 
-    width: 1, 
-    color: '#fff'    // Bordure blanche
-  }
-};
  
 recuepererDernierNumeroDeCycle(){
   this.pistoletGeneralService.getDernierNumeroCycle(this.typePistolet,  this.numeroPistolet, this.categorie, this.segmentUser, this.plantUser)
@@ -304,40 +366,66 @@ recuepererDernierNumeroDeCycle(){
   
   }
 
-recupererDonneesDeFichierPdekDePageParticulier(): Observable<Pistolet[]> {
-  return this.pistoletGeneralService.getPistoletsParPdekEtPage(this.idPdek, this.numPage).pipe(
-    tap((data: Pistolet[]) => {
-      this.pistolets = data;
-      console.log('Pistolets récupérés :', data);
+   recupererDonneesDeFichierPdekDePageParticulier(): Observable<Pistolet[]> {
+      return this.pistoletGeneralService.getPistoletsParPdekEtPage(this.idPdek, this.numPage).pipe(
+        tap((data: Pistolet[]) => {
+          this.pistolets = data;
+          console.log('Pistolets récupérés :', data);
+        
+          this.seriesDataMoyenne = data.map(p => ({
+            x: p.numCourant.toString(), // 👈 Important ! doit correspondre à category type string
+            y: p.moyenne
+          }));        
+        
+          const dataRemplie = Array.from({ length: 25 }, (_, i) => {
+            const x = (i + 1).toString();
+            const point = this.seriesDataMoyenne.find(p => p.x === x);
+            return {
+              x,
+              y: point ? point.y : null
+            };
+          });
+  
+          this.chartOptionsMoyenne.series = [{
+            name: 'Moyenne',
+            data: dataRemplie ,
+          }];
+                  // Met à jour le graphique sans animation
+     
+  
+          this.seriesDataEtendue = data.map(p => ({
+            x: p.numCourant.toString(),
+            y: Number(p.etendu) 
+          }));
+        
+          const dataRemplie2 = Array.from({ length: 25 }, (_, i) => {
+            const x = (i + 1).toString();
+            const point = this.seriesDataEtendue.find(p => p.x === x);
+            return {
+              x,
+              y: point ? point.y : null
+            };
+          });
+  
+          this.chartOptionsEtendue.series = [{
+            name: 'Etendu',
+            data: dataRemplie2 ,
+          }];
+  
+     
+          if (data.length > 0) {
+            this.numeroCourant = data[data.length - 1].numCourant;
+          }
+        
+          console.log('Séries Moyenne :', this.seriesDataMoyenne);
+        }) ,
+        catchError(error => {
+          console.error('Erreur lors de la récupération des pistolets', error);
+          return of([]);
+        })
+      );
+    }
 
-      this.seriesMoyenne = data.map(p => ({
-        x: p.numCourant,
-        y: p.moyenne
-      }));
-
-      this.donneesMoyenne = this.seriesMoyenne;
-
-      this.seriesEtendue = data.map(p => ({
-        x: p.numCourant,
-        y: p.etendu
-      }));
-      this.donneesEtendu = this.seriesEtendue;
-
-      if (data.length > 0) {
-        this.numeroCourant = data[data.length - 1].numCourant;
-      }
-      // Log pour vérification
-      console.log('Séries Moyenne récuperer :', this.seriesMoyenne);
-      console.log('Séries Étendue récuperer :', this.seriesEtendue);
-      console.log('pistoles recuperer de pdek adequat :', this.pistolets);
-
-    }),
-    catchError(error => {
-      console.error('Erreur lors de la récupération des pistolets', error);
-      return of([]); // retourne une liste vide en cas d'erreur
-    })
-  );
-}
 validerPdekPistolet(): void {
   this.pistoletGeneralService.getPistoletInformations(this.numeroPistolet , this.typePistolet , this.categorie).subscribe({
     next: (data) => {

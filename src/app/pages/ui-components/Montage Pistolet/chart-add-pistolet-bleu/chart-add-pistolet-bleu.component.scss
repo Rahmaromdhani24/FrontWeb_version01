@@ -210,3 +210,31 @@
 #btnSave{
   margin-left: 330px;
 }
+.vertical-text-moyenne {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-weight: bold;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  position: absolute;
+  top: 185px;
+  left: 10px;
+}
+.vertical-text-etendu {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-weight: bold;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  position: absolute;
+  top: 535px;
+  left: 10px;
+}

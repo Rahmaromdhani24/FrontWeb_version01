@@ -80,6 +80,17 @@ export class AddPistoletMecaniqueComponent implements OnInit{
     this.plantUser = localStorage.getItem('plant') !;
     this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
     this.recupererTechniciens() ; 
+    
+    this.myForm.get('typePistolet')?.valueChanges.subscribe((value: string) => {
+      const coupePropreControl = this.myForm.get('selectedValue');
+  
+      if (value === 'PISTOLET_JAUNE') {
+        coupePropreControl?.disable();
+        coupePropreControl?.reset(); // Efface la valeur sélectionnée
+      } else {
+        coupePropreControl?.enable();
+      }
+    });
   }
   submitForm() {
     const now = new Date();

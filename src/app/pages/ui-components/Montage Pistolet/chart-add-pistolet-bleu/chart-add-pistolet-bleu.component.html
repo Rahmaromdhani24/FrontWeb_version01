@@ -3,67 +3,46 @@
       <mat-card-title class="m-b-0" id="titreNumCourant">Numéro Courant : {{numeroCourant}}</mat-card-title>
     </mat-card-header>
     <mat-card-content class="b-t-1">
-      <div  *ngIf="donneesMoyenne.length > 0" style="width: 100%; height: 400px;" >
-        <ejs-chart 
-          [title]="title" 
-          [titleStyle]="titleStyle"
-          [primaryXAxis]="primaryXAxis" 
-          [primaryYAxis]="primaryYAxis"
-          [tooltip]="tooltip"
-          [annotations]="annotations"
-          [legendSettings]="{visible: false}"
-          background="transparent">
-          <e-series-collection>
-            <e-series 
-              [dataSource]="seriesMoyenne" 
-              type="Line" 
-              xName="x" 
-              yName="y" 
-              width="2"
-              [marker]="{
-                visible: true, 
-                width: 10, 
-                height: 10,
-                shape: 'Circle',
-                dataLabel: { visible: false }
-              }"
-              [animation]="{ enable: true }">
-            </e-series>
-          </e-series-collection>
-        </ejs-chart>
-        <span id="label50"> 50 -</span>
-        <span id="label56"> 56 -</span>
-        <span id="label65"> 65 -</span>
-        <span id="label74"> 74 -</span>
-        <span id="label80"> 80 -</span>
+      <div class="vertical-text-moyenne">La moyenne X̄</div>
+      <div   style="width: 100%; height: 400px;" >
+        <apx-chart 
+        [series]="chartOptionsMoyenne.series"
+        [chart]="chartOptionsMoyenne.chart"
+        [xaxis]="chartOptionsMoyenne.xaxis"
+        [yaxis]="chartOptionsMoyenne.yaxis"
+        [stroke]="chartOptionsMoyenne.stroke"
+        [dataLabels]="chartOptionsMoyenne.dataLabels"
+        [markers]="chartOptionsMoyenne.markers"
+        [tooltip]="chartOptionsMoyenne.tooltip"
+        [annotations]="chartOptionsMoyenne.annotations"
+        [fill]="chartOptionsMoyenne.fill"
+        [legend]="chartOptionsMoyenne.legend"
+        style="position: absolute;width: 940px; margin-top: -20px;">
+      </apx-chart>
       </div>
-      <div *ngIf="donneesEtendu.length > 0" style="width: 100%; height: 250px;">
-        <ejs-chart 
-          [title]="titleEtendue" 
-          [titleStyle]="titleStyleEtendue"
-          [primaryXAxis]="primaryXAxisEtendue" 
-          [primaryYAxis]="primaryYAxisEtendue"
-          [tooltip]="tooltipEtendue"
-          [annotations]="annotationsEtendue"
-          [legendSettings]="{visible: false}">
-          <e-series-collection>
-            <e-series 
-              [dataSource]="seriesEtendue" 
-              type="Line" 
-              xName="x" 
-              yName="y" 
-              width="2"
-              [marker]="{
-                visible: true, 
-                width: 10, 
-                height: 10,
-                shape: 'Circle',
-                fill: 'black',
-                dataLabel: { visible: false }
-              }">
-            </e-series>
-          </e-series-collection>
-        </ejs-chart>
+      <div class="vertical-text-etendu">L'étendu R </div>
+      <div  style="width: 100%; height: 250px;">
+        <apx-chart 
+        [series]="chartOptionsEtendue.series"
+        [chart]="chartOptionsEtendue.chart"
+        [xaxis]="chartOptionsEtendue.xaxis"
+        [yaxis]="chartOptionsEtendue.yaxis"
+        [stroke]="chartOptionsEtendue.stroke"
+        [dataLabels]="chartOptionsEtendue.dataLabels"
+        [markers]="{
+          size: 6,
+          colors: ['#000'],
+          strokeColors: '#fff',
+          strokeWidth: 2,
+          shape: 'circle',
+          hover: {
+            size: 8
+          }
+        }"
+        [tooltip]="{ enabled: true }"
+        [annotations]="chartOptionsEtendue.annotations"
+        style=" position: absolute;width: 940px; margin-top:-20px;">
+      </apx-chart>
       </div>
       <br> <br>
         <div class="form-container">

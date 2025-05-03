@@ -15,7 +15,7 @@
               <mat-label class="f-s-14 f-w-600 m-b-12 d-block label-shift">Matricule</mat-label>
         
               <mat-form-field appearance="outline" class="w-100" color="primary" style="min-height: 60px;">
-                <input matInput formControlName="matricule" type="number" placeholder="Placer ici votre matricule" />
+                <input matInput formControlName="matricule" type="number"  min="0" placeholder="Placer ici votre matricule" />
               
                 <mat-error *ngIf="form.get('matricule')?.hasError('required') && form.get('matricule')?.touched">
                   Saisir votre matricule

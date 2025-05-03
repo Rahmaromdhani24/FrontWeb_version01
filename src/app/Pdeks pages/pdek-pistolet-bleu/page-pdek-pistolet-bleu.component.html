@@ -1,12 +1,6 @@
 <div class="loading" *ngIf="showLoader">
     <span id="loader" class="loader"></span>
   </div>
-  <form action="" class="search-bar"  *ngIf="!showLoader">
-    <input type="search" name="search" pattern=".*\S.*" required>
-    <button class="search-btn" type="submit">
-      <span>Search</span>
-    </button>
-  </form>
   <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
     <div class="pdf-container" *ngFor="let page of pages">
       <!-- En-tête -->
