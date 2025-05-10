@@ -54,7 +54,7 @@
             <ng-container matColumnDef="numPoste">
               <mat-header-cell *matHeaderCellDef mat-sort-header> Poste</mat-header-cell>
               <mat-cell *matCellDef="let row" style="text-align: center;">
-                &nbsp;&nbsp;&nbsp;{{ row.numPoste}}
+                &nbsp;&nbsp;&nbsp;{{ row.poste}}
                </mat-cell>
             </ng-container>
     
@@ -72,7 +72,7 @@
               <mat-header-cell *matHeaderCellDef mat-sort-header>Opérateurs</mat-header-cell>
               <mat-cell *matCellDef="let row" (click)="viewOperatorsDetails(row)">
                 <div class="user-cell">
-                  <i class="fa-solid fa-people-group" style="margin-left: 25px;"></i>
+                  <i class="fa-solid fa-people-group" style="margin-left: 33px;"></i>
                   <span class="operator-count" *ngIf="row.operateurs?.length > 0">
                     ({{row.operateurs.length}})
                   </span>
@@ -101,15 +101,15 @@
                   Plan d'action
                 </mat-header-cell>
                 <mat-cell style="width: 300px;" *matCellDef="let row">
-                  <ng-container *ngIf="row.planAction; else noPlan">
-                    <span class="plan-badge" (click)="viewPlanAction(row)">
-                      <mat-icon>description</mat-icon>
-                      Voir
-                    </span>
-                  </ng-container>
-                  <ng-template #noPlan>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -
-                  </ng-template>
+                <ng-container *ngIf="row.plans && row.plans.length > 0; else noPlan">
+                <span class="plan-badge" (click)="viewPlanAction(row)">
+                  <mat-icon>description</mat-icon>
+                  Voir
+                </span>
+              </ng-container>
+              <ng-template #noPlan>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -
+              </ng-template>
                 </mat-cell>
               </ng-container>
               
@@ -118,15 +118,13 @@
             Actions</mat-header-cell>
         <mat-cell *matCellDef="let row">
           <!-- Icône Eye (visualisation) - couleur primaire -->
-          <button mat-icon-button (click)="viewFilePDEK(row)" matTooltip="Voir détails">
+          <button mat-icon-button  (click)="viewFilePDEK(row)" style="margin-left: 25px;">
             <i class="fas fa-eye fa-sm" id="iconeEye"></i>
-    
-          </button>
-          
-          <!-- Icône Print (impression) - couleur accent -->
+          </button>   
+          <!-- Icône Print (impression) - couleur accent 
           <button mat-icon-button (click)="printRow(row)" matTooltip="Imprimer">
             <i class="fa-solid fa-print" id="iconePrint"></i>      
-          </button>
+          </button>-->
         </mat-cell>
       </ng-container>
       

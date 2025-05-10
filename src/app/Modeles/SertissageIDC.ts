@@ -5,6 +5,7 @@ export interface SertissageIDC{
     date: string;
     numCycle: number;
     userSertissageIDC : number;
+    matriculeAgentQualite : number ; 
     hauteurSertissageC1Ech1: number;
     hauteurSertissageC1Ech2: number;
     hauteurSertissageC1Ech3: number;

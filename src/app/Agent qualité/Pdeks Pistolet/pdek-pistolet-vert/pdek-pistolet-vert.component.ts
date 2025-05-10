@@ -55,8 +55,10 @@ export class PdekPistoletVertComponent implements OnInit ,AfterViewInit  {
    pistolets: Pistolet[] = [];
    pistolet : Pistolet ; 
    reponseApi : any ; 
-   pistoletsValides: Set<number> = new Set();  // Pour stocker les IDs validés
+   pistoletsValides: Set<number> = new Set();  
+   role : string ; 
    ngOnInit(): void {
+    this.role = localStorage.getItem('role')!;
     this.pistolet = JSON.parse(localStorage.getItem("pistolet")!);
     this.reponseApi = JSON.parse(localStorage.getItem("reponseApi")!);
     this.numeroPistolet = this.pistolet.numeroPistolet;

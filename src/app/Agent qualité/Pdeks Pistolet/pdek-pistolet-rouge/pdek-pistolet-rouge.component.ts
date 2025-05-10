@@ -58,6 +58,7 @@ export class PdekPistoletRougeComponent implements OnInit ,AfterViewInit  {
    pistoletsValides: Set<number> = new Set();  // Pour stocker les IDs validés
    pistoletsParNumCourant = new Map<number, Pistolet>();
    matriculeAgentQualite : number ; 
+   role : string ; 
    ngOnInit(): void {
     this.pistolet = JSON.parse(localStorage.getItem("pistolet")!);
     this.reponseApi = JSON.parse(localStorage.getItem("reponseApi")!);
@@ -70,6 +71,7 @@ export class PdekPistoletRougeComponent implements OnInit ,AfterViewInit  {
     console.log('num page  est:'+this.numPage) ;
 
     this.plantUser = localStorage.getItem('plant')!;
+     this.role = localStorage.getItem('role')!;
     this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
   
     this.pistoletsValides = new Set<number>();

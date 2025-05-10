@@ -43,8 +43,8 @@ export class PdekTorsadageSimpleComponent implements OnInit {
               private router : Router  , private route: ActivatedRoute , 
               private torsadageService : TorsadageService ){}
   
-  seriesDataEtendue: { x: number, y: number }[] = [];
-   seriesDataMoyenne: { x: number, y: number }[] = [];
+  seriesDataEtendue: { x: string, y: number }[] = [];
+   seriesDataMoyenne: { x: string, y: number }[] = [];
    rows = Array.from({ length: 25 }, (_, i) => i + 1);
    showLoader : boolean = true; 
    twentyFive: number[] = Array.from({ length: 25 }, (_, i) => i + 1);
@@ -128,7 +128,13 @@ public chartOptionsMoyenne: {
       type: 'line',
       height: 400,
       background: 'transparent',
-      animations: { enabled: false },
+      animations: {
+        enabled: false,
+        easing: 'linear',
+        speed: 1,
+        animateGradually: { enabled: false },
+        dynamicAnimation: { enabled: false }
+      },
       toolbar: { show: false }
     },
     xaxis: {
@@ -347,15 +353,41 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
       this.numPage = this.reponseApi.pageNumber;
       } 
 
-      this.seriesDataMoyenne = data.map(p => ({
+      /*this.seriesDataMoyenne = data.map(p => ({
         x: p.numeroCycle,
         y: p.moyenne
-      }));
-
-      this.seriesDataEtendue = data.map(p => ({
+      }));*/
+      this.seriesDataMoyenne = data.map((p: any) => ({
+        x: p.numeroCycle.toString(), // 👈 Important ! doit correspondre à category type string
+        y: p.moyenne
+      }));        
+    
+      const dataRemplie = Array.from({ length: 25 }, (_, i) => {
+        const x = (i + 1).toString();
+        const point = this.seriesDataMoyenne.find(p => p.x === x);
+        return {
+          x,
+          y: point ? point.y : null
+        };
+      });
+   
+    /*  this.seriesDataEtendue = data.map(p => ({
         x: p.numeroCycle,
         y: Number(p.etendu)
+      }));*/
+      this.seriesDataEtendue = data.map((p: any)=> ({
+        x: p.numeroCycle.toString(),
+        y: Number(p.etendu) 
       }));
+    
+      const dataRemplie2 = Array.from({ length: 25 }, (_, i) => {
+        const x = (i + 1).toString();
+        const point = this.seriesDataEtendue.find(p => p.x === x);
+        return {
+          x,
+          y: point ? point.y : null
+        };
+      });
       if (data.length > 0) {
         this.numeroCourant = data[data.length - 1].numeroCycle;
       }
@@ -363,14 +395,20 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
     this.chartOptionsMoyenne = {
       series: [{
         name: 'Moyenne',
-        data: this.seriesDataMoyenne
+        data: dataRemplie
       }],
       chart: {
         type: 'line',
         height: 400,
         background: 'transparent',
-        animations: { enabled: false },
-        toolbar: { show: false }
+        animations: {
+          enabled: false,
+          easing: 'linear',
+          speed: 1,
+          animateGradually: { enabled: false },
+          dynamicAnimation: { enabled: false }
+        },
+        toolbar: { show: false } ,
       },
       xaxis: {
         type: 'numeric',
@@ -397,14 +435,19 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
         enabled: false
       },
       markers: {
-        size: 6,
-        shape: 'circle',
+        size: 5,
         strokeColors: '#fff',
-        strokeWidth: 2,
-        colors: ['#000']
+        strokeWidth: 1,
+        colors: ['#333']
       },
       tooltip: {
-        enabled: true
+        enabled: true,
+        x: {
+          formatter: (val: number) => `Numéro Courant: ${val}`
+        },
+        y: {
+          formatter: (val: number) => `${val}`
+        }
       },
       annotations: {
         yaxis: [
@@ -495,14 +538,20 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
     this.chartOptionsEtendue = {
       series: [{
         name: 'Étendue',
-        data: this.seriesDataEtendue
+        data: dataRemplie2
       }],
       chart: {
         type: 'line',
         height: 250,
         background: 'transparent',
-        animations: { enabled: false },
-        toolbar: { show: false }
+        animations: {
+          enabled: false,
+          easing: 'linear',
+          speed: 1,
+          animateGradually: { enabled: false },
+          dynamicAnimation: { enabled: false }
+        },
+        toolbar: { show: false } ,
       },
       xaxis: {
         type: 'numeric',
@@ -535,7 +584,13 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
         colors: ['#333']
       },
       tooltip: {
-        enabled: true
+        enabled: true,
+        x: {
+          formatter: (val: number) => `Numéro Courant: ${val}`
+        },
+        y: {
+          formatter: (val: number) => `${val}`
+        }
       },
       annotations: {
         yaxis: [
@@ -720,15 +775,23 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
     const torsadage = this.torsadages.find(p => p.numeroCycle === numCourant);
     return torsadage ? torsadage.quantiteAtteint : null;
   }
-   naviger(){
+  /* naviger(){
     localStorage.removeItem('reponseApi')
     this.router.navigate(['/dashboard']);
-  }
+  }*/
 
   extraireValeurNumerique(spec: string): number {
     const match = spec.match(/[\d.]+/); // Capture les nombres (entiers ou décimaux)
     return match ? parseFloat(match[0]) : 0;
   }
-  
+  naviger() {
+    localStorage.removeItem('reponseApi');
+    localStorage.removeItem('pdekTorsadage');
+    localStorage.removeItem('torsadage');
+    // Trick pour forcer reload
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/dashboard']);
+    });
+  }
   
 }

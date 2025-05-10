@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError  , map} from 'rxjs/operators';
 import { Torsadage } from 'src/app/Modeles/Torsadage';
 import { GeneralService } from '../Géneral/general.service';
+import { User } from 'src/app/Modeles/User';
 
 @Injectable({
   providedIn: 'root'
@@ -114,5 +115,16 @@ export class TorsadageService {
                   { headers, params }
                 );
               }
+
+ private baseUrl = 'http://localhost:8281/operations/torsadage';
+                    getUsersByPdek(pdekId: number): Observable<User[]> {
+                      const token = localStorage.getItem('token'); // récupère le token depuis le local storage
+                  
+                      const headers = new HttpHeaders({
+                        'Authorization': `Bearer ${token}`
+                      });
+                  
+                      return this.http.get<User[]>(`${this.baseUrl}/users-by-pdek/${pdekId}`, { headers });
+                    }               
               
 }

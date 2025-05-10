@@ -122,7 +122,7 @@ submitForm() {
               this.general.nbrNotifications=0 ; 
               this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
               this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
-              this.general.recupererNombreNotificationsTousProcessSaufPistolet() ;  
+              this.general.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite() ;  
             }
             if( this.role =="CHEF_DE_LIGNE"){
                 this.general.donnees = [];

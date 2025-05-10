@@ -363,6 +363,7 @@ export const navItems: NavItem[] = [
   },
   {
     navCap: 'Archives',
+     roles: ['ADMIN', ], 
   },
   {
     displayName: 'Archives',

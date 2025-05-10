@@ -15,13 +15,17 @@
     <div id="idBorderTableau">
     <table border="2" id="tableTitre">
       <tr>
-        <td>Type opération Mesure de <br> valeur de force de serrage</td>
-        <td>Instrument de mesure :<br>Machine de traction MAV<br>Outil KBP-GS2B</td>
-        <td>Spécification de mesure <br><strong style="color: brown;">40 N (Jaune)</strong></td>
-        <td>Limite d'intervention<br><strong style="color: red;">min. 34 N / max. 46 N</strong></td>
-        <td>Fréquence de contrôle :<br>Selon PDS</td>
-        <td>Numéro de pistolet :<br><strong>{{ getNumeroPistolet(page) ?? '' }}</strong></td>
-        <td>
+        <td style="font-size: 13px;">Type opération Mesure de <br> 
+                                     valeur de force de serrage</td>
+        <td style="font-size: 13px;">Instrument de mesure :<br>
+                    Machine de traction MAV<br>Outil KBP-GS2B</td>
+        <td style="font-size: 13px;">
+              Spécification de mesure 
+              <br><strong style="color: brown;font-size: 18px;">40 N (Jaune)</strong></td>
+        <td style="font-size: 13px;">Limite d'intervention<br><strong style="color: red;font-size: 18px;">min. 34 N / max. 46 N</strong></td>
+        <td style="font-size: 13px;">Fréquence de contrôle :<br>Selon PDS</td>
+        <td style="font-size: 13px;">Numéro de pistolet :<br><strong>{{ getNumeroPistolet(page) ?? '' }}</strong></td>
+        <td style="font-size: 13px;">
           Segment / année<br>
           {{segmentUser}} /  {{ getAnnee(page,0) ?? '' }} <br>
           <div style="background-color: yellow; display: inline-block; padding: 4px 8px; font-weight: bold;">
@@ -71,7 +75,7 @@
        <!-- TABLEAU PRINCIPAL -->
 <table class="main-table">
   <!-- Code de répartition -->
-  <tr>
+  <tr class="blanc-background">
     <th>Code de répartition</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getCodeRepartition(page, col) ?? '' }}
@@ -79,7 +83,7 @@
   </tr>
 
   <!-- Date sans année -->
-  <tr>
+  <tr class="blanc-background">
     <th>Date</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getDateSansAnnee(page, col) ?? '' }}
@@ -87,17 +91,16 @@
     
   </tr>
 
-  <!-- Coupe propre -->
+  <!-- Coupe propre 
   <tr>
     <th>Coupe Propre <br> 'OK' &nbsp;'N-OK'</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getCoupePropre(page, col) ?? '' }}
-    </td>
-    
+    </td> 
   </tr>
-
+-->
   <!-- Nom -->
-  <tr>
+  <tr class="blanc-background">
     <th>Nom</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getNom(page, col) ?? '' }}
@@ -105,34 +108,34 @@
   </tr>
 
   <!-- 5 LIGNES X -->
-  <tr>
+  <tr class="blanc-background">
     <th rowspan="5">X</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 0, col) ?? '' }}
     </td> 
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 1, col) ?? '' }}
     </td>  
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 2, col) ?? '' }}
     </td>  
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 3, col) ?? '' }}
     </td>  </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 4, col) ?? '' }}
     </td>
   </tr>
 
   <!-- Moyenne -->
-  <tr>
+  <tr class="blanc-background">
     <th>X̄</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getMoyenne(page, col) ?? '' }}
@@ -140,7 +143,7 @@
   </tr>
 
   <!-- Étendue -->
-  <tr>
+  <tr class="blanc-background">
     <th>R</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getEtendu(page, col) ?? '' }}
@@ -148,7 +151,7 @@
   </tr>
 
   <!-- Num courant -->
-  <tr>
+  <tr  class="gris-background">
     <th>Nr courant</th>
     <td *ngFor="let i of [].constructor(25); let idx = index">
       {{ idx + 1 }}
@@ -170,20 +173,24 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let i of twentyFive; let index = index">
+      <tr *ngFor="let i of twentyFive; let index = index" class="blanc-background">
         <td>{{ index + 1 }}</td>
         <ng-container *ngIf="page.pistolets[index] as pistolet">
           <td>{{ pistolet.nbrCollierTester }}</td>
           <td>{{ pistolet.axeSerrage }}</td>
           <td>{{ pistolet.semaine }}</td>
           <td>
-            <button (click)="onValiderPistolet(pistolet.id)" 
-                    *ngIf="pistolet.decision === 0 && !pistoletsValides.has(pistolet.id)" 
-                    class="custom-check-button">
-              <i class="fa fa-check"></i>
-            </button>
-            <span *ngIf="pistolet.decision === 1 || pistoletsValides.has(pistolet.id)">Confirmé</span>
-          </td>
+               <button (click)="onValiderPistolet(pistolet.id)" 
+                *ngIf="pistolet.decision === 0 &&pistolet.rempliePlanAction === 0 
+                && !pistoletsValides.has(pistolet.id) && role ==='AGENT_QUALITE_PISTOLET'" 
+                class="custom-check-button">
+          <i class="fa fa-check"></i>
+        </button>
+        <span *ngIf="pistolet.decision === 0 && pistolet.rempliePlanAction === 0 &&  role ==='TECHNICIEN'">N/V</span>
+        <span *ngIf="pistolet.decision === 0 && pistolet.rempliePlanAction === 1 &&  role ==='TECHNICIEN'">Invalide</span>
+        <span *ngIf="pistolet.decision === 0 && pistolet.rempliePlanAction === 1 &&  role ==='AGENT_QUALITE_PISTOLET'">Invalide</span>
+        <span *ngIf="pistolet.decision === 1 || pistoletsValides.has(pistolet.id)">Confirmé</span>
+      </td>    
         </ng-container>
         <ng-container *ngIf="!page.pistolets[index]">
           <td></td><td></td><td></td><td></td>

@@ -77,13 +77,13 @@
       <div class="tables-wrapper" >
        <!-- TABLEAU PRINCIPAL -->
 <table class="main-table">
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Longueur fil début Cde</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getLongueurFinalDebutCde(page, col) ?? '' }}
     </td> 
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Longueur fil fin Cde</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getLongueurFinalFinCde(page, col) ?? '' }}
@@ -91,7 +91,7 @@
   </tr>
 
    <!-- Ligne 3 : Titre + C1 -->
-   <tr>
+   <tr class="blanc-background">
     <th rowspan="2" class="bordered">
       Longueur bouts non tors. début Cde
     </th>
@@ -101,7 +101,7 @@
     </td>
   </tr>
 
-  <tr>
+  <tr class="blanc-background">
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurBoutDebutC2(page, col) ?? '' }}
@@ -110,7 +110,7 @@
  
 
    <!-- Ligne 3 : Titre + C1 -->
-   <tr>
+   <tr class="blanc-background">
     <th rowspan="2" class="bordered">
       Longueur bouts non tors. fin Cde
     </th>
@@ -121,7 +121,7 @@
   </tr>
 
   <!-- Ligne 4 : C2 -->
-  <tr>
+  <tr class="blanc-background">
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurBoutFinC2(page, col) ?? '' }}
@@ -129,7 +129,7 @@
   </tr>
 
    <!-- Ligne 3 : Titre + C1 -->
-   <tr>
+   <tr class="blanc-background">
     <th rowspan="2" class="bordered">
       Déc. max début Cde
     </th>
@@ -140,14 +140,14 @@
   </tr>
 
   <!-- Ligne 4 : C2 -->
-  <tr>
+  <tr class="blanc-background">
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getDecalageMaxDebutC2(page, col) ?? '' }}
     </td>
   </tr>
 
-  <tr>
+  <tr class="blanc-background">
     <th rowspan="2" class="bordered">
       Déc. max fin Cde
     </th>
@@ -158,7 +158,7 @@
   </tr>
 
   <!-- Ligne 4 : C2 -->
-  <tr>
+  <tr class="blanc-background">
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getDecalageMaxFinC1(page, col) ?? '' }}
@@ -166,27 +166,27 @@
   </tr>
   <!-- Code de répartition -->
 
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Longueur fil fin Cde</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getLongueurFinalFinCde(page, col) ?? '' }}
     </td> 
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Code de mesure</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getCodeControle(page, col) ?? '' }}
     </td>
   </tr>
   <!-- Date sans année -->
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Date </th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getDateSansAnnee(page, col) ?? '' }}
     </td>
     
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Nom </th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getMatriculeOperateur(page, col) ?? '' }}
@@ -196,34 +196,34 @@
   
 
   <!-- 5 LIGNES X -->
-  <tr>
+  <tr class="blanc-background">
     <th rowspan="5" colspan="2" class="bordered">X</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 0, col) ?? '' }}
     </td> 
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 1, col) ?? '' }}
     </td>  
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 2, col) ?? '' }}
     </td>  
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 3, col) ?? '' }}
     </td>  </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 4, col) ?? '' }}
     </td>
   </tr>
 
   <!-- Moyenne -->
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">X̄</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getMoyenne(page, col) ?? '' }}
@@ -231,13 +231,13 @@
   </tr>
 
   <!-- Étendue -->
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">R</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getEtendu(page, col) ?? '' }}
     </td>
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Atteinte quantité</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getQuantiteAtteint(page, col) ?? '' }}
@@ -266,7 +266,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let i of twentyFive; let index = index">
+      <tr *ngFor="let i of twentyFive; let index = index" class="blanc-background">
         <td >{{ index + 1 }}</td>
         <ng-container *ngIf="page.torsadages[index] as torsadage">
           <td>{{ torsadage.numCommande }}</td>
@@ -274,11 +274,14 @@
           <td>{{ torsadage.numerofil }}</td>
           <!--td>{{ torsadage.decision }}</td-->
           <td>
-            <button (click)="onValiderTorsadage(torsadage.id)" 
-                    *ngIf="torsadage.decision === 0 && !pistoletsValides.has(torsadage.id)" 
+             <button (click)="onValiderTorsadage(torsadage.id)" 
+                    *ngIf="torsadage.decision === 0 && !pistoletsValides.has(torsadage.id)
+                     && roleUser==='AGENT_QUALITE'" 
                     class="custom-check-button">
               <i class="fa fa-check"></i>
             </button>
+           <span *ngIf="roleUser==='CHEF_DE_LIGNE' && torsadage.decision === 0 "> N/V</span>
+
             <span *ngIf="torsadage.decision === 1 || pistoletsValides.has(torsadage.id)">Confirmé</span>
           </td>
         </ng-container>
@@ -294,6 +297,13 @@
 </div>
 
       </div>
+         <div>
+              <br>
+            <span id="titreCode"> Code de Controle : </span>
+            <span id="code1"> A = Rupture à cause défaut de matériel ou perturbation de moyen de travail /Arrét </span>
+            <span id="code2"> D = Démarrage de commande </span>
+            <span id="code3"> R = Machine réparé </span><br>
+            </div>
        </div>
        <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
        (click)="naviger()">Retour à la liste des PDEKs</button>

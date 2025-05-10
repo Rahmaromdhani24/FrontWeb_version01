@@ -166,7 +166,8 @@ body {
   
   #tableTitre td {
     border: 2px solid black; /* Bordures internes */
-    padding: 5px;             /* Un peu d’espace pour le texte */
+    padding: 5px;    
+               /* Un peu d’espace pour le texte */
   }
   
   .custom-check-button {
@@ -361,4 +362,49 @@ body {
   font-size: 14px;
   font-weight: bold;
   line-height: 2;
+}
+/****************************************************************************************/
+.blanc-background {
+  
+  border: 1px solid black;
+  font-weight: bold;
+  font-size: 12px;
+
+}
+#titreCode{
+  font-size: 14px;
+  font-family: auto;
+  font-weight: bold;
+  color: black;
+}
+#code1{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}
+#code2{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 10px;
+}
+#code3{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}
+#code4{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 25px;
+  margin-left: 10px;
+}
+#code5{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: -4px;
 }

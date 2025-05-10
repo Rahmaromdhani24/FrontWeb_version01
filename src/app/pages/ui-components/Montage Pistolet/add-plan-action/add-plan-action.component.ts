@@ -43,6 +43,7 @@ export class AddPlanActionComponent implements OnInit {
   categoriePistolet: string = '';
   couleurPistolet: string = '';
   numeroPistolet: number = 0;
+  typePistolet : string ='' ; 
  constructor(private router: Router , private serviceTechnicien : TechnicienServiceService , 
               private servicePistoletGeneral: PistoletGeneralService ,private  general :GeneralService ) {}
     
@@ -62,6 +63,8 @@ export class AddPlanActionComponent implements OnInit {
     this.categoriePistolet = parsed.categorie ;
     this.couleurPistolet = this.getCouleurPistoletStyle(parsed.type );
     this.numeroPistolet = parsed.numeroPistolet;
+    this.typePistolet = parsed.type
+
   } 
 }
 
@@ -90,10 +93,11 @@ submitForm() {
     const numeroPage = this.pistoletPlanAction.numPage;
     const userId = this.matriculeTechnicien;
     const numeroPistolet = this.pistoletPlanAction.numeroPistolet;
-    const typePistolet = this.pistoletPlanAction.type;
+    const typePistolet = this.typePistolet;
     const categoriePistolet = this.pistoletPlanAction.categorie;
-    this.serviceTechnicien.ajouterPlanAction(pdekId, numeroPage,userId,  numeroPistolet,
-        typePistolet , categoriePistolet , detailsPlanAction).subscribe({
+    console.log("type pistolet : "+ typePistolet) ; 
+    this.serviceTechnicien.ajouterPlanAction(pdekId, numeroPage, detailsPlanAction,userId,  numeroPistolet,
+        typePistolet , categoriePistolet ).subscribe({
       next: (data) => {
         console.log('Plan action ajouté avec succès', data);
         Swal.fire({

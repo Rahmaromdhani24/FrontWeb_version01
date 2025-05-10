@@ -8,6 +8,7 @@ export interface SertissageNormal{
   heureCreation: string;
   numCycle: number;
   userSertissageNormal: number;
+  matriculeAgentQualite : number ; 
   hauteurSertissageEch1: number;
   hauteurSertissageEch2: number;
   hauteurSertissageEch3: number;

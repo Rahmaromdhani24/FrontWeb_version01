@@ -124,7 +124,7 @@
   border-width: 1px;
   left: -100px;
   border-style: solid;
-  width: 1088px;
+  width: 1086px;
   height: 225px;
  
 }
@@ -137,7 +137,7 @@
   border-width: 1px;
   left: -100px;
   border-style: solid;
-  width: 1088px ; 
+  width: 1086px ; 
   height: 371px;
 }
 #tableTitre {
@@ -163,14 +163,14 @@
   font-weight: bold;
 }
 #idBorderRemarque{
-  border-color: black;
-  border-width: 1px;
-  border-style: double;
-  width: 220px;
-  height: 81px;
-  position: relative;
-  top: 804px;
-  left: 1089px;
+     border-color: black;
+    border-width: 6px;
+    border-style: double;
+    width: 226px;
+    height: 80px;
+    position: relative;
+    top: 802px;
+    left: 1082px;
 }
 .custom-check-button {
   background-color: #28a745; /* Vert Bootstrap */
@@ -292,4 +292,17 @@
   position: relative;
   left: 235px;
   top: 17px;
+}
+.gris-background {
+  background-color: #f0f0f0;  /* Gris clair */
+  border: 1px solid black;
+  font-weight: bold;
+  font-size: 12px;
+}
+.blanc-background {
+  
+  border: 1px solid black;
+  font-weight: bold;
+  font-size: 12px;
+
 }

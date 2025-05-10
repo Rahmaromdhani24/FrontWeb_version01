@@ -41,12 +41,56 @@ export class LoginUserComponent implements OnInit {
             try {
               await this.recupererInformations(matricule);
               this.router.navigate(['/dashboard']);
+              /*this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this.router.navigate(['/dashboard']);
+              });*/
+            
             } catch (error) {
               console.error('Erreur lors de la récupération des informations', error);
             }
           }
         },
         error: (error) => {
+          let errorCode: string | undefined;
+        
+          if (error.status === 403) {
+            errorCode = "ROLE_NOT_AUTHORIZED";
+          } else {
+            errorCode = error.error?.code;
+          }
+        
+          console.log("erreur afficher : " + errorCode);
+        
+          switch (errorCode) {
+            case "MATRICULE_INVALIDE":
+              Swal.fire({
+                icon: "error",
+                title: "Matricule incorrect",
+                text: "Ce matricule n'existe pas. Veuillez réessayer !",
+              });
+              break;
+        
+            case "ROLE_NOT_AUTHORIZED":
+              Swal.fire({
+                icon: "warning",
+                title: "Accès refusé",
+                text: "Votre rôle ne vous permet pas d'accéder à cette application.",
+              });
+              break;
+        
+            case "ERREUR_GENERALE":
+            default:
+              Swal.fire({
+                icon: "error",
+                title: "Erreur de connexion",
+                text: "Une erreur inattendue est survenue. Veuillez réessayer plus tard.",
+              });
+              break;
+          }
+        }
+        
+        
+       /* error: (error) => {
             // Gérer les erreurs de connexion, par exemple une erreur réseau
             if (error.status === 400 || error.status === 500) {
               Swal.fire({
@@ -66,9 +110,9 @@ export class LoginUserComponent implements OnInit {
                 icon: "error",
                 title: "Oops...",
                 text: "Cette matricule n'existe pas, Veuillez réessayer !",
-              });*/
+              });
             }
-          }
+          }**/
         });
       } 
     }

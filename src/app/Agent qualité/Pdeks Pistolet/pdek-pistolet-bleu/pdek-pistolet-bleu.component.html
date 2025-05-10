@@ -15,16 +15,16 @@
      <div id="idBorderTableau">
       <table border="2" id="tableTitre">
         <tr>
-          <td>Type opération Mesure de <br> valeur de force de serrage</td>
-          <td>Instrument de mesure :<br>Machine de traction MAV<br>Outil KBP-GS2B</td>
-          <td>Spécification de mesure : 80 - 120 N<br>
+          <td style="font-size: 13px;">Type opération Mesure de <br> valeur de force de serrage</td>
+          <td style="font-size: 13px;">Instrument de mesure :<br>Machine de traction MAV<br>Outil KBP-GS2B</td>
+          <td style="font-size: 13px;">Spécification de mesure : 80 - 120 N<br>
             <strong class="styleSpecidication">OGW = 120/OEW - 20%T </strong><br>
             <strong class="styleSpecidication">UGW = 80/UEG + 20%T </strong><br></td>
-            <td>Fréquence de contrôle :<br>Selon PDS</td>
-          <td>Réglage 2 :<br>Interval de diamétre <br>de seraage <br>
+            <td style="font-size: 13px;">Fréquence de contrôle :<br>Selon PDS</td>
+          <td style="font-size: 13px;">Réglage 2 :<br>Interval de diamétre <br>de seraage <br>
             <strong class="styleSpecidication">de 1.5 mm à 50mm</strong></td>
-          <td>Numéro de pistolet :<br><strong>{{numeroPistolet}}</strong></td>
-          <td>
+          <td style="font-size: 13px;">Numéro de pistolet :<br><strong>{{numeroPistolet}}</strong></td>
+          <td style="font-size: 13px;">
             Segment / année<br>
             {{segmentUser}} / {{ getAnnee() }}<br>
             <div style="background-color: rgb(0, 17, 255); display: inline-block; padding: 4px 8px; font-weight: bold;">
@@ -75,25 +75,25 @@
     <div class="tables-wrapper">
       <!-- Tableau principal -->
       <table class="main-table">
-        <tr>
+        <tr class="blanc-background">
           <th>Code de répartition</th>
           <td *ngFor="let i of twentyFive">
             {{ getCodeRepartition(i) ?? '' }}
           </td>
         </tr>
-        <tr>
+        <tr class="blanc-background">
           <th>Date</th>
           <td *ngFor="let i of twentyFive">
             {{ getDateSansAnnee(i) ?? '' }}
           </td>
         </tr>
-        <tr>
+        <tr class="blanc-background">
           <th>Coupe Propre <br> 'OK' &nbsp;'N-OK'</th>
           <td *ngFor="let i of twentyFive">
             {{ getCoupePropre(i) ?? '' }}
           </td>
         </tr>
-        <tr>
+        <tr class="blanc-background">
           <th>Nom</th>
           <td *ngFor="let i of twentyFive">
             {{ getNom(i) ?? '' }}
@@ -101,23 +101,23 @@
         </tr>
 
         <!-- 5 lignes X -->
-        <tr>
+        <tr class="blanc-background">
           <th rowspan="5">X</th>
           <td *ngFor="let num of twentyFive">{{ getValeurX(0, num) ?? '' }}</td>
         </tr>
-        <tr>
+        <tr class="blanc-background">
           <td *ngFor="let num of twentyFive">{{ getValeurX(1, num) ?? '' }}</td>
         </tr>
-        <tr>
+        <tr class="blanc-background">
           <td *ngFor="let num of twentyFive">{{ getValeurX(2, num) ?? '' }}</td>
         </tr>
-        <tr>
+        <tr class="blanc-background">
           <td *ngFor="let num of twentyFive">{{ getValeurX(3, num) ?? '' }}</td>
         </tr>
-        <tr>
+        <tr class="blanc-background">
           <td *ngFor="let num of twentyFive">{{ getValeurX(4, num) ?? '' }}</td>
         </tr>
-        <tr>
+        <tr class="blanc-background">
           <th>X̄</th>
           <td *ngFor="let i of twentyFive">
             {{ getMoyenne(i) ?? '' }}
@@ -125,14 +125,14 @@
         </tr>
         
         <!-- Ligne de l'étendue -->
-        <tr>
+        <tr class="blanc-background">
           <th>R</th>
           <td *ngFor="let i of twentyFive">
             {{ getEtendu(i) ?? '' }}
           </td>
         </tr>
 
-        <tr>
+        <tr class="blanc-background">
           <th>Nr courant</th>
           <td *ngFor="let i of numCourants">{{i}}</td>
         </tr>
@@ -150,21 +150,24 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let i of rows" >
-            <td style="height: 30px">{{ i }}</td>
+          <tr *ngFor="let i of rows" class="blanc-background">
+            <td style="height: 30px" >{{ i }}</td>
             <ng-container *ngIf="getPistoletParNumCourant(i) as pistolet">
               <td style="height: 30px">{{ pistolet.nbrCollierTester }}</td>
               <td style="height: 30px" >{{ pistolet.axeSerrage }}</td>
               <td style="height: 30px">{{ pistolet.semaine }}</td>
               <td style="height: 30px">
-        <button (click)="onValiderPistolet(pistolet.id)" 
-                *ngIf="pistolet.decision === 0 && !pistoletsValides.has(pistolet.id)" 
+       <button
+                (click)="onValiderPistolet(pistolet.id)"
+                *ngIf="pistolet.decision === 0 &&pistolet.rempliePlanAction === 0 &&
+                !pistoletsValides.has(pistolet.id)&&  role ==='AGENT_QUALITE_PISTOLET'" 
                 class="custom-check-button">
-          <i class="fa fa-check"></i>
-        </button>
-      
-        <span *ngIf="pistolet.decision === 1 || pistoletsValides.has(pistolet.id)">Confirmé</span>
-      </td>
+                <i class="fa fa-check"></i>
+              </button>
+    <span *ngIf="pistolet.decision === 0 && role ==='TECHNICIEN'&& pistolet.rempliePlanAction === 1 ">Invalide</span>
+    <span *ngIf="pistolet.decision === 0 && pistolet.rempliePlanAction === 1 &&  role ==='AGENT_QUALITE_PISTOLET'">Invalide</span>
+    <span *ngIf="pistolet.decision === 1 || pistoletsValides.has(pistolet.id)">Confirmé</span>
+              </td>
       
               
            </ng-container>

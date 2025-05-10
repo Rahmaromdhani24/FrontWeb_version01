@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { catchError, tap } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +18,7 @@ import { Pistolet } from 'src/app/Modeles/Pistolet';
 import { MatButtonModule } from '@angular/material/button';
 import { SoudureService } from 'src/app/services/Agent Qualité Operation Soudure/soudure.service';
 import { Soudure } from 'src/app/Modeles/Soudure';
+import * as ApexCharts from 'apexcharts';
 
 @Component({
   selector: 'app-pdek-soudure-simple',
@@ -35,11 +36,11 @@ import { Soudure } from 'src/app/Modeles/Soudure';
   styleUrl: './pdek-soudure-simple.component.scss'
 })
 export class PdekSoudureSimpleComponent implements OnInit ,AfterViewInit  {
-
+  window = window;
    constructor(private serviceSoudure: SoudureService  , private router : Router ){}
    matriculeAgentQualite : number ;
-   seriesDataEtendue: { x: number, y: number }[] = [];
-   seriesDataMoyenne: { x: number, y: number }[] = [];
+   seriesDataEtendue: { x: string, y: number }[] = [];
+   seriesDataMoyenne: { x: string, y: number }[] = [];
    rows = Array.from({ length: 25 }, (_, i) => i + 1);
    showLoader : boolean = true; 
    twentyFive: number[] = Array.from({ length: 25 }, (_, i) => i + 1); // Le tableau original
@@ -116,7 +117,13 @@ public chartOptionsMoyenne: {
     type: 'line',
     height: 400,
     background: 'transparent',
-    animations: { enabled: false },
+    animations: {
+      enabled: false,
+      easing: 'linear',
+      speed: 1,
+      animateGradually: { enabled: false },
+      dynamicAnimation: { enabled: false }
+    },
     toolbar: { show: false }
   },
   xaxis: {
@@ -132,7 +139,7 @@ public chartOptionsMoyenne: {
     max: this.moyenneMax + 2, // Dynamique en fonction de moyenneMax
     tickAmount: 20,
     labels: {
-      show: true,
+      show: false,
       formatter: (val: number) => val % 2 === 0 && val !== 0 ? `${val}` : ''
     }
   },
@@ -150,7 +157,13 @@ public chartOptionsMoyenne: {
     colors: ['#333']
   },
   tooltip: {
-    enabled: true
+    enabled: true,
+    x: {
+      formatter: (val: number) => `Numéro Courant: ${val}`
+    },
+    y: {
+      formatter: (val: number) => `${val}`
+    }
   },
   annotations: {
     yaxis: [
@@ -270,13 +283,13 @@ public chartOptionsMoyenne: {
      }
      ,
      xaxis: {
-       type: 'numeric',
-       min: 1,
-       max:25 ,
-       labels: { show: false },
-       axisTicks: { show: false },
-       axisBorder: { show: false }
-     },
+      type: 'numeric',
+      min: 1,
+      max: 25,
+      labels: { show: false },
+      axisTicks: { show: false },
+      axisBorder: { show: false }
+    },
      yaxis: {
       min: 0,
       max: this.etenduMax , // ✅ sécurité au cas où non chargé
@@ -300,7 +313,13 @@ public chartOptionsMoyenne: {
       colors: ['#333']
     },
     tooltip: {
-      enabled: true
+      enabled: true,
+      x: {
+        formatter: (val: number) => `Numéro Courant: ${val}`
+      },
+      y: {
+        formatter: (val: number) => `${val}`
+      }
     },
     annotations: {
       yaxis: [
@@ -328,15 +347,32 @@ public chartOptionsMoyenne: {
         console.log('soudures récupérés :', data);
   
         this.seriesDataMoyenne = data.map(p => ({
-          x: p.numeroCycle,
+          x: p.numeroCycle.toString(), // 👈 Important ! doit correspondre à category type string
           y: p.moyenne
-        }));
-  
+        }));        
+      
+        const dataRemplie = Array.from({ length: 25 }, (_, i) => {
+          const x = (i + 1).toString();
+          const point = this.seriesDataMoyenne.find(p => p.x === x);
+          return {
+            x,
+            y: point ? point.y : null
+          };
+        });
+     
         this.seriesDataEtendue = data.map(p => ({
-          x: p.numeroCycle,
-          y: Number(p.etendu)
+          x: p.numeroCycle.toString(),
+          y: Number(p.etendu) 
         }));
-  
+      
+        const dataRemplie2 = Array.from({ length: 25 }, (_, i) => {
+          const x = (i + 1).toString();
+          const point = this.seriesDataEtendue.find(p => p.x === x);
+          return {
+            x,
+            y: point ? point.y : null
+          };
+        });
         if (data.length > 0) {
           this.numeroCourant = data[data.length - 1].numeroCycle;
         }
@@ -345,11 +381,89 @@ public chartOptionsMoyenne: {
         this.chartOptionsEtendue = {
           series: [{
             name: 'Étendue',
-            data: this.seriesDataEtendue
+            data: dataRemplie2
           }],
           chart: {
             type: 'line',
             height: 250,
+            background: 'transparent',
+            animations: {
+              enabled: false,
+              easing: 'linear',
+              speed: 1,
+              animateGradually: {
+                enabled: false
+              },
+              dynamicAnimation: {
+                enabled: false
+              }
+            },
+            toolbar: { show: false }
+          }
+          ,
+          xaxis: {
+            type: 'numeric',
+            min: 1,
+            max: 25,
+            labels: { show: false },
+            axisTicks: { show: false },
+            axisBorder: { show: false }
+          },
+          yaxis: {
+           min: 0,
+           max: this.etenduMax , // ✅ sécurité au cas où non chargé
+           tickAmount: 20,
+           labels: {
+             show: true,
+             formatter: (val: number) => val % 2 === 0 && val !== 0 ? `${val}` : ''
+           }
+         },
+         stroke: {
+           curve: 'straight',
+           width: 2
+         },
+         dataLabels: {
+           enabled: false
+         },
+         markers: {
+           size: 5,
+           strokeColors: '#fff',
+           strokeWidth: 1,
+           colors: ['#333']
+         },
+         tooltip: {
+           enabled: true,
+           x: {
+             formatter: (val: number) => `Numéro Courant: ${val}`
+           },
+           y: {
+             formatter: (val: number) => `${val}`
+           }
+         },
+         annotations: {
+           yaxis: [
+             {
+               y: this.etenduMax,
+               borderColor: 'red',
+               label: {
+                 style: {
+                   color: '#fff',
+                   background: 'red'
+                 },
+                 text: `Étendue Max: ${this.etenduMax}`
+               }
+             }
+           ]
+         }
+        } ;
+        this.chartOptionsMoyenne = {
+          series: [{
+            name: 'Moyenne',
+            data: dataRemplie
+          }],
+          chart: {
+            type: 'line',
+            height: 400,
             background: 'transparent',
             animations: {
               enabled: false,
@@ -369,66 +483,11 @@ public chartOptionsMoyenne: {
             axisBorder: { show: false }
           },
           yaxis: {
-            min: 0,
-            max: this.etenduMax ?? 10, // 💥 Valeur de fallback
+            min: this.pelageMin - 4, // Dynamique en fonction de pelageMin
+            max: this.moyenneMax + 2, // Dynamique en fonction de moyenneMax
             tickAmount: 20,
             labels: {
-              show: true,
-              formatter: (val: number) => val % 2 === 0 && val !== 0 ? `${val}` : ''
-            }
-          },
-          stroke: {
-            curve: 'straight',
-            width: 2
-          },
-          dataLabels: { enabled: false },
-          markers: {
-            size: 5,
-            strokeColors: '#fff',
-            strokeWidth: 1,
-            colors: ['#333']
-          },
-          tooltip: { enabled: true },
-          annotations: {
-            yaxis: [{
-              y: this.etenduMax ?? 10, // 💥
-              borderColor: 'red',
-              label: {
-                style: {
-                  color: '#fff',
-                  background: 'red'
-                },
-                text: `Étendue Max: ${this.etenduMax}`
-              }
-            }]
-          }
-        };
-        this.chartOptionsMoyenne = {
-          series: [{
-            name: 'Moyenne',
-            data: this.seriesDataMoyenne
-          }],
-          chart: {
-            type: 'line',
-            height: 400,
-            background: 'transparent',
-            animations: { enabled: false },
-            toolbar: { show: false }
-          },
-          xaxis: {
-            type: 'numeric',
-            min: 1,
-            max: 25,
-            labels: { show: false },
-            axisTicks: { show: false },
-            axisBorder: { show: false }
-          },
-          yaxis: {
-            min: this.pelageMin - 4,
-            max: this.moyenneMax + 2,
-            tickAmount: 20,
-            labels: {
-              show: true,
+              show: false,
               formatter: (val: number) => val % 2 === 0 && val !== 0 ? `${val}` : ''
             }
           },
@@ -446,28 +505,38 @@ public chartOptionsMoyenne: {
             colors: ['#333']
           },
           tooltip: {
-            enabled: true
+            enabled: true,
+            x: {
+              formatter: (val: number) => `Numéro Courant: ${val}`
+            },
+            y: {
+              formatter: (val: number) => `${val}`
+            }
           },
           annotations: {
             yaxis: [
+              // Zone rouge (Pelage Min - 4 à Pelage Min)
               {
                 y: this.pelageMin - 4,
                 y2: this.pelageMin,
                 fillColor: '#ff00006e',
                 opacity: 0.4
               },
+              // Zone jaune (Pelage Min à Moyenne Min)
               {
                 y: this.pelageMin,
                 y2: this.moyenneMin,
                 fillColor: '#ffff0064',
                 opacity: 0.5
               },
+              // Zone verte (Moyenne Min à Moyenne Max)
               {
                 y: this.moyenneMin,
                 y2: this.moyenneMax,
                 fillColor: '#00c80087',
                 opacity: 0.4
               },
+              // Lignes pour Pelage Min, Moyenne Min, et Moyenne Max
               {
                 y: this.pelageMin,
                 borderColor: 'yellow',
@@ -500,11 +569,32 @@ public chartOptionsMoyenne: {
                   },
                   text: `Moyenne Max: ${this.moyenneMax}`
                 }
+              } ,
+              {
+                y: this.pelageMin,
+                borderColor: 'red',
+                label: {
+                  style: {
+                    color: '#fff',
+                    background: 'red'
+                  },
+                
+                }
+              } ,
+              {
+                y: this.moyenneMin,
+                borderColor: 'yellow',
+                label: {
+                  style: {
+                    color: '#fff',
+                    background: 'yellow'
+                  },
+                
+                }
               }
             ]
           }
         };
-        
         console.log('Séries Moyenne :', this.seriesDataMoyenne);
         console.log('Séries Étendue :', this.seriesDataEtendue);
       }),
@@ -720,10 +810,27 @@ public chartOptionsMoyenne: {
   
   
   
-  naviger(){
+  /*naviger(){
     localStorage.removeItem('reponseApi')
     localStorage.removeItem('soudure')
     this.router.navigate(['/dashboard']);
-  }
+  }*/
+    naviger() {
+      localStorage.removeItem('reponseApi');
+      localStorage.removeItem('soudure');
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['/dashboard']);
+      });
+    }
+    @HostListener('window:beforeprint', [])
+onBeforePrint() {
+  ApexCharts.exec('chartMoyenne', 'updateOptions', {
+    chart: { width: 800, height: 200 }
+  });
+
+  ApexCharts.exec('chartEtendue', 'updateOptions', {
+    chart: { width: 800, height: 200 }
+  });
+}
 
  }

@@ -490,4 +490,41 @@
   font-weight: bold;
   font-size: 12px;
 
+}/****************************************************************************************/
+.blanc-background {
+  
+  border: 1px solid black;
+  font-weight: bold;
+  font-size: 12px;
+
+}
+#titreCode{
+  font-size: 14px;
+  font-family: auto;
+  font-weight: bold;
+  padding: 50px;
+  color: black;
+}
+#code1{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}
+#code2{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}
+#code3{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}
+.small-text {
+  font-size: 12px; /* ou plus petit selon ton besoin */
+  color: rgb(0, 0, 0);     /* optionnel : couleur grise pour les textes secondaires */
+  font-style: italic; /* optionnel : italique */
 }

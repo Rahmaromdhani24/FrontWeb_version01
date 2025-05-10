@@ -95,7 +95,7 @@ export class PlanActionPdfService {
     
     // Titre et logo
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
+    doc.setFontSize(15);
     doc.text('Plan d\'action', pageWidth / 2, 20, { align: 'center' });
     
     const logoLeoni = 'LEONI';
@@ -113,7 +113,7 @@ export class PlanActionPdfService {
       { header: 'Description des décisions prises', dataKey: 'decisions', width: 50 },
       { header: 'Délais', dataKey: 'delais', width: 20 },
       { header: 'Responsable', dataKey: 'responsable', width: 20 },
-      { header: 'Contremaitre', dataKey: 'contremetre', width: 20 }, // Notez l'orthographe ici
+     // { header: 'Contremaitre', dataKey: 'contremetre', width: 20 }, // Notez l'orthographe ici
       { header: 'Maintenance', dataKey: 'maintenance', width: 20 },
       { header: 'Qualité', dataKey: 'qualite', width: 20 }
   ];
@@ -129,7 +129,7 @@ export class PlanActionPdfService {
   decisions: item.description_decision || '',
   delais: item.delais || '',
   responsable: item.responsable || '',
-  contremetre: item.signature_contermetre && item.signature_contermetre !== 0 ? 'Validé' : '',
+  //contremetre: item.signature_contermetre && item.signature_contermetre !== 0 ? 'Validé' : '',
   maintenance: item.signature_maintenance && item.signature_maintenance !== 0 ? 'Validé' : '',
   qualite: item.signature_qualite && item.signature_qualite !== 0 ? 'Validé' : ''
   }));
@@ -146,7 +146,7 @@ for (let i = 0; i < rowsToAdd; i++) {
     decisions: '',
     delais: '',
     responsable: '',
-    contremetre: '',
+    //contremetre: '',
     maintenance: '',
     qualite: ''
   });
@@ -161,12 +161,12 @@ for (let i = 0; i < rowsToAdd; i++) {
             { content: 'Description des décisions prises', rowSpan: 2 },
             { content: 'Délais', rowSpan: 2 },
             { content: 'Responsable', rowSpan: 2 },
-            { content: 'Signature', colSpan: 3 }
+            { content: 'Signature', colSpan: 2}//3 }
         ],
         [
             // Cellules vides pour les colonnes avec rowSpan
             '', '', '', '', '', '', '',
-            'Contremaitre', 
+            //'Contremaitre', 
             'Maintenance', 
             'Qualité'
         ]
@@ -187,7 +187,7 @@ for (let i = 0; i < rowsToAdd; i++) {
           ],
           [
               // Ces cellules seront automatiquement masquées par la fusion
-              { content: 'Contremaitre' },
+             // { content: 'Contremaitre' },
               { content: 'Maintenance' },
               { content: 'Qualité' }
           ]
@@ -211,7 +211,7 @@ for (let i = 0; i < rowsToAdd; i++) {
       startY: 25,
       margin: { left: margin, right: margin },
       styles: {
-          fontSize: 7,
+          fontSize: 10,
           cellPadding: 2.5,
           halign: 'center',
           valign: 'middle',
@@ -221,16 +221,16 @@ for (let i = 0; i < rowsToAdd; i++) {
           lineWidth: 0.2
       },
       columnStyles: {
-          0: { cellWidth: 8, halign: 'center' },
-          1: { cellWidth: 25, halign: 'center' },
+          0: { cellWidth: 12, halign: 'center' },
+          1: { cellWidth: 23, halign: 'center' },
           2: { cellWidth: 50, halign: 'left' },
           3: { cellWidth: 40, halign: 'center' },
-          4: { cellWidth: 50, halign: 'left' },
+          4: { cellWidth: 40, halign: 'left' },
           5: { cellWidth: 20, halign: 'center' },
-          6: { cellWidth: 20, halign: 'center' },
-          7: { cellWidth: 20, halign: 'center' },
-          8: { cellWidth: 20, halign: 'center' },
-          9: { cellWidth: 20, halign: 'center' }
+          6: { cellWidth: 35, halign: 'center' },
+          7: { cellWidth: 30, halign: 'center' },
+          8: { cellWidth: 30, halign: 'center' },
+         // 9: { cellWidth: 40, halign: 'center' }
       },
       headStyles: {
           fillColor: [255, 255, 255],

@@ -7,14 +7,15 @@ import {
   ViewChild,
 } from '@angular/core';
 import { BrandingComponent } from './branding.component';
-import { TablerIconsModule } from 'angular-tabler-icons';
+//import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { NavItem } from './nav-item/nav-item';
 import { navItems } from './sidebar-data';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [BrandingComponent, TablerIconsModule, MaterialModule],
+  imports: [BrandingComponent/* TablerIconsModule,*/ , FontAwesomeModule , MaterialModule],
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent implements OnInit {

@@ -48,8 +48,8 @@ pages: {
               private router : Router  , private route: ActivatedRoute , 
               private torsadageService : TorsadageService ){}
   
-  seriesDataEtendue: { x: number, y: number }[] = [];
-   seriesDataMoyenne: { x: number, y: number }[] = [];
+  seriesDataEtendue: { x: string, y: number }[] = [];
+   seriesDataMoyenne: { x: string, y: number }[] = [];
    rows = Array.from({ length: 25 }, (_, i) => i + 1);
    showLoader : boolean = true; 
    twentyFive: number[] = Array.from({ length: 25 }, (_, i) => i + 1);
@@ -64,7 +64,8 @@ pages: {
    torsadages: Torsadage[] = [] ; 
    torsadagesParPage: Map<number, Torsadage[]> = new Map();
    specificationMesure: number = 0; 
-   
+   roleUser  = localStorage.getItem('role') || '';
+
 
    ngOnInit(): void {
     this.pdekId = +this.route.snapshot.paramMap.get('id')!;
@@ -103,7 +104,7 @@ public chartOptionsMoyenne: {
 } 
 
 // Méthode pour obtenir les options du graphique
-getChartOptionsMoyenne(data: { x: number; y: number }[]) {
+getChartOptionsMoyenne(data: { x: string, y: number | null }[]): any {
   const pas = this.specificationMesure;
 
   const zoneMin = (pas - 2) - 1;
@@ -163,14 +164,19 @@ getChartOptionsMoyenne(data: { x: number; y: number }[]) {
       enabled: false
     },
     markers: {
-      size: 6,
-      shape: 'circle',
+      size: 5,
       strokeColors: '#fff',
-      strokeWidth: 2,
-      colors: ['#000']
+      strokeWidth: 1,
+      colors: ['#333']
     },
     tooltip: {
-      enabled: true
+      enabled: true,
+      x: {
+        formatter: (val: number) => `Numéro Courant: ${val}`
+      },
+      y: {
+        formatter: (val: number) => `${val}`
+      }
     },
     annotations: {
       yaxis: [
@@ -272,7 +278,7 @@ public chartOptionsEtendue: {
       tooltip: ApexTooltip;
       annotations: ApexAnnotations;
     } 
-    getChartOptionsEtendue(data: { x: number; y: number }[]) {
+    getChartOptionsEtendue(data: { x: string, y: number | null }[]): any {
       return {
         series: [{
           name: 'Étendue',
@@ -282,15 +288,13 @@ public chartOptionsEtendue: {
           type: 'line',
           height: 250,
           background: 'transparent',
-          /*animations: {
+          animations: {
             enabled: false,
             easing: 'linear',
             speed: 1,
             animateGradually: { enabled: false },
             dynamicAnimation: { enabled: false }
           },
-          toolbar: { show: false }*/
-          animations: { enabled: false },
           toolbar: { show: false }
         },
         xaxis: {
@@ -324,7 +328,13 @@ public chartOptionsEtendue: {
           colors: ['#333']
         },
         tooltip: {
-          enabled: true
+          enabled: true,
+          x: {
+            formatter: (val: number) => `Numéro Courant: ${val}`
+          },
+          y: {
+            formatter: (val: number) => `${val}`
+          }
         },
         annotations: {
           yaxis: [
@@ -354,17 +364,43 @@ public chartOptionsEtendue: {
       this.pages = contenuPages.map((page: any) => {
         const torsadages = page.contenu;
 
-        const dataMoyenne = torsadages.map((p: any) => ({
+       /* const dataMoyenne = torsadages.map((p: any) => ({
           x: p.numeroCycle,
           y: p.moyenne
         }));
+*/
+this.seriesDataMoyenne = torsadages.map((p: any) => ({
+  x: p.numeroCycle.toString(), // 👈 Important ! doit correspondre à category type string
+  y: p.moyenne
+}));        
 
-        const dataEtendue = torsadages.map((p: any) => ({
+const dataRemplie = Array.from({ length: 25 }, (_, i) => {
+  const x = (i + 1).toString();
+  const point = this.seriesDataMoyenne.find(p => p.x === x);
+  return {
+    x,
+    y: point ? point.y : null
+  };
+});
+       /* const dataEtendue = torsadages.map((p: any) => ({
           x: p.numeroCycle,
           y: Number(p.etendu)
         }));
-        console.log("data etendu :"+  dataEtendue) ; 
+        console.log("data etendu :"+  dataEtendue) ; */
 
+        this.seriesDataEtendue = torsadages.map((p: any)=> ({
+          x: p.numeroCycle.toString(),
+          y: Number(p.etendu) 
+        }));
+      
+        const dataRemplie2 = Array.from({ length: 25 }, (_, i) => {
+          const x = (i + 1).toString();
+          const point = this.seriesDataEtendue.find(p => p.x === x);
+          return {
+            x,
+            y: point ? point.y : null
+          };
+        });
         const pdekTorsadageJson = localStorage.getItem('pdekTorsadage') || '{}';
         const pdekTorsadage= JSON.parse(pdekTorsadageJson);    
         this.specificationMesure = this.extraireValeurNumerique(pdekTorsadage.sectionFil);
@@ -373,8 +409,8 @@ public chartOptionsEtendue: {
         return {
           pageNum: page.numeroPage,
           torsadages,
-          chartOptionsMoyenne: this.getChartOptionsMoyenne(dataMoyenne),
-          chartOptionsEtendue: this.getChartOptionsEtendue(dataEtendue) // ✅ Appelle ici
+          chartOptionsMoyenne: this.getChartOptionsMoyenne(dataRemplie),
+          chartOptionsEtendue: this.getChartOptionsEtendue(dataRemplie2) // ✅ Appelle ici
         };
       });
 
@@ -543,11 +579,19 @@ public chartOptionsEtendue: {
     const torsadage = page.torsadages?.[col];
     return torsadage ? torsadage.quantiteAtteint : null;
   }
-   naviger(){
+ /*  naviger(){
     localStorage.removeItem('reponseApi')
     this.router.navigate(['/ui-components/listePdekTousProcess']);
   }
-
+*/
+naviger() {
+  localStorage.removeItem('reponseApi');
+  localStorage.removeItem('pdekTorsadage');
+  // Trick pour forcer reload
+  this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    this.router.navigate(['/ui-components/listePdekTousProcess']);
+  });
+}
   extraireValeurNumerique(spec: string): number {
     const match = spec.match(/[\d.]+/); // Capture les nombres (entiers ou décimaux)
     return match ? parseFloat(match[0]) : 0;

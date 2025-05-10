@@ -14,14 +14,9 @@ import { ChartAddPistoletJauneComponent } from './Montage Pistolet/chart-add-pis
 import { ChartAddPistoletVertComponent } from './Montage Pistolet/chart-add-pistolet-vert/chart-add-pistolet-vert.component';
 import { ChartAddPistoletRougeComponent } from './Montage Pistolet/chart-add-pistolet-rouge/chart-add-pistolet-rouge.component';
 import { ChartAddPistoletBleuComponent } from './Montage Pistolet/chart-add-pistolet-bleu/chart-add-pistolet-bleu.component';
-import { ListePDEKComponent } from './liste-pdek/liste-pdek.component';
 import { ListPlanActionComponent } from './Montage Pistolet/list-plan-action/list-plan-action.component';
 import { AddPlanActionComponent } from './Montage Pistolet/add-plan-action/add-plan-action.component';
 import { ListePdekPistoletComponent } from './Montage Pistolet/liste-pdek-pistolet/liste-pdek-pistolet.component';
-import { PdekPistoletJauneComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-jaune/pdek-pistolet-jaune.component';
-import { PdekPistoletRougeComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-rouge/pdek-pistolet-rouge.component';
-import { PdekPistoletBleuComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-bleu/pdek-pistolet-bleu.component';
-import { PdekPistoletVertComponent } from '../../Agent qualité/Pdeks Pistolet/pdek-pistolet-vert/pdek-pistolet-vert.component';
 import { PageNotificationsPistoletComponent } from './Montage Pistolet/page-notifications-pistolet/page-notifications-pistolet.component';
 import { ListsPdekTousProcessComponent } from './Components Tous process/lists-pdek-tous-process/lists-pdek-tous-process.component';
 import { PageTousNotificationsAllProcessComponent } from './Components Tous process/page-tous-notifications-all-process/page-tous-notifications-all-process.component';
@@ -32,6 +27,8 @@ import { AddPlanActionSertissageNormalComponent } from './Sertissage Normal/add-
 import { AddPlanActionSertissageIDCComponent } from './Sertissage IDC/add-plan-action-sertissage-idc/add-plan-action-sertissage-idc.component';
 import { ErreursParProcessComponent } from './statistiques All process sauf pistolet/erreurs-par-process/erreurs-par-process.component';
 import { ErreursChefLigneComponent } from './statistiques All process sauf pistolet/erreurs-chef-ligne/erreurs-chef-ligne.component';
+import { AuthGuard } from 'src/app/services/guards/auth.guard';
+import { RoleGuard } from 'src/app/services/guards/role-guard';
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -40,88 +37,118 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'addPistoletMecanique',
         component: AddPistoletMecaniqueComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE_PISTOLET'] }
       },
      {
         path: 'addPistoletPneumatique',
         component: AddPistoletPneumatiqueComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE_PISTOLET'] }
       } ,
-      {
-        path: 'forms',
-        component: AppFormsComponent,
-      },
       {
         path: 'chartAddPistoletJaune',
         component: ChartAddPistoletJauneComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE_PISTOLET'] }
       },
       {
         path: 'chartAddPistoletVert',
         component: ChartAddPistoletVertComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE_PISTOLET'] }
       },
       {
         path: 'chartAddPistoletRouge',
         component: ChartAddPistoletRougeComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE_PISTOLET'] }
       },
       {
         path: 'chartAddPistoletBleu',
         component: ChartAddPistoletBleuComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE_PISTOLET'] }
       },
-      {
-        path: 'listePdek',
-        component: ListePDEKComponent,
-      } ,
       {
         path: 'listePdekPistolet',
         component: ListePdekPistoletComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE_PISTOLET' , 'TECHNICIEN'] }
       }
       ,
       {
         path: 'listePlanAction',
         component: ListPlanActionComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE_PISTOLET' , 'TECHNICIEN'] }
       },
       {
         path: 'addPlanAction',
         component: AddPlanActionComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['TECHNICIEN'] }
       },
       {
         path: 'pageNotificationsPistolet',
         component: PageNotificationsPistoletComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE_PISTOLET' , 'TECHNICIEN'] }
       } ,
       /************************** Soudure  ****************************************/
       {
         path: 'listePdekTousProcess',
         component: ListsPdekTousProcessComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE' , 'CHEF_DE_LIGNE'] }
       } ,
       {
         path: 'listePlanActionsTousProcess',
         component: ListsPlanActionsTousProcessComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE' , 'CHEF_DE_LIGNE'] }
       } ,
       {
         path: 'pagesNotificationsAllProcess',
         component: PageTousNotificationsAllProcessComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE' , 'CHEF_DE_LIGNE'] }
       } ,
       {
         path: 'addPlanActionSoudure',
         component: AddPlanActionSoudureComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['CHEF_DE_LIGNE'] }
       },
       {
         path: 'addPlanActionTorsadage',
         component: AddPlanActionTorsadageComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['CHEF_DE_LIGNE'] }
       },
       {
         path: 'addPlanActionSertissageIDC',
         component: AddPlanActionSertissageIDCComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['CHEF_DE_LIGNE'] }
       },
       {
         path: 'addPlanActionSertissageNormal',
         component: AddPlanActionSertissageNormalComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['CHEF_DE_LIGNE'] }
       },
       {
         path: 'statAgentQualite',
         component: ErreursParProcessComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['AGENT_QUALITE'] }
       },
       {
         path: 'statChefLigne',
         component: ErreursChefLigneComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['CHEF_DE_LIGNE'] }
       },
      /*
       {

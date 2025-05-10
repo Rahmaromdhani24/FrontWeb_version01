@@ -72,7 +72,7 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
     this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
     this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesAgentQualite() ;
     this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesAgentQualite() ;
-    this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet() ;  
+    this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite() ;  
   }
   if( this.role =="CHEF_DE_LIGNE"){
       this.serviceGeneral.donnees = [];
@@ -142,7 +142,7 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
           if(donnee.typeOperation ==='Soudure'){
           this.serviceSoudure.validerSoudure (donnee.id, this.matriculeAgentQualite).subscribe({
             next: () => {
-              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
               console.log('Pdek validé avec succès');
               this.pistoletsValides.add(donnee.id); 
              this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
@@ -173,7 +173,7 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
         if(donnee.typeOperation ==='Torsadage'){
           this.serviceTorsadage.validerTorsadage (donnee.id, this.matriculeAgentQualite).subscribe({
             next: () => {
-              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
               console.log('Pdek validé avec succès');
               this.pistoletsValides.add(donnee.id); 
              this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
@@ -204,7 +204,7 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
         if(donnee.typeOperation ==='SertissageIDC'){
           this.serviceSertissageIDC.validerSertissageIDC (donnee.id, this.matriculeAgentQualite).subscribe({
             next: () => {
-              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
               console.log('Pdek validé avec succès');
               this.pistoletsValides.add(donnee.id); 
              this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
@@ -235,7 +235,7 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
         if(donnee.typeOperation ==='SertissageNormal'){
           this.serviceSertissageNormal.validerSertissageNormal(donnee.id, this.matriculeAgentQualite).subscribe({
             next: () => {
-              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
               console.log('Pdek validé avec succès');
               this.pistoletsValides.add(donnee.id); 
              this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);

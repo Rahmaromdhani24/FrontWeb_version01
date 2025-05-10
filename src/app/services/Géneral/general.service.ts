@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Pistolet } from 'src/app/Modeles/Pistolet';
@@ -17,7 +17,7 @@ export class GeneralService {
               public serviceSoudure : SoudureService , 
               public serviceTorsadage : TorsadageService ,
               public serviceSertissageIDC : SertissageIDCService , 
-              public serviceSertissageNormal : SertissageNormalService ) { }
+              public serviceSertissageNormal : SertissageNormalService   ) { }
   nbrNotifications: number ; 
   pistolets: Pistolet[] = [];
   donnees: any[] = [];
@@ -49,9 +49,17 @@ saveToken(token: string) {
 getToken(): string | null {
   return localStorage.getItem('token');
 }
+isLoggedIn(): boolean {
+  return !!localStorage.getItem('token'); // ou une vérification plus poussée
+}
+getCurrentUser(): any {
+  const userJson = localStorage.getItem('user');
+  return userJson ? JSON.parse(userJson) : null;
+}
+
 
 /*****************************************************************************************************/
-recupererNombreNotificationsTousProcessSaufPistolet() {
+recupererNombreNotificationsTousProcessSaufPistoletAgentQualite() {
     forkJoin([
       this.serviceSoudure.getNombreNotificationsAgentQualitePourValidation(),
       this.serviceTorsadage.getNombreNotificationsAgentQualitePourValidation() ,
@@ -60,17 +68,17 @@ recupererNombreNotificationsTousProcessSaufPistolet() {
     ]).subscribe({
       next: ([countSoudure, countTorsadage , countSertissageIDC , countSertissageNormal]) => {
         this.nbrNotifications = countSoudure + countTorsadage +countSertissageIDC +countSertissageNormal;
-        console.log('Total notifications :', this.nbrNotifications);
+        console.log('Total notifications agent qualite:', this.nbrNotifications);
       },
       error: (err: any) => {
         console.error('Erreur lors de la récupération des notifications :', err);
       }
     });
   }
-
+ /* //operationUser  = localStorage.getItem('operation') || '';
 recupererNombreNotificationsTousProcessSaufPistoletChefLigne(){
     forkJoin([
-      this.serviceSoudure.getNombreNotificationsChefDeLigne(),
+        this.serviceSoudure.getNombreNotificationsChefDeLigne(),
       this.serviceTorsadage.getNombreNotificationsChefDeLigne(),
       this.serviceSertissageIDC.getNombreNotificationsChefDeLigne() ,
       this.serviceSertissageNormal.getNombreNotificationsChefDeLigne() 
@@ -83,5 +91,42 @@ recupererNombreNotificationsTousProcessSaufPistoletChefLigne(){
         console.error('Erreur lors de la récupération des notifications :', err);
       }
     });
-  }
+  }*/
+    operationUser = localStorage.getItem('operation') || '';
+
+    recupererNombreNotificationsTousProcessSaufPistoletChefLigne() {
+      const observables: Observable<number>[] = [];
+    
+      if (this.operationUser === 'Soudure') {
+        observables.push(this.serviceSoudure.getNombreNotificationsChefDeLigne());
+      }
+      if (this.operationUser === 'Torsadage') {
+        observables.push(this.serviceTorsadage.getNombreNotificationsChefDeLigne());
+      }
+      if (this.operationUser === 'Sertissage_IDC') {
+        observables.push(this.serviceSertissageIDC.getNombreNotificationsChefDeLigne());
+        console.log("test de nbr notif en service general : "+this.serviceSertissageIDC.getNombreNotificationsChefDeLigne())
+      }
+      if (this.operationUser === 'Sertissage_Normal') {
+    
+        observables.push(this.serviceSertissageNormal.getNombreNotificationsChefDeLigne());
+      }
+    
+      // Si rien à exécuter, on évite l'appel à forkJoin
+      if (observables.length === 0) {
+        this.nbrNotifications = 0;
+        return;
+      }
+    
+      forkJoin(observables).subscribe({
+        next: (counts: number[]) => {
+          this.nbrNotifications = counts.reduce((acc, curr) => acc + curr, 0);
+          console.log('Total notifications :', this.nbrNotifications);
+        },
+        error: (err: any) => {
+          console.error('Erreur lors de la récupération des notifications :', err);
+        }
+      });
+    }
+    
 }

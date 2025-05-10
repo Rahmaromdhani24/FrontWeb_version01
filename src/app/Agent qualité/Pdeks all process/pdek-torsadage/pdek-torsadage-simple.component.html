@@ -76,13 +76,13 @@
       <div class="tables-wrapper" >
        <!-- TABLEAU PRINCIPAL -->
 <table class="main-table">
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Longueur fil début Cde</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getLongueurFinalDebutCde(i) ?? '' }}
     </td> 
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Longueur fil fin Cde</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getLongueurFinalFinCde(i) ?? '' }}
@@ -90,7 +90,7 @@
   </tr>
 
    <!-- Ligne 3 : Titre + C1 -->
-   <tr>
+   <tr class="blanc-background">
     <th rowspan="2" class="bordered">
       Longueur bouts non tors. début Cde
     </th>
@@ -100,7 +100,7 @@
     </td>
   </tr>
 
-  <tr>
+  <tr class="blanc-background">
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurBoutDebutC2(i) ?? '' }}
@@ -109,7 +109,7 @@
  
 
    <!-- Ligne 3 : Titre + C1 -->
-   <tr>
+   <tr class="blanc-background">
     <th rowspan="2" class="bordered">
       Longueur bouts non tors. fin Cde
     </th>
@@ -120,7 +120,7 @@
   </tr>
 
   <!-- Ligne 4 : C2 -->
-  <tr>
+  <tr class="blanc-background">
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurBoutFinC2(i) ?? '' }}
@@ -128,7 +128,7 @@
   </tr>
 
    <!-- Ligne 3 : Titre + C1 -->
-   <tr>
+   <tr class="blanc-background">
     <th rowspan="2" class="bordered">
       Déc. max début Cde
     </th>
@@ -139,14 +139,14 @@
   </tr>
 
   <!-- Ligne 4 : C2 -->
-  <tr>
+  <tr class="blanc-background">
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getDecalageMaxDebutC2(i) ?? '' }}
     </td>
   </tr>
 
-  <tr>
+  <tr class="blanc-background">
     <th rowspan="2" class="bordered">
       Déc. max fin Cde
     </th>
@@ -157,7 +157,7 @@
   </tr>
 
   <!-- Ligne 4 : C2 -->
-  <tr>
+  <tr class="blanc-background">
     <td><strong>C2</strong></td>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getDecalageMaxFinC1(i) ?? '' }}
@@ -165,27 +165,27 @@
   </tr>
   <!-- Code de répartition -->
 
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Longueur fil fin Cde</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getLongueurFinalFinCde(i) ?? '' }}
     </td> 
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Code de mesure</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getCodeControle(i) ?? '' }}
     </td>
   </tr>
   <!-- Date sans année -->
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Date </th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getDateSansAnnee(i) ?? '' }}
     </td>
     
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Nom </th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getMatriculeOperateur(i) ?? '' }}
@@ -194,26 +194,26 @@
   </tr>
   
 <!-- 5 LIGNES X -->
-<tr>
+<tr class="blanc-background">
   <th rowspan="5" colspan="2" class="bordered">X</th>
   <td *ngFor="let i of twentyFive">{{ getValeurX(0, i) ?? '' }}</td>
 </tr>
-<tr>
+<tr class="blanc-background">
   <td *ngFor="let i of twentyFive">{{ getValeurX(1, i) ?? '' }}</td>
 </tr>
-<tr>
+<tr class="blanc-background">
   <td *ngFor="let i of twentyFive">{{ getValeurX(2, i) ?? '' }}</td>
 </tr>
-<tr>
+<tr class="blanc-background">
   <td *ngFor="let i of twentyFive">{{ getValeurX(3, i) ?? '' }}</td>
 </tr>
-<tr>
+<tr class="blanc-background">
   <td *ngFor="let i of twentyFive">{{ getValeurX(4, i) ?? '' }}</td>
 </tr>
 
 
   <!-- Moyenne -->
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">X̄</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getMoyenne(i) ?? '' }}
@@ -221,13 +221,13 @@
   </tr>
 
   <!-- Étendue -->
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">R</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getEtendu(i) ?? '' }}
     </td>
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th colspan="2" class="bordered">Atteinte quantité</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getQuantiteAtteint(i) ?? '' }}
@@ -256,7 +256,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let i of getRange(25)">
+      <tr *ngFor="let i of getRange(25)" class="blanc-background">
         <td>{{ i + 1 }}</td>
         <ng-container *ngIf="torsadages[i]; else emptyRow">
           <td>{{ torsadages[i].numCommande }}</td>
@@ -267,25 +267,23 @@
                                   && getRempliePlanAction(torsadages[i].numeroCycle) === 1) 
                                   || torsadagesValides.has(torsadages[i].id); 
                                   else checkOrInvalid">
-              <span>Confirmé</span>
-            </ng-container>
-      
+           </ng-container>
             <ng-template #checkOrInvalid>
               <button 
                 (click)="onValiderTorsadage(torsadages[i].id)" 
                 *ngIf="!torsadagesValides.has(torsadages[i].numeroCycle) 
                       && getDecision(torsadages[i].numeroCycle) === 0 
                       && getRempliePlanAction(torsadages[i].numeroCycle) === 0
-                      && role === 'AGENT_QUALITE'; 
-                      else pasValide" 
+                      && role === 'AGENT_QUALITE'" 
                 class="custom-check-button">
                 <i class="fa fa-check"></i>
               </button>
-            </ng-template>
-      
+            </ng-template>     
             <ng-template #pasValide>
               <span>Invalide</span>
             </ng-template>
+             <span *ngIf="role==='CHEF_DE_LIGNE' && torsadages[i].decision === 0 "> N/V</span>
+             <span *ngIf="torsadages[i].decision === 1 || torsadagesValides.has(torsadages[i].id)">Confirmé</span>
           </td>
         </ng-container>
       
@@ -301,11 +299,18 @@
 </table>
   <div id="idBorderRemarque">
     <span id="spanRemarque">Remarque<br></span>
-  </div>
-</div>
-
-      </div>
        </div>
+      </div>
+      
+            </div>
+            <div>
+              <br>
+            <span id="titreCode"> Code de Controle : </span>
+            <span id="code1"> A = Rupture à cause défaut de matériel ou perturbation de moyen de travail /Arrét </span>
+            <span id="code2"> D = Démarrage de commande </span>
+            <span id="code3"> R = Machine réparé </span><br>
+            </div>
+             </div>
        <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
        (click)="naviger()">Retour</button>
     </div>

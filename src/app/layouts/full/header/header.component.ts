@@ -5,6 +5,7 @@ import {
   Input,
   ViewEncapsulation,
   OnInit,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +24,7 @@ import Swal from 'sweetalert2';
 import { GeneralService } from 'src/app/services/Géneral/general.service';
 import { SoudureService } from 'src/app/services/Agent Qualité Operation Soudure/soudure.service';
 import { TorsadageService } from 'src/app/services/Agent Qualite Operation Torsadage/torsadage.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, interval, Subject, takeUntil } from 'rxjs';
 import { SertissageNormal } from 'src/app/Modeles/SertissageNormal';
 import { SertissageIDC } from 'src/app/Modeles/SertissageIDC';
 import { SertissageIDCService } from 'src/app/services/Agent Qualite Operation Sertissage/sertissage-idc.service';
@@ -64,7 +65,8 @@ export class HeaderComponent  implements OnInit{
               public  serviceGeneral : GeneralService , public serviceSoudure : SoudureService ,
               public serviceTorsadage : TorsadageService  , 
               public serviceSertissageIDC : SertissageIDCService  ,
-              public serviceSertissageNormal : SertissageNormalService ){}
+              public serviceSertissageNormal : SertissageNormalService , 
+              private cdr: ChangeDetectorRef ){}
   matriculeAgentQualite : number ; 
   pistolets: Pistolet[] = [];
   role : string | null ; 
@@ -78,7 +80,8 @@ export class HeaderComponent  implements OnInit{
   dropdownOpen = false;
   userSexe: string = '';
   userString  = localStorage.getItem('user') || '';
-
+  operationUser  = localStorage.getItem('operation') || '';
+  operationUser1  = localStorage.getItem('operation') ?? null;
   languages = [
     { code: 'fr', label: 'Français', flag: 'assets/flags/fr.png' },
     { code: 'en', label: 'English', flag: 'assets/flags/gb.png' },
@@ -101,18 +104,29 @@ export class HeaderComponent  implements OnInit{
       });
     }
   }
-
+private destroy$ = new Subject<void>();
   ngOnInit(): void {
+  this.cdr.detectChanges();
   const user = JSON.parse(this.userString); // Convertir la chaîne en objet
   this.userSexe = user.sexe?.toLowerCase(); // suppose que le champ s'appelle "sexe"
    this.role= localStorage.getItem('role') ;//, "AGENT_QUALITE_PISTOLET");
    this.roleDashboard = localStorage.getItem('roleDashboard') ;
    this.fullname =  localStorage.getItem('fullName') ;
    this.plant=   localStorage.getItem('plant') ;
+   this.plant=   localStorage.getItem('plant') ;
+   this.operationUser1 = localStorage.getItem('operation') || null;
+   console.log('operation:', this.operationUser); // Sertissage IDC, etc.
+   this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
+   console.log('role:', this.role);
+
+   if (this.operationUser1 === 'undefined') {
+     this.operationUser1 = null;
+   }
     if( this.role =="AGENT_QUALITE_PISTOLET"){
       this.nom_process ="Montage Pistolet";  
       this.servicePistolet.recupererListePistoletsNonValidesAgentQualite() ;
       this.recupererNombreNotificationsPistolet() ;  
+    
     }
 
     if( this.role =="TECHNICIEN"){
@@ -129,21 +143,46 @@ export class HeaderComponent  implements OnInit{
       this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
       this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesAgentQualite() ;
       this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesAgentQualite() ;
-      this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet() ;  
+      this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite() ;  
     }
     if( this.role =="CHEF_DE_LIGNE"){
         this.serviceGeneral.donnees = [];
         this.serviceGeneral.nbrNotifications=0 ; 
-        this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
-        this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
+        if(this.operationUser =="Soudure"){
+          this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
+          this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
+           interval(10000).pipe(takeUntil(this.destroy$)).subscribe(() => {
+       this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
+  });
+        }
+        if(this.operationUser =="Torsadage"){
+          this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
+          this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
+          interval(10000).pipe(takeUntil(this.destroy$)).subscribe(() => {
+       this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;  });
+        }
+        if(this.operationUser =="Sertissage_IDC"){
         this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesChefDeLigne();
+        this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
+           interval(10000).pipe(takeUntil(this.destroy$)).subscribe(() => {
+       this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;  });
+        }
+        if(this.operationUser =="Sertissage_Normal"){
         this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesChefDeLigne();
-        this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;   
+        this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
+         interval(10000).pipe(takeUntil(this.destroy$)).subscribe(() => {
+       this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;  });
+        }
+          
     }
     this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
    
     
   }
+  ngOnDestroy(): void {
+  this.destroy$.next();
+  this.destroy$.complete();
+}
   getUserImage(): string {
     if (this.userSexe === 'femme') {
       return '/assets/images/profile/image1.png';
@@ -446,7 +485,7 @@ export class HeaderComponent  implements OnInit{
            if(donnee.typeOperation ==='Soudure'){
            this.serviceSoudure.validerSoudure (donnee.id, this.matriculeAgentQualite).subscribe({
              next: () => {
-               this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+               this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
                console.log('Pdek validé avec succès');
                this.pistoletsValides.add(donnee.id); 
               this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
@@ -477,7 +516,7 @@ export class HeaderComponent  implements OnInit{
          if(donnee.typeOperation ==='Torsadage'){
           this.serviceTorsadage.validerTorsadage (donnee.id, this.matriculeAgentQualite).subscribe({
             next: () => {
-              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
               console.log('Pdek validé avec succès');
               this.pistoletsValides.add(donnee.id); 
              this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
@@ -508,7 +547,7 @@ export class HeaderComponent  implements OnInit{
         if(donnee.typeOperation ==='SertissageIDC'){
           this.serviceSertissageIDC.validerSertissageIDC (donnee.id, this.matriculeAgentQualite).subscribe({
             next: () => {
-              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
               console.log('Pdek validé avec succès');
               this.pistoletsValides.add(donnee.id); 
              this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
@@ -539,7 +578,7 @@ export class HeaderComponent  implements OnInit{
         if(donnee.typeOperation ==='SertissageNormal'){
           this.serviceSertissageNormal.validerSertissageNormal (donnee.id, this.matriculeAgentQualite).subscribe({
             next: () => {
-              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistolet();
+              this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
               console.log('Pdek validé avec succès');
               this.pistoletsValides.add(donnee.id); 
              this.serviceGeneral.donnees = this.serviceGeneral.donnees.filter(p => p.id !== donnee.id);
@@ -568,6 +607,10 @@ export class HeaderComponent  implements OnInit{
           });
         }
          }
+
+  formatAttribut(input: string): string {
+  return input.toLowerCase().replace(/_/g, ' ');}
+
     logout(){
       localStorage.clear() ;
       this.router.navigate(['/login'])

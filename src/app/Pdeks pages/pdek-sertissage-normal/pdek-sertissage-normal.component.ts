@@ -71,7 +71,9 @@ export class PdekSertissageNormalComponent  implements OnInit {
 
    toleranceLargeurIsolant: string = '';
    toleranceHauteurIsolant: string = '';
+   role : string ='' ; 
    ngOnInit(): void {
+     this.role= localStorage.getItem('role') || '';
     this.pdekId = +this.route.snapshot.paramMap.get('id')!;
 
     const pdekSertissageIDCJson = localStorage.getItem('pdekSertissage');
@@ -119,13 +121,33 @@ generateChartHauteur(hauteurSertissage: number) {
       type: 'line',
       height: 400,
       background: 'transparent',
-      toolbar: { show: false },
-      animations: { enabled: false }
+      animations: {
+        enabled: false,
+        easing: 'linear',
+        speed: 1,
+        animateGradually: { enabled: false },
+        dynamicAnimation: { enabled: false }
+      },
+      tooltip: {
+        enabled: true,
+        shared: false,
+        intersect: true,
+        x: {
+          formatter: (val: string) => {
+            const [cycle, ech] = val.split('-');
+            return `Cycle: ${cycle}, Échantillon: ${ech}`;
+          }
+        },
+        y: {
+          formatter: (val: number) => `${val.toFixed(3)} mm`
+        }
+      }
+    
     },
     xaxis: {
       type: 'numeric',
       min: 1,
-      max: 25,
+      max: 32,
       labels: { show: false },
       axisTicks: { show: false },
       axisBorder: { show: false }
@@ -146,15 +168,9 @@ generateChartHauteur(hauteurSertissage: number) {
     },
     markers: {
       size: 5,
+      strokeColors: '#fff',
       strokeWidth: 1,
-      strokeColors: '#000',
-      colors: ['#000']
-    },
-    tooltip: {
-      enabled: false,
-      y: {
-        formatter: (val: number) => `${val.toFixed(2)}`
-      }
+      colors: ['#333']
     },
     fill: {
       type: 'solid'
@@ -213,23 +229,49 @@ generateChartHauteur(hauteurSertissage: number) {
     }
   };
 }
-getChartHauteur(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
-  const moyenneData = data.map(p => ({
-    x: p.x,
-    y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0) + (p.y4 ?? 0)) / [p.y1, p.y2, p.y3, p.y4].filter(v => v !== null && v !== undefined).length
-  }));
+getChartHauteur(data: { x: string; y1: number; y2: number; y3: number; y4: number }[]) {
+  const flatData: { x: string; y: number }[] = [];
+
+  data.forEach(p => {
+    if (p.y1 !== null && p.y1 !== undefined) flatData.push({ x: `${p.x}-1`, y: p.y1 });
+    if (p.y2 !== null && p.y2 !== undefined) flatData.push({ x: `${p.x}-2`, y: p.y2 });
+    if (p.y3 !== null && p.y3 !== undefined) flatData.push({ x: `${p.x}-3`, y: p.y3 });
+    if (p.y4 !== null && p.y4 !== undefined) flatData.push({ x: `${p.x}-4`, y: p.y4 });
+  });
+
+  const baseChart = this.generateChartHauteur(this.hauteurSertissage);
 
   return {
-    ...this.generateChartHauteur(this.hauteurSertissage), // utilisation dynamique
+    ...baseChart,
     series: [{
-      name: 'Hauteur',
-      data: moyenneData
-    }]
+      name: 'Hauteurs successives',
+      data: flatData
+    }],
+    xaxis: {
+      ...baseChart.xaxis,
+      type: 'category',
+      categories: flatData.map(d => d.x),
+      labels: { rotate: -45 },
+      //title: { text: 'Cycle - Échantillon' }
+    },
+    tooltip: {
+      enabled: true,
+      shared: false,
+      intersect: true,
+      x: {
+        formatter: (val: string) => {
+          const [cycle, ech] = val.split('-');
+          return `Cycle: ${cycle}<br/>Échantillon: ${ech}`;
+        }
+      },
+      y: {
+        formatter: (val: number) => `${val.toFixed(3)} mm`
+      }
+    }
   };
 }
 
 
- /*********************** Chart d'Étendue R *******************************/
 
  chargerToutesLesPages(): void {
   this.hauteurSertissage= this.chargerHauteurSertissage( this.numOutil ,  this.numContact ,  this.sectionFil ) ; 
@@ -342,32 +384,34 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
   
   onValiderSertissage(id: number) {
      this.service.validerSertissageNormal(id, this.matriculeAgentQualite).subscribe({
-                     next: () => {
-                       this.pistoletsValides.add(id); // Marquer ce pistolet comme validé
-                 
-                       Swal.fire({
-                         title: 'Confirmation !',
-                         text: 'Pdek Sertissage validé avec succès.',
-                         icon: 'success',
-                         confirmButtonText: 'OK',
-                         customClass: {
-                           popup: 'custom-popup',
-                           title: 'custom-title',
-                           confirmButton: 'custom-confirm-button'
-                         }
-                       });
-                     },
-                     error: (err) => {
-                       console.error('Erreur lors de la validation :', err);
-                       Swal.fire({
-                         title: 'Erreur',
-                         text: 'Erreur lors de la validation',
-                         icon: 'error',
-                         confirmButtonText: 'OK'
-                       });
-                     }
-                   });
-  }
+                    next: () => {
+                                         console.log('Pdek Sertissage  validé avec succès');
+                                         this.pistoletsValides.add(id); // Marquer ce pistolet comme validé
+                                   
+                                         Swal.fire({
+                                           title: 'Confirmation !',
+                                           text: 'Pdek Sertissage validé avec succès.',
+                                           icon: 'success',
+                                           confirmButtonText: 'OK',
+                                           customClass: {
+                                             popup: 'custom-popup',
+                                             title: 'custom-title',
+                                             confirmButton: 'custom-confirm-button'
+                                           }
+                                         });
+                                       },
+                                       error: (err) => {
+                                         console.error('Erreur lors de la validation :', err);
+                                         Swal.fire({
+                                           title: 'Erreur',
+                                           text: 'Erreur lors de la validation',
+                                           icon: 'error',
+                                           confirmButtonText: 'OK'
+                                         });
+                                       }
+                                     });
+                    }
+                  
   getNumContact(page: any, col: number): string | null {
     const sertissage = page.sertissages?.[col];
     return sertissage ? sertissage.numContact : null;
@@ -409,6 +453,10 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
   getOperateur(page: any, col: number): number | null {
     const sertissage = page.sertissages?.[col];
     return sertissage ? sertissage.userSertissageNormal : null;
+  }
+   getQM(page: any, col: number): number | null {
+    const sertissage = page.sertissages?.[col];
+    return sertissage ? sertissage.matriculeAgentQualite : null;
   }
   chargerTraction(numeroOutil: string, numeroContact: string, sectionFil: string): string {
     this.service.getTractionValeur(numeroOutil, numeroContact, sectionFil)
@@ -520,10 +568,15 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
       return this.toleranceHauteurIsolant 
 
   }
-   naviger(){
-    localStorage.removeItem('reponseApi')
-    this.router.navigate(['/ui-components/listePdekTousProcess']);
-  }  
+
+    naviger() {
+      localStorage.removeItem('reponseApi');
+      localStorage.removeItem('pdekSertissage');
+      // Trick pour forcer reload
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['/ui-components/listePdekTousProcess']);
+      });
+    }
   decodeHtml(html: string): string {
     const txt = document.createElement('textarea');
     txt.innerHTML = html;

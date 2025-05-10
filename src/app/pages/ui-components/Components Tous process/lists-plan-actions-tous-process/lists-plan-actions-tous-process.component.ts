@@ -78,6 +78,8 @@ displayedColumns: string[] = [
   plans : PlanActionDTO[]; // 
   currentPlantFilter: string[] = [];
   userAddPlanAction : User ;
+  operationUser  = localStorage.getItem('operation') || '';
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   
@@ -188,7 +190,7 @@ navigateToAddPlanActionPage(){
   this.router.navigate(['/ui-components/addPlanAction']);
 }
 
-recupereListPlanAction() {
+/*recupereListPlanAction() {
   const typesOperation = ["Soudure", "Torsadage", "Sertissage_IDC", "Sertissage_Normal"];
 
   const requestsParType = typesOperation.map(type => 
@@ -234,7 +236,32 @@ recupereListPlanAction() {
       console.error("Erreur lors de la récupération des plans par type :", err);
     }
   });
+}*/
+recupereListPlanAction() {
+  const allTypes = ["Soudure", "Torsadage", "Sertissage_IDC", "Sertissage_Normal"];
+  const operation = this.operationUser?.trim();
+  const typesToLoad = (operation && operation !== 'undefined') ? [operation] : allTypes;
+
+  const requests = typesToLoad.map(type => this.planActionService.getPlansByTypeOperation(type));
+
+  forkJoin(requests).subscribe({
+    next: (plansParType) => {
+      // Fusionner les résultats en une seule liste
+      this.plans = plansParType.flat();
+
+      // Affecter directement au tableau sans enrichissement
+      this.dataSource = new MatTableDataSource(this.plans);
+      setTimeout(() => {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      });
+    },
+    error: (err) => {
+      console.error("Erreur lors de la récupération des plans :", err);
+    }
+  });
 }
+
 
 formatPistolet(value: string): string {
   return value.replace('PISTOLET_', '').toLowerCase().replace(/^\w/, c => c.toUpperCase());

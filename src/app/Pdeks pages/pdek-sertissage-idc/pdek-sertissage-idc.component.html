@@ -242,15 +242,30 @@
     <th id="gras" colspan="8">Opérateur </th>
     <td *ngFor="let i of eight; let col = index" colspan="4">
       <ng-container *ngIf="page.sertissages[col] as sertissage">
+          {{ getOperateur(page, col) ?? '' }}
+      </ng-container>
+    </td>
+    
+  </tr>
+    <tr>
+    <th id="gras" colspan="8">Matricule QM </th>
+    <td *ngFor="let i of eight; let col = index" colspan="4">
+      <ng-container *ngIf="page.sertissages[col] as sertissage">
         <button 
           (click)="onValiderSertissage(sertissage.id)" 
-          *ngIf="sertissage.decision === 0 && !pistoletsValides.has(sertissage.id)" 
+          *ngIf="role==='AGENT_QUALITE'&&
+                 sertissage.decision === 0 && sertissage.rempliePlanAction === 0 &&
+                 !pistoletsValides.has(sertissage.id)" 
           class="custom-check-button">
           <i class="fa fa-check"></i>
         </button>
         <span *ngIf="sertissage.decision === 1 || pistoletsValides.has(sertissage.id)">
-          {{ getOperateur(page, col) ?? '' }}
+          {{ getQM(page, col) ?? '' }}
         </span>
+         <span *ngIf="role ==='AGENT_QUALITE'  
+                      &&sertissage.decision === 0 && 
+                       sertissage.rempliePlanAction === 1">Invalide</span>
+        <span *ngIf="role ==='CHEF_DE_LIGNE' && sertissage.decision === 0">N/V</span>
       </ng-container>
     </td>
     
@@ -258,8 +273,19 @@
   </tbody>
 </table>
        </div>
-       <br>
-       <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
-       (click)="naviger()">Retour à la liste des PDEKs</button>
+       <div>
+              <br>
+            <span id="titreCode"> Code de Controle : </span>
+            <span id="code1"> S = Démarrage du cycle </span>
+            <span id="code2"> M = Changement matière  </span>
+            <span id="code3"> R = Réparation ou réglage Outil/Machine </span>
+            <span id="code4"> L = Fin de commande</span>
+            <span id="code5"> A = Discontinuité du au fin matière </span>
+            </div>
+             </div>
+
+    <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
+    (click)="naviger()">Retour à la liste des PDEKs</button>
+
     </div>
-    <br>
+   

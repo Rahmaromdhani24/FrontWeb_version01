@@ -12,7 +12,7 @@
     position: relative;
     top: -5px;
     font-family: Arial, sans-serif;
-    min-width: 1328px;
+    min-width: 1344px;
     width: 100%;
     max-width: 100%;
     min-height: 800px;
@@ -20,6 +20,7 @@
     padding: 10px;
     box-sizing: border-box;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin-left: -15px;
   }
   
   
@@ -151,7 +152,9 @@
   
   #tableTitre td {
     border: 2px solid black; /* Bordures internes */
-    padding: 5px;             /* Un peu d’espace pour le texte */
+    padding: 5px;    
+    min-width: 190px;
+    max-width: 223px;         /* Un peu d’espace pour le texte */
   }
   
   /*#spanRemarque{
@@ -290,7 +293,7 @@
     font-size: 46px;
     color: #005c96;
     position: relative;
-    left: 235px;
+    left: 287px;
     top: 17px;
   }
 
@@ -466,7 +469,7 @@
   margin-bottom: 5px;
   width: 100%;
   box-sizing: border-box;
-  height: 215px;
+  height: 255px;
 }
 
 /* Tableau latéral */
@@ -496,3 +499,67 @@
   color: black;  /* Assure-toi que le texte est bien visible avec un bon contraste. */
 }
 
+.gris-background {
+  background-color: #f0f0f0;  /* Gris clair */
+  border: 1px solid black;
+  font-weight: bold;
+  font-size: 12px;
+
+}
+.bordered {
+  border: 1px solid black;
+  font-weight: bold;
+  font-size: 11px;
+}
+/****************************************************************************************/
+.blanc-background {
+  
+  border: 1px solid black;
+  font-weight: bold;
+  font-size: 12px;
+
+}
+#titreCode{
+  font-size: 14px;
+  font-family: auto;
+  font-weight: bold;
+  padding: 50px;
+  color: black;
+}
+#code1{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}
+#code2{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}
+#code3{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}
+#code4{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 25px;
+  margin-left: 207px;
+}
+#code5{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}
+#code6{
+  font-size: 14px;
+  font-family: auto;
+  color: black;
+  padding: 14px;
+}

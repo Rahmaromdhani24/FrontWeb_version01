@@ -19,31 +19,31 @@ import { PdekSoudureSimpleComponent } from './Agent qualité/Pdeks all process/p
 import { PdekTorsadageSimpleComponent } from './Agent qualité/Pdeks all process/pdek-torsadage/pdek-torsadage-simple.component';
 import { PdekSertissageIDCSimpleComponent } from './Agent qualité/Pdeks all process/pdek-sertissage-idcsimple/pdek-sertissage-idcsimple.component';
 import { PdekSertissageNormalSimpleComponent } from './Agent qualité/Pdeks all process/pdek-sertissage-normal-simple/pdek-sertissage-normal-simple.component';
+import { AuthGuard } from './services/guards/auth.guard';
 
 export const routes: Routes = [
 
   
-  { path: "", component: LoginUserComponent }, 
   { path: "login", component: LoginUserComponent }, 
-  { path: "pdekPistoletJaune", component: PdekPistoletJauneComponent }, 
-  { path: "pdekPistoletRouge", component: PdekPistoletRougeComponent }, 
-  { path: "pdekPistoletVert", component: PdekPistoletVertComponent }, 
-  { path: "pdekPistoletBleu", component: PdekPistoletBleuComponent }, 
+  { path: "pdekPistoletJaune", component: PdekPistoletJauneComponent ,  canActivate: [AuthGuard]}, 
+  { path: "pdekPistoletRouge", component: PdekPistoletRougeComponent , canActivate: [AuthGuard]}, 
+  { path: "pdekPistoletVert", component: PdekPistoletVertComponent , canActivate: [AuthGuard]}, 
+  { path: "pdekPistoletBleu", component: PdekPistoletBleuComponent , canActivate: [AuthGuard]}, 
  
-  {  path: 'pdek-pistolet-bleu/:id',component: PagePdekPistoletBleuComponent  } ,
-  {  path: 'pdek-pistolet-jaune/:id',component: PagePdekPistoletJauneComponent  } ,
-  {  path: 'pdek-pistolet-rouge/:id',component: PagePdekPistoletRougeComponent  } ,
-  {  path: 'pdek-pistolet-vert/:id',component: PagePdekPistoletVertComponent  } ,
+  {  path: 'pdek-pistolet-bleu/:id',component: PagePdekPistoletBleuComponent , canActivate: [AuthGuard] } ,
+  {  path: 'pdek-pistolet-jaune/:id',component: PagePdekPistoletJauneComponent , canActivate: [AuthGuard] } ,
+  {  path: 'pdek-pistolet-rouge/:id',component: PagePdekPistoletRougeComponent , canActivate: [AuthGuard] } ,
+  {  path: 'pdek-pistolet-vert/:id',component: PagePdekPistoletVertComponent  , canActivate: [AuthGuard]} ,
 
-  {  path: 'pdeks-soudure/:id',component: PdekSoudureComponent } ,
-  {  path: 'pdeks-torsadage/:id',component: PdekTorsadageComponent } ,
-  {  path: 'pdeks-sertissageIDC/:id',component: PdekSertissageIDCComponent } ,
-  {  path: 'pdeks-sertissage/:id',component: PdekSertissageNormalComponent } ,
+  {  path: 'pdeks-soudure/:id',component: PdekSoudureComponent , canActivate: [AuthGuard]} ,
+  {  path: 'pdeks-torsadage/:id',component: PdekTorsadageComponent , canActivate: [AuthGuard]} ,
+  {  path: 'pdeks-sertissageIDC/:id',component: PdekSertissageIDCComponent , canActivate: [AuthGuard]} ,
+  {  path: 'pdeks-sertissage/:id',component: PdekSertissageNormalComponent , canActivate: [AuthGuard]} ,
 
-  {  path: 'pdekSoudure',component: PdekSoudureSimpleComponent } ,
-  {  path: 'pdekTorsadage',component: PdekTorsadageSimpleComponent } ,
-  {  path: 'pdekSertissageIDC',component: PdekSertissageIDCSimpleComponent } ,
-  {  path: 'pdekSertissage',component: PdekSertissageNormalSimpleComponent } ,
+  {  path: 'pdekSoudure',component: PdekSoudureSimpleComponent , canActivate: [AuthGuard]} ,
+  {  path: 'pdekTorsadage',component: PdekTorsadageSimpleComponent , canActivate: [AuthGuard]} ,
+  {  path: 'pdekSertissageIDC',component: PdekSertissageIDCSimpleComponent , canActivate: [AuthGuard]} ,
+  {  path: 'pdekSertissage',component: PdekSertissageNormalSimpleComponent , canActivate: [AuthGuard]} ,
     {
     path: '',
     component: FullComponent,
@@ -55,11 +55,13 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
+        canActivate: [AuthGuard],
         loadChildren: () =>
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
       },
       {
         path: 'ui-components',
+        canActivate: [AuthGuard],
         loadChildren: () =>
           import('./pages/ui-components/ui-components.routes').then(
             (m) => m.UiComponentsRoutes
@@ -68,7 +70,10 @@ export const routes: Routes = [
      
     ],
   },
+ {
+     path: 'unauthorized', component: PageNotFoundComponent ,
 
+  },
   {
      path: '**', component: PageNotFoundComponent ,
 

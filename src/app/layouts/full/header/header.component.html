@@ -177,8 +177,22 @@
   </button>
 
   <div class="d-none d-lg-flex text-left flex-col">
-    <h5 class="f-s-16 f-w-600" id="nomUser">{{ fullname }}</h5>
-    <span class="f-s-14" id="roleUser">{{ roleDashboard }}</span>
+  
+ <!-- Cas où operationUser est défini -->
+
+<span *ngIf="operationUser1" class="f-s-14" id="roleUser">
+  <h5 class="f-s-16 f-w-600" id="nomUser">{{ fullname }}</h5>
+  {{ roleDashboard }}&nbsp;&nbsp;{{ formatAttribut(operationUser1) }}
+</span>
+
+<!-- Si operationUser1 est null ou non définie -->
+<span *ngIf="!operationUser1" class="f-s-14" id="roleUserOnly">
+  <h5 class="f-s-16 f-w-600" id="nomUser1">{{ fullname }}</h5>
+  {{ roleDashboard }}
+</span>
+
+
+
   </div>
 
   <mat-menu #profilemenu="matMenu" class="cardWithShadow topbar-dd" xPosition="before">

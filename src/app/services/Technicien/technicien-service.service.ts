@@ -17,8 +17,8 @@ export class TechnicienServiceService {
 
   private baseUrl = 'http://localhost:8281/planAction/addPlanAction';
 
-  ajouterPlanAction(pdekId: number, numeroPage: number, userId: number, numeroPistolet: number,
-                    typePistolet: string, categoriePistolet: string, details: DetailsPlanAction): Observable<any> {
+  ajouterPlanAction(pdekId: number, numeroPage: number, details: DetailsPlanAction, userId: number, 
+                    numeroPistolet: number,typePistolet: string, categoriePistolet: string): Observable<any> {
     const url = `${this.baseUrl}/${pdekId}/${numeroPage}/${userId}/${numeroPistolet}/${typePistolet}/${categoriePistolet}`;
     const token = localStorage.getItem('token'); // Assure-toi que le token est bien stocké
   

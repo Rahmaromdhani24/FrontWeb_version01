@@ -102,7 +102,7 @@
     </ng-container>
   </tr>
   <tr>
-    <th colspan="8" id="grasCellule">Larg Sertissage <br> /Tol :{{largeurSertissage}} /± {{toleranceLargeurSertissage}}</th>
+    <th colspan="8" id="grasCellule">Larg Sertissage <br> /Tol :{{largeurSertissage}} / {{toleranceLargeurSertissage}}</th>
     <ng-container *ngFor="let group of eight; let col = index">
       <td colspan="3" id="grasLabel">{{ getLargeurSertissage(page, 0, col) ?? '' }}</td>
       <td id="grasLabel">{{ getLargeurSertissage(page, 1, col) ?? '' }}</td>
@@ -112,7 +112,7 @@
 
   <!-- Troisième ligne : Valeurs de C2 (si besoin) -->
   <tr>
-    <th colspan="8" id="grasCellule">Haut Isol<br> /Tol :{{hauteurIsolant}} /± {{toleranceHauteurIsolant}}</th>
+    <th colspan="8" id="grasCellule">Haut Isol<br> /Tol :{{hauteurIsolant}} / {{toleranceHauteurIsolant}}</th>
     <ng-container *ngFor="let group of eight; let col = index">
       <td colspan="3" id="grasLabel">{{ getHauteurIsolant(page, 0, col) ?? '' }}</td>
       <td id="grasLabel">{{ getHauteurIsolant(page, 1, col) ?? '' }}</td>
@@ -121,7 +121,7 @@
   </tr>
 
   <tr>
-    <th colspan="8" id="grasCellule">Larg Isol <br> {{largeurIsolant}} /± {{toleranceLargeurIsolant}}</th>
+    <th colspan="8" id="grasCellule">Larg Isol <br> {{largeurIsolant}} / {{toleranceLargeurIsolant}}</th>
     <ng-container *ngFor="let group of eight; let col = index">
       <td colspan="3" id="grasLabel">{{ getLargeurIsolant(page, 0, col) ?? '' }}</td>
       <td id="grasLabel"> {{ getLargeurIsolant(page, 1, col) ?? '' }}</td>
@@ -191,23 +191,48 @@
   <th id="grasCellule" colspan="8">Opérateur </th>
   <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
     <ng-container *ngIf="page.sertissages[col] as sertissage">
-      <!--button 
+        {{ getOperateur(page, col) ?? '' }}
+    </ng-container>
+  </td>
+</tr>
+
+<tr>
+  <th id="grasCellule" colspan="8">Matricule QM </th>
+  <td *ngFor="let i of eight; let col = index" colspan="4" id="grasLabel">
+    <ng-container *ngIf="page.sertissages[col] as sertissage">
+      <button 
         (click)="onValiderSertissage(sertissage.id)" 
-        *ngIf="sertissage.decision === 0 && !pistoletsValides.has(sertissage.id)" 
+        *ngIf=" sertissage.decision === 0 && 
+                sertissage.rempliePlanAction === 0 && 
+                !pistoletsValides.has(sertissage.id)" 
         class="custom-check-button">
         <i class="fa fa-check"></i>
       </button>
-      <span *ngIf="sertissage.decision === 1 || pistoletsValides.has(sertissage.id)"-->
-        {{ getOperateur(page, col) ?? '' }}
-      <!--/span-->
+      <span *ngIf="sertissage.decision === 1 || pistoletsValides.has(sertissage.id)">
+        {{ getQM(page, col) ?? '' }}
+      </span>
+       <span *ngIf="role ==='AGENT_QUALITE'  
+                      &&sertissage.decision === 0 && 
+                       sertissage.rempliePlanAction === 1">Invalide</span>
+        <span *ngIf="role ==='CHEF_DE_LIGNE' && sertissage.decision === 0">N/V</span>
     </ng-container>
   </td>
-  
 </tr>
+
 </tbody>
 </table>
      </div>
-     <br>
+   <div>
+              <br>
+            <span id="titreCode"> Code de Controle : </span>
+            <span id="code1"> S = Démarrage de la commande </span>
+            <span id="code2"> M = Changement matière  </span>
+            <span id="code3"> R = Réparation ou réglage Outil/Machine </span>
+            <span id="code4"> L = Fin de commande </span>
+            <span id="code5"> W = Démarrage apprentissage du systeme de surveillance(CFM)</span>
+         
+            </div>
+             </div>
      <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
      (click)="naviger()">Retour</button>
   </div>

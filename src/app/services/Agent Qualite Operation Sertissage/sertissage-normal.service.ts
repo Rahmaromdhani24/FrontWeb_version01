@@ -5,6 +5,7 @@ import { catchError  , map} from 'rxjs/operators';
 import { NonNullableFormBuilder } from '@angular/forms';
 import { GeneralService } from '../Géneral/general.service';
 import { SertissageNormal } from 'src/app/Modeles/SertissageNormal';
+import { User } from 'src/app/Modeles/User';
 
 @Injectable({
   providedIn: 'root'
@@ -236,7 +237,16 @@ getLargeurIsolant(numeroOutil: string, numeroContact: string, sectionFil: string
             { headers, params }
           );
         }
-        
+              private baseUrl = 'http://localhost:8281/operations/SertissageNormal';
+                 getUsersByPdek(pdekId: number): Observable<User[]> {
+                   const token = localStorage.getItem('token'); // récupère le token depuis le local storage
+               
+                   const headers = new HttpHeaders({
+                     'Authorization': `Bearer ${token}`
+                   });
+               
+                   return this.http.get<User[]>(`${this.baseUrl}/users-by-pdek/${pdekId}`, { headers });
+                 } 
                        
               genererMessageEtatAllProcess(etat: string): string {
                 switch (etat) {

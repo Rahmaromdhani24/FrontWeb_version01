@@ -68,7 +68,9 @@ export class PagePdekPistoletVertComponent implements OnInit ,AfterViewInit  {
    pistoletsValides: Set<number> = new Set();  // Pour stocker les IDs validés
    matriculeAgentQualite : number ; 
    pdekId : number ; 
+   role : string ; 
    ngOnInit(): void {
+    this.role = localStorage.getItem('role')!;
     this.pdekId = +this.route.snapshot.paramMap.get('id')!;
     this.chargerToutesLesPages(); // 👈 appel ici
     

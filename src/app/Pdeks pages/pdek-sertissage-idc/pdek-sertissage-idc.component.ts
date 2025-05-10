@@ -62,9 +62,10 @@ export class PdekSertissageIDCComponent  implements OnInit {
    sertissages: SertissageIDC[] = [] ; 
    sertissagesParPage: Map<number, SertissageIDC[]> = new Map();
    four = [0, 1, 2, 3];
-
+   role : string =''
 
    ngOnInit(): void {
+    this.role= localStorage.getItem('role') || '';
     this.pdekId = +this.route.snapshot.paramMap.get('id')!;
     this.chargerToutesLesPages();
     const pdekSertissageIDCJson = localStorage.getItem('pdekSertissageIDC') || '{}';
@@ -110,7 +111,7 @@ public chartCote1Hauteur: {
   xaxis: {
     type: 'numeric',
     min: 1,
-    max: 25,
+    max: 32,
     labels: { show: false },
     axisTicks: { show: false },
     axisBorder: { show: false }
@@ -206,20 +207,124 @@ public chartCote1Hauteur: {
   }
 };
 
-getChartCote1Hauteur(data: { x: number; y1: number; y2: number; y3: number ; y4: number }[]) {
-  const moyenneData = data.map(p => ({
-    x: p.x,
-    y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0)+ (p.y4 ?? 0)) / [p.y1, p.y2, p.y3 , p.y4].filter(v => v !== null && v !== undefined).length
+getChartCote1Hauteur(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
+  // Générer toutes les combinaisons x-échantillon de 1-1 à 8-4
+  const allCategories: string[] = [];
+  for (let i = 1; i <= 8; i++) {
+    for (let j = 1; j <= 4; j++) {
+      allCategories.push(`${i}-${j}`);
+    }
+  }
+
+  // Créer un map des données disponibles
+  const dataMap = new Map<string, number>();
+  data.forEach(p => {
+    if (p.y1 != null) dataMap.set(`${p.x}-1`, p.y1);
+    if (p.y2 != null) dataMap.set(`${p.x}-2`, p.y2);
+    if (p.y3 != null) dataMap.set(`${p.x}-3`, p.y3);
+    if (p.y4 != null) dataMap.set(`${p.x}-4`, p.y4);
+  });
+
+  // Remplir la série en respectant les 32 points (valeur ou null)
+  const flatData = allCategories.map(cat => ({
+    x: cat,
+    y: dataMap.has(cat) ? dataMap.get(cat)! : null
   }));
 
   return {
     ...this.chartCote1Hauteur,
     series: [{
       name: 'Coté 1',
-      data: moyenneData
-    }]
+      data: flatData
+    }],
+    xaxis: {
+      type: 'category',
+      categories: allCategories,
+      labels: {
+        rotate: -45,
+        style: { fontSize: '10px' }
+      },
+     /* title: {
+        text: 'Cycle - Échantillon'
+      }*/
+    },
+    tooltip: {
+      enabled: true,
+      shared: false,
+      intersect: true,
+      x: {
+        formatter: (val: string) => {
+          const [cycle, ech] = val.split('-');
+          return `Cycle: ${cycle} - Échantillon: ${ech}`;
+        }
+      },
+      y: {
+        formatter: (val: number | null) =>
+          val != null ? `${val.toFixed(2)} mm` : 'Pas de donnée'
+      }
+    }
   };
 }
+
+getChartCote2Hauteur(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
+  // Générer toutes les combinaisons x-échantillon de 1-1 à 8-4
+  const allCategories: string[] = [];
+  for (let i = 1; i <= 8; i++) {
+    for (let j = 1; j <= 4; j++) {
+      allCategories.push(`${i}-${j}`);
+    }
+  }
+
+  // Créer un map des données disponibles
+  const dataMap = new Map<string, number>();
+  data.forEach(p => {
+    if (p.y1 != null) dataMap.set(`${p.x}-1`, p.y1);
+    if (p.y2 != null) dataMap.set(`${p.x}-2`, p.y2);
+    if (p.y3 != null) dataMap.set(`${p.x}-3`, p.y3);
+    if (p.y4 != null) dataMap.set(`${p.x}-4`, p.y4);
+  });
+
+  // Remplir la série en respectant les 32 points (valeur ou null)
+  const flatData = allCategories.map(cat => ({
+    x: cat,
+    y: dataMap.has(cat) ? dataMap.get(cat)! : null
+  }));
+
+  return {
+    ...this.chartCote1Hauteur,
+    series: [{
+      name: 'Coté 1',
+      data: flatData
+    }],
+    xaxis: {
+      type: 'category',
+      categories: allCategories,
+      labels: {
+        rotate: -45,
+        style: { fontSize: '10px' }
+      },
+     /* title: {
+        text: 'Cycle - Échantillon'
+      }*/
+    },
+    tooltip: {
+      enabled: true,
+      shared: false,
+      intersect: true,
+      x: {
+        formatter: (val: string) => {
+          const [cycle, ech] = val.split('-');
+          return `Cycle: ${cycle} - Échantillon: ${ech}`;
+        }
+      },
+      y: {
+        formatter: (val: number | null) =>
+          val != null ? `${val.toFixed(2)} mm` : 'Pas de donnée'
+      }
+    }
+  };
+}
+
 /************************* traction c1 ************************************/
 public chartCote1Traction: {
   series: ApexAxisChartSeries;
@@ -333,20 +438,65 @@ public chartCote1Traction: {
   }
 };
 
-getChartCote1Traction(data: { x: number; y1: number; y2: number; y3: number ; y4: number }[]) {
-  const moyenneData = data.map(p => ({
-    x: p.x,
-    y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0)+ (p.y4 ?? 0)) / [p.y1, p.y2, p.y3 , p.y4].filter(v => v !== null && v !== undefined).length
+getChartCote1Traction(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
+  // Générer toutes les combinaisons x-échantillon de 1-1 à 8-4 (32 points)
+  const allCategories: string[] = [];
+  for (let i = 1; i <= 8; i++) {
+    for (let j = 1; j <= 4; j++) {
+      allCategories.push(`${i}-${j}`);
+    }
+  }
+
+  // Créer un map des données disponibles
+  const dataMap = new Map<string, number>();
+  data.forEach(p => {
+    if (p.y1 != null) dataMap.set(`${p.x}-1`, p.y1);
+    if (p.y2 != null) dataMap.set(`${p.x}-2`, p.y2);
+    if (p.y3 != null) dataMap.set(`${p.x}-3`, p.y3);
+    if (p.y4 != null) dataMap.set(`${p.x}-4`, p.y4);
+  });
+
+  // Remplir la série avec les points valides et null si pas de données
+  const flatData = allCategories.map(cat => ({
+    x: cat,
+    y: dataMap.has(cat) ? dataMap.get(cat)! : null
   }));
 
   return {
     ...this.chartCote1Traction,
     series: [{
-      name: 'Coté 1',
-      data: moyenneData
-    }]
+      name: 'Coté 2',
+      data: flatData
+    }],
+    xaxis: {
+      type: 'category',
+      categories: allCategories,
+      labels: {
+        rotate: -45,
+        style: { fontSize: '10px' }
+      },
+     /* title: {
+        text: 'Cycle - Échantillon'
+      }*/
+    },
+    tooltip: {
+      enabled: true,
+      shared: false,
+      intersect: true,
+      x: {
+        formatter: (val: string) => {
+          const [cycle, ech] = val.split('-');
+          return `Cycle: ${cycle} - Échantillon: ${ech}`;
+        }
+      },
+      y: {
+        formatter: (val: number | null) =>
+          val != null ? `${val.toFixed(2)}` : 'Pas de donnée'
+      }
+    }
   };
 }
+
 /******************************* Cote 2 ************************************/
 public chartCote2Hauteur: {
   series: ApexAxisChartSeries;
@@ -471,20 +621,6 @@ public chartCote2Hauteur: {
   }
 };
 
-getChartCote2Hauteur(data: { x: number; y1: number; y2: number; y3: number ; y4: number}[]) {
-  const moyenneData = data.map(p => ({
-    x: p.x,
-    y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0)+ (p.y4 ?? 0)) / [p.y1, p.y2, p.y3].filter(v => v !== null && v !== undefined).length
-  }));
-
-  return {
-    ...this.chartCote2Hauteur,
-    series: [{
-      name: 'Coté 2',
-      data: moyenneData
-    }]
-  };
-}
 
 /************************* Cote c2 traction*******************************/
 public chartCote2Traction: {
@@ -599,20 +735,65 @@ public chartCote2Traction: {
   }
 };
 
-getChartCote2Traction(data: { x: number; y1: number; y2: number; y3: number ; y4: number}[]) {
-  const moyenneData = data.map(p => ({
-    x: p.x,
-    y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0)+ (p.y4 ?? 0)) / [p.y1, p.y2, p.y3].filter(v => v !== null && v !== undefined).length
+getChartCote2Traction(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
+  // Générer toutes les combinaisons x-échantillon de 1-1 à 8-4 (32 points)
+  const allCategories: string[] = [];
+  for (let i = 1; i <= 8; i++) {
+    for (let j = 1; j <= 4; j++) {
+      allCategories.push(`${i}-${j}`);
+    }
+  }
+
+  // Créer un map des données disponibles
+  const dataMap = new Map<string, number>();
+  data.forEach(p => {
+    if (p.y1 != null) dataMap.set(`${p.x}-1`, p.y1);
+    if (p.y2 != null) dataMap.set(`${p.x}-2`, p.y2);
+    if (p.y3 != null) dataMap.set(`${p.x}-3`, p.y3);
+    if (p.y4 != null) dataMap.set(`${p.x}-4`, p.y4);
+  });
+
+  // Remplir la série avec les points valides et null si pas de données
+  const flatData = allCategories.map(cat => ({
+    x: cat,
+    y: dataMap.has(cat) ? dataMap.get(cat)! : null
   }));
 
   return {
-    ...this.chartCote2Traction,
+    ...this.chartCote1Traction,
     series: [{
       name: 'Coté 2',
-      data: moyenneData
-    }]
+      data: flatData
+    }],
+    xaxis: {
+      type: 'category',
+      categories: allCategories,
+      labels: {
+        rotate: -45,
+        style: { fontSize: '10px' }
+      },
+    /*  title: {
+        text: 'Cycle - Échantillon'
+      }*/
+    },
+    tooltip: {
+      enabled: true,
+      shared: false,
+      intersect: true,
+      x: {
+        formatter: (val: string) => {
+          const [cycle, ech] = val.split('-');
+          return `Cycle: ${cycle} - Échantillon: ${ech}`;
+        }
+      },
+      y: {
+        formatter: (val: number | null) =>
+          val != null ? `${val.toFixed(2)}` : 'Pas de donnée'
+      }
+    }
   };
 }
+
 
  /*********************** Chart d'Étendue R *******************************/
 
@@ -805,10 +986,22 @@ getChartCote2Traction(data: { x: number; y1: number; y2: number; y3: number ; y4
     const sertissage = page.sertissages?.[col];
     return sertissage ? sertissage.userSertissageIDC : null;
   }
+   getQM(page: any, col: number): number | null {
+    const sertissage = page.sertissages?.[col];
+    return sertissage ? sertissage.matriculeAgentQualite : null;
+  }
 
-   naviger(){
+
+ /*  naviger(){
     localStorage.removeItem('reponseApi')
     this.router.navigate(['/ui-components/listePdekTousProcess']);
-  }  
-
+  }  */
+    naviger() {
+      localStorage.removeItem('reponseApi');
+      localStorage.removeItem('pdekSertissageIDC');
+      // Trick pour forcer reload
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['/ui-components/listePdekTousProcess']);
+      });
+    }
 }

@@ -49,8 +49,8 @@ pages: {
               private router : Router  , private route: ActivatedRoute , 
               private soudureService : SoudureService ){}
   
-  seriesDataEtendue: { x: number, y: number }[] = [];
-   seriesDataMoyenne: { x: number, y: number }[] = [];
+   seriesDataEtendue: { x: string, y: number }[] = [];
+   seriesDataMoyenne: { x: string, y: number }[] = [];
    rows = Array.from({ length: 25 }, (_, i) => i + 1);
    showLoader : boolean = true; 
    twentyFive: number[] = Array.from({ length: 25 }, (_, i) => i + 1);
@@ -188,7 +188,7 @@ public chartOptionsMoyenne: {
 };
 
 // Méthode pour obtenir les options du graphique
-getChartOptionsMoyenne(data: { x: number; y: number }[]) {
+getChartOptionsMoyenne(data: { x: string, y: number | null }[]): any {
   return { 
     series: [{
       name: 'Moyenne',
@@ -205,7 +205,7 @@ getChartOptionsMoyenne(data: { x: number; y: number }[]) {
         animateGradually: { enabled: false },
         dynamicAnimation: { enabled: false }
       },
-      toolbar: { show: false }
+      toolbar: { show: false } ,
     },
     xaxis: {
       type: 'numeric',
@@ -238,7 +238,13 @@ getChartOptionsMoyenne(data: { x: number; y: number }[]) {
       colors: ['#333']
     },
     tooltip: {
-      enabled: true
+      enabled: true,
+      x: {
+        formatter: (val: number) => `Numéro Courant: ${val}`
+      },
+      y: {
+        formatter: (val: number) => `${val}`
+      }
     },
     annotations: {
       yaxis: [
@@ -337,7 +343,7 @@ public chartOptionsEtendue: {
       tooltip: ApexTooltip;
       annotations: ApexAnnotations;
     } 
-    getChartOptionsEtendue(data: { x: number; y: number }[]) {
+    getChartOptionsEtendue(data: { x: string, y: number | null }[]): any {
       return {
         series: [{
           name: 'Étendue',
@@ -387,7 +393,13 @@ public chartOptionsEtendue: {
           colors: ['#333']
         },
         tooltip: {
-          enabled: true
+          enabled: true,
+          x: {
+            formatter: (val: number) => `Numéro Courant: ${val}`
+          },
+          y: {
+            formatter: (val: number) => `${val}`
+          }
         },
         annotations: {
           yaxis: [
@@ -417,21 +429,47 @@ public chartOptionsEtendue: {
       this.pages = contenuPages.map((page: any) => {
         const soudures = page.contenu;
 
-        const dataMoyenne = soudures.map((p: any) => ({
+     /*   const dataMoyenne = soudures.map((p: any) => ({
           x: p.numeroCycle,
           y: p.moyenne
-        }));
+        }));*/
 
-        const dataEtendue = soudures.map((p: any) => ({
+        this.seriesDataMoyenne = soudures.map((p: any) => ({
+          x: p.numeroCycle.toString(), // 👈 Important ! doit correspondre à category type string
+          y: p.moyenne
+        }));        
+      
+        const dataRemplie = Array.from({ length: 25 }, (_, i) => {
+          const x = (i + 1).toString();
+          const point = this.seriesDataMoyenne.find(p => p.x === x);
+          return {
+            x,
+            y: point ? point.y : null
+          };
+        });
+     
+       /* const dataEtendue = soudures.map((p: any) => ({
           x: p.numeroCycle,
           y: Number(p.etendu)
+        }));*/
+        this.seriesDataEtendue = soudures.map((p: any)=> ({
+          x: p.numeroCycle.toString(),
+          y: Number(p.etendu) 
         }));
-
+      
+        const dataRemplie2 = Array.from({ length: 25 }, (_, i) => {
+          const x = (i + 1).toString();
+          const point = this.seriesDataEtendue.find(p => p.x === x);
+          return {
+            x,
+            y: point ? point.y : null
+          };
+        });
         return {
           pageNum: page.numeroPage,
           soudures,
-          chartOptionsMoyenne: this.getChartOptionsMoyenne(dataMoyenne),
-          chartOptionsEtendue: this.getChartOptionsEtendue(dataEtendue) // ✅ Appelle ici
+          chartOptionsMoyenne: this.getChartOptionsMoyenne(dataRemplie),
+          chartOptionsEtendue: this.getChartOptionsEtendue(dataRemplie2) // ✅ Appelle ici
         };
       });
 
@@ -473,6 +511,10 @@ public chartOptionsEtendue: {
     getNom(page: any, col: number): number | null {
       const soudure = page.soudures?.[col];
       return soudure ? soudure.matricule : null;
+    }
+    getMatriculeQM(page: any, col: number): number | null {
+      const soudure = page.soudures?.[col];
+      return soudure ? soudure.matriculeAgentQualite : null;
     }
     
   
@@ -565,11 +607,18 @@ public chartOptionsEtendue: {
     const soudure = page.soudures?.[col];
     return soudure ? soudure.sectionFil : null;
   }
-   naviger(){
+  /* naviger(){
     localStorage.removeItem('reponseApi')
     this.router.navigate(['/ui-components/listePdekTousProcess']);
+  }*/
+  naviger() {
+    localStorage.removeItem('reponseApi');
+    localStorage.removeItem('pdekSoudure');
+    // Trick pour forcer reload
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/ui-components/listePdekTousProcess']);
+    });
   }
-
   chargerEtenduMax(sectionFil: string): void {
     this.soudureService.getEtenduMax(sectionFil).subscribe({
       next: (val: number) => {

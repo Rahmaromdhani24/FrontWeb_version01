@@ -28,14 +28,19 @@ export class AppTopEmployeesComponent implements OnInit {
     const role = localStorage.getItem('role');
     const operation = localStorage.getItem('operation');
 
-    if ((role === 'AGENT_QUALITE' || role === 'CHEF_DE_LIGNE') &&
-    (operation === 'undefined' || operation === 'Sertissage_IDC' ||
-     operation === 'Sertissage_Normal' || operation === 'Soudure' ||
-     operation === 'Torsadage')) {
-     this.test ='allProcess'
-    this.service.getTop5OperateursErreurs().subscribe({
-      next: (data) => {
-        this.dataSource = data.map(item => ({
+ if ((role === 'AGENT_QUALITE' || role === 'CHEF_DE_LIGNE') &&
+  (operation === 'undefined' || operation === 'Sertissage_IDC' ||
+   operation === 'Sertissage_Normal' || operation === 'Soudure' ||
+   operation === 'Torsadage')) {
+  
+  this.test = 'allProcess';
+  
+  this.service.getTop5OperateursErreurs().subscribe({
+    next: (data) => {
+      const top5 = data
+        .sort((a, b) => b.nombreErreurs - a.nombreErreurs)
+        .slice(0, 5)
+        .map(item => ({
           matricule: item.matricule,
           poste: item.poste,
           machine: item.machine,
@@ -46,17 +51,23 @@ export class AppTopEmployeesComponent implements OnInit {
           typeOperation: item.typeOperation,
           nombreErreurs: item.nombreErreurs
         }));
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des opérateurs :', err);
-      }
-    });
-  }
-  if ( (role === 'AGENT_QUALITE_PISTOLET' || role === 'TECHNICIEN')) {
-       this.test ='pistolet'
-    this.servicePistolet.getTop5OperateursPistoletsErreurs().subscribe({
-      next: (data) => {
-        this.dataSourcePistolet = data.map(item => ({
+
+      this.dataSource = top5;
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des opérateurs :', err);
+    }
+  });
+}
+ if (role === 'AGENT_QUALITE_PISTOLET' || role === 'TECHNICIEN') {
+  this.test = 'pistolet';
+  this.servicePistolet.getTop5OperateursPistoletsErreurs().subscribe({
+    next: (data) => {
+      // Trier les données par nombre d'erreurs décroissant, puis prendre les 5 premiers
+      const top5 = data
+        .sort((a, b) => b.nombreErreurs - a.nombreErreurs)
+        .slice(0, 5)
+        .map(item => ({
           matricule: item.matricule,
           plant: item.plant,
           segment: item.segment,
@@ -65,12 +76,14 @@ export class AppTopEmployeesComponent implements OnInit {
           categoriePistolet: item.categoriePistolet,
           nombreErreurs: item.nombreErreurs
         }));
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des opérateurs :', err);
-      }
-    });
-  }
+
+      this.dataSourcePistolet = top5;
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des opérateurs :', err);
+    }
+  });
+}
   }
   formatAttribut(input: string): string {
     return input.toLowerCase().replace(/_/g, ' ');

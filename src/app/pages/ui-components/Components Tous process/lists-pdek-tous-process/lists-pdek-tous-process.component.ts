@@ -19,10 +19,18 @@ import { PistoletGeneralService } from 'src/app/services/Agent Qualité Montage 
 import { PlanActionGeneralService } from 'src/app/services/Plan d\'action/plan-action-general.service';
 import { PlanActionDTO } from 'src/app/Modeles/PlanActionDTO';
 import { Router } from '@angular/router';
-import { forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { PDEK } from 'src/app/Modeles/Pdek';
-
+import { OperatorDetailsModalComponent } from '../../Montage Pistolet/operator-details-modal/operator-details-modal.component';
+import { SoudureService } from 'src/app/services/Agent Qualité Operation Soudure/soudure.service';
+import { TorsadageService } from 'src/app/services/Agent Qualite Operation Torsadage/torsadage.service';
+import { SertissageIDCService } from 'src/app/services/Agent Qualite Operation Sertissage/sertissage-idc.service';
+import { SertissageNormalService } from 'src/app/services/Agent Qualite Operation Sertissage/sertissage-normal.service';
+import { PdekService } from 'src/app/services/PDEK service/pdek.service';
+import { PdekAvecPlans } from 'src/app/Modeles/PdekAvecPlans';
+import { from } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-lists-pdek-tous-process',
@@ -60,10 +68,10 @@ displayedColumns: string[] = [
     'action'
   ];
 
-  dataSource: MatTableDataSource<PDEK>;
+  dataSource: MatTableDataSource<PdekAvecPlans>;
 
   // Options des filtres
-  pdeks : PDEK[] = [];
+  pdeks : PdekAvecPlans[] = [];
   processTypes: string[] = ['Torsadage', 'Sertissage normal', 'Sertissage idc' ,'Soudure'];
   plant: string[] = ['VW', 'BM'];
   // Filtres actuels
@@ -74,13 +82,20 @@ displayedColumns: string[] = [
   currentStatusFilter: string[] = [];
   searchFilter: string = '';
   planAction: PlanActionDTO  | null = null ;
+  operationUser  = localStorage.getItem('operation') || '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   
-  constructor(private dialog: MatDialog , private pistoletJauneService: PistoletJauneService
-            , private planActionPdfService : PlanActionPdfService , private  pistoletService :PistoletGeneralService
-            , private planActionService: PlanActionGeneralService ,private  router : Router) {
+  constructor(private dialog: MatDialog ,private  router : Router , 
+              private planActionPdfService : PlanActionPdfService ,
+              private  pistoletService :PistoletGeneralService ,
+              private planActionService: PlanActionGeneralService ,
+              private serviceSoudure : SoudureService ,
+              private serviceTorsadage : TorsadageService , 
+              private serviceSertissageIDC : SertissageIDCService , 
+              private serviceSertissage : SertissageNormalService , 
+              private pdekService : PdekService ) {
   }
   ngOnInit() {
     this.recupererListPdek();
@@ -114,7 +129,7 @@ displayedColumns: string[] = [
   }
 
   applyAllFilters() {
-    this.dataSource.filterPredicate = (data: PDEK, filter: string) => {
+    this.dataSource.filterPredicate = (data: PdekAvecPlans, filter: string) => {
       const searchText = this.searchFilter?.toLowerCase() || '';
   
       // 🔍 Recherche texte sur plusieurs champs
@@ -178,12 +193,14 @@ displayedColumns: string[] = [
       this.router.navigate(['/pdeks-sertissage', row.id]);
     }
   }
-  viewPlanAction(row : PDEK  ){
-    console.log('id de plan action' +row.planAction.id) ; 
-    this.planActionPdfService.openPDFInNewWindow(row.planAction.id);
+  viewPlanAction(row: PdekAvecPlans){
+    console.log('plan action de pdek selectionner: ' + JSON.stringify(row));
+    const planActionId = row.plans[0]?.id;
+    console.log('id de plan action : ' + planActionId);
+  this.planActionPdfService.openPDFInNewWindow(planActionId);
   }
   printRow(row: PDEK) {
-    console.log('Imprimer:', row);
+    window.print();
   }
   getStatusClass(status: string | undefined | null): string {
     if (!status) return 'status-inconnu'; // ou retourne une classe par défaut
@@ -202,15 +219,15 @@ displayedColumns: string[] = [
 /******************************************************************************************/
 viewOperatorsDetails(row: PDEK): void {
   const idPdek = row.id; // ou row.pdekId selon ta structure
-
-  this.pistoletService.getUsersByPdek(idPdek).subscribe({
+ if(row.typeOperation==='Soudure'){
+  this.serviceSoudure.getUsersByPdek(idPdek).subscribe({
     next: (operatorsData) => {
-    /*  this.dialog.open(OperatorDetailsModalComponent, {
+     this.dialog.open(OperatorDetailsModalComponent , {
         width: '500px',
         data: {
           operators: operatorsData
         }
-      });*/
+      });
       console.error('les operateurs sont :', operatorsData);
 
     },
@@ -219,53 +236,104 @@ viewOperatorsDetails(row: PDEK): void {
     }
   });
 }
-
-recupererListPdek() {
-  const types = ['Soudure', 'Torsadage', 'Sertissage_IDC', 'Sertissage_Normal'];
-  const allPdekObservables = types.map(type => this.pistoletService.getPdeks(type));
-
-  forkJoin(allPdekObservables).subscribe({
-    next: (resultatsParType) => {
-      // Fusionner toutes les listes de PDEK
-      this.pdeks = resultatsParType.flat();
-      const planActionObservables = this.pdeks.map(pdek =>
-        this.planActionService.testerAllTypesPdeksSaufPistolet(pdek.id).pipe(
-          catchError(err => {
-            console.error(`Erreur pour le PDEK ${pdek.id} :`, err);
-            pdek.planAction = null;
-            return of(null);
-          }),
-          map(planAction => {
-            pdek.planAction = planAction;
-            return pdek;
-          })
-        )
-      );
-
-      forkJoin(planActionObservables).subscribe({
-        next: (pdeksAvecPlanAction) => {
-          this.pdeks = pdeksAvecPlanAction;
-          this.dataSource = new MatTableDataSource(this.pdeks);
-          setTimeout(() => {
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-          });
-        },
-        error: (err) => {
-          console.error('Erreur lors de la récupération des plans d\'action :', err);
+if(row.typeOperation==='Torsadage'){
+  this.serviceTorsadage.getUsersByPdek(idPdek).subscribe({
+    next: (operatorsData) => {
+     this.dialog.open(OperatorDetailsModalComponent , {
+        width: '500px',
+        data: {
+          operators: operatorsData
         }
+      });
+      console.error('les operateurs sont :', operatorsData);
+
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des opérateurs :', err);
+    }
+  });
+}
+if(row.typeOperation==='Sertissage_Normal'){
+  this.serviceSertissage.getUsersByPdek(idPdek).subscribe({
+    next: (operatorsData) => {
+     this.dialog.open(OperatorDetailsModalComponent , {
+        width: '500px',
+        data: {
+          operators: operatorsData
+        }
+      });
+      console.error('les operateurs sont :', operatorsData);
+
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des opérateurs :', err);
+    }
+  });
+}
+if(row.typeOperation==='Sertissage_IDC'){
+  this.serviceSertissageIDC.getUsersByPdek(idPdek).subscribe({
+    next: (operatorsData) => {
+     this.dialog.open(OperatorDetailsModalComponent , {
+        width: '500px',
+        data: {
+          operators: operatorsData
+        }
+      });
+      console.error('les operateurs sont :', operatorsData);
+
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des opérateurs :', err);
+    }
+  });
+}
+}
+
+
+
+/*recupererListPdek() {
+  const types = ['Soudure', 'Torsadage', 'Sertissage_IDC', 'Sertissage_Normal'];
+  this.pdeks = []; // vide au début
+  this.dataSource = new MatTableDataSource(this.pdeks);
+
+  from(types).pipe(
+    mergeMap(type => this.pdekService.getPdeksEnServiceAvecPlans(type))
+  ).subscribe({
+    next: (pdeksParType) => {
+      this.pdeks = [...this.pdeks, ...pdeksParType];
+      this.dataSource.data = this.pdeks;
+      setTimeout(() => {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
       });
     },
     error: (err) => {
-      if (err.status === 401) {
-        console.error('Non autorisé. Token expiré ou invalide.');
-        // Redirection vers login ici si besoin
-      } else {
-        console.error('Erreur lors de la récupération des PDEKs :', err);
-      }
+      console.error('Erreur lors du chargement des PDEKs :', err);
     }
   });
-  console.log("data de tableau :"+  this.pdeks) ; 
+}*/
+recupererListPdek() {
+  const allTypes = ['Soudure', 'Torsadage', 'Sertissage_IDC', 'Sertissage_Normal'];
+  const operation = this.operationUser?.trim();
+  // Choix du/des type(s) à charger
+  const types = (operation && operation !== 'undefined') ? [operation] : allTypes;
+  this.pdeks = [];
+  this.dataSource = new MatTableDataSource(this.pdeks);
+  from(types).pipe(
+    mergeMap(type => this.pdekService.getPdeksEnServiceAvecPlans(type))
+  ).subscribe({
+    next: (pdeksParType) => {
+      this.pdeks = [...this.pdeks, ...pdeksParType];
+      this.dataSource.data = this.pdeks;
+      setTimeout(() => {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      });
+    },
+    error: (err) => {
+      console.error('Erreur lors du chargement des PDEKs :', err);
+    }
+  });
 }
 
 

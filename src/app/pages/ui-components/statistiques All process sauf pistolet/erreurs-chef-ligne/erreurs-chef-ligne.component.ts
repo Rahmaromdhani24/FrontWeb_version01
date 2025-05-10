@@ -116,6 +116,7 @@ export class ErreursChefLigneComponent {
         }
       },      
       xaxis: { categories },
+    
    
     };
   }

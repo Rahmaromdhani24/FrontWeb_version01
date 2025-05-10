@@ -51,7 +51,10 @@
         [annotations]="page.chartOptionsMoyenne.annotations"
         [fill]="page.chartOptionsMoyenne.fill"
         [legend]="page.chartOptionsMoyenne.legend"
-          style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -244px;"
+          style="margin-left: 30px;
+          position: absolute;
+          width: 1062px;
+          margin-top: -244px;"
   
         ></apx-chart>
       </div>
@@ -68,33 +71,36 @@
           [markers]="page.chartOptionsEtendue.markers"
           [tooltip]="page.chartOptionsEtendue.tooltip"
           [annotations]="page.chartOptionsEtendue.annotations"
-          style="margin-left: 47px; position: absolute; width: 1044px;margin-top: -240px;"
+          style="margin-left: 30px;
+          position: absolute;
+          width: 1061px;
+          margin-top: -240px;"
         ></apx-chart>
         </div>
   
       <div class="tables-wrapper" >
        <!-- TABLEAU PRINCIPAL -->
 <table class="main-table">
-  <tr>
+  <tr class="blanc-background">
     <th>Pliage</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getPilage(page, col) ?? '' }}
     </td> 
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th>Distance B/C</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getDistanceBC(page, col) ?? '' }}
     </td> 
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <th>Traction</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getTraction(page, col) ?? '' }}
     </td> 
   </tr>
   <!-- Code de répartition -->
-  <tr>
+  <tr class="blanc-background">
     <th>Code de controle</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getCodeControle(page, col) ?? '' }}
@@ -102,62 +108,57 @@
   </tr>
 
   <!-- Date sans année -->
-  <tr>
+  <tr class="blanc-background">
     <th>Date </th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getDateSansAnnee(page, col) ?? '' }}
     </td>
-    
   </tr>
-  <tr>
-    <th>Mat de QM</th>
-    <td *ngFor="let i of twentyFive; let col = index">
-      <ng-container *ngIf="getSoudureByIndex(page, col) as soudure">
-        <ng-container *ngIf="soudure.decision === 1 && soudure.rempliePlanAction === 0; else boutonValidation">
-          {{ soudure.matriculeAgentQualite }}
-        </ng-container>
-        <ng-template #boutonValidation>
-          <button 
-            (click)="onValiderPistolet(soudure.id)" 
-            *ngIf="soudure.decision === 0 && !pistoletsValides.has(soudure.id)" 
-            class="custom-check-button">
-            <i class="fa fa-check"></i>
-          </button>
-        </ng-template>
+
+  <tr class="blanc-background">
+  <th>Mat de QM</th>
+  <td *ngFor="let i of twentyFive; let col = index">
+    <ng-container *ngIf="getCodeControle(page, col) !== null">
+      <ng-container *ngIf="getMatriculeQM(page, col) && getMatriculeQM(page, col) !== 0; else nonValide">
+        {{ getMatriculeQM(page, col) }}
       </ng-container>
-    </td>
-  </tr>
-  
+      <ng-template #nonValide>
+        <span class="small-text">N/V</span>
+      </ng-template>
+    </ng-container>
+  </td>
+</tr>
+
 
   <!-- 5 LIGNES X -->
-  <tr>
+  <tr class="blanc-background">
     <th rowspan="5">X</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 0, col) ?? '' }}
     </td> 
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 1, col) ?? '' }}
     </td>  
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 2, col) ?? '' }}
     </td>  
   </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 3, col) ?? '' }}
     </td>  </tr>
-  <tr>
+  <tr class="blanc-background">
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getValeurX(page, 4, col) ?? '' }}
     </td>
   </tr>
 
   <!-- Moyenne -->
-  <tr>
+  <tr class="blanc-background">
     <th>X̄</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getMoyenne(page, col) ?? '' }}
@@ -165,7 +166,7 @@
   </tr>
 
   <!-- Étendue -->
-  <tr>
+  <tr class="blanc-background">
     <th>R</th>
     <td *ngFor="let i of twentyFive; let col = index">
       {{ getEtendu(page, col) ?? '' }}
@@ -173,7 +174,7 @@
   </tr>
 
   <!-- Num courant -->
-  <tr>
+  <tr  class="gris-background">
     <th>Nr courant</th>
     <td *ngFor="let i of [].constructor(25); let idx = index">
       {{ idx + 1 }}
@@ -195,7 +196,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let i of twentyFive; let index = index">
+      <tr *ngFor="let i of twentyFive; let index = index" class="blanc-background">
         <td>{{ index + 1 }}</td>
         <ng-container *ngIf="page.soudures[index] as soudure">
           <td>{{ soudure.nbrKanban }}</td>
@@ -222,6 +223,16 @@
   </div>
 </div>
 
+      </div>
+      <div>
+        <br>
+      <span id="titreCode"> Code de Controle : </span>
+      <span id="code1"> A = Démarrage du poste/ Changement de configuration /Fin du dernier poste /Arrêt </span>
+      <span id="code2"> R = Réparation machine </span>
+      <span id="code3"> E = Entretien machine </span><br>
+      <span id="code4"> P = Changement des paramètres ou bien apprentissage</span>
+      <span id="code5"> B = Reprise de la même épissure</span>
+      <span id="code6"> S =  Contrôle supplémentaire</span>
       </div>
        </div>
        <button mat-flat-button color="primary" class="m-r-8" type="submit" 

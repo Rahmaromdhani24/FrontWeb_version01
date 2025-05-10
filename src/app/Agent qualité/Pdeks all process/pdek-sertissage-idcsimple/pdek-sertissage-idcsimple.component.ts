@@ -75,6 +75,7 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
    sectionFil: string =''
    idPdek: number 
    ngOnInit(): void {
+     this.role= localStorage.getItem('role') || '';
     this.reponseApi = JSON.parse(localStorage.getItem("reponseApi")!);
     const pdekSertissageJson = localStorage.getItem('pdekSertissageIDC');
     if (pdekSertissageJson) {
@@ -239,20 +240,65 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
      }
    };
    
-   getChartCote1Hauteur(data: { x: number; y1: number; y2: number; y3: number ; y4: number }[]) {
-     const moyenneData = data.map(p => ({
-       x: p.x,
-       y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0)+ (p.y4 ?? 0)) / [p.y1, p.y2, p.y3 , p.y4].filter(v => v !== null && v !== undefined).length
-     }));
-   
-     return {
-       ...this.chartCote1Hauteur,
-       series: [{
-         name: 'Coté 1',
-         data: moyenneData
-       }]
-     };
-   }
+   getChartCote1Hauteur(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
+    // Générer toutes les combinaisons x-échantillon de 1-1 à 8-4
+    const allCategories: string[] = [];
+    for (let i = 1; i <= 8; i++) {
+      for (let j = 1; j <= 4; j++) {
+        allCategories.push(`${i}-${j}`);
+      }
+    }
+  
+    // Créer un map des données disponibles
+    const dataMap = new Map<string, number>();
+    data.forEach(p => {
+      if (p.y1 != null) dataMap.set(`${p.x}-1`, p.y1);
+      if (p.y2 != null) dataMap.set(`${p.x}-2`, p.y2);
+      if (p.y3 != null) dataMap.set(`${p.x}-3`, p.y3);
+      if (p.y4 != null) dataMap.set(`${p.x}-4`, p.y4);
+    });
+  
+    // Remplir la série en respectant les 32 points (valeur ou null)
+    const flatData = allCategories.map(cat => ({
+      x: cat,
+      y: dataMap.has(cat) ? dataMap.get(cat)! : null
+    }));
+  
+    return {
+      ...this.chartCote1Hauteur,
+      series: [{
+        name: 'Coté 1',
+        data: flatData
+      }],
+      xaxis: {
+        type: 'category',
+        categories: allCategories,
+        labels: {
+          rotate: -45,
+          style: { fontSize: '10px' }
+        },
+       /* title: {
+          text: 'Cycle - Échantillon'
+        }*/
+      },
+      tooltip: {
+        enabled: true,
+        shared: false,
+        intersect: true,
+        x: {
+          formatter: (val: string) => {
+            const [cycle, ech] = val.split('-');
+            return `Cycle: ${cycle} - Échantillon: ${ech}`;
+          }
+        },
+        y: {
+          formatter: (val: number | null) =>
+            val != null ? `${val.toFixed(2)} mm` : 'Pas de donnée'
+        }
+      }
+    };
+  }
+  
    /************************* traction c1 ************************************/
    public chartCote1Traction: {
      series: ApexAxisChartSeries;
@@ -366,20 +412,65 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
      }
    };
    
-   getChartCote1Traction(data: { x: number; y1: number; y2: number; y3: number ; y4: number }[]) {
-     const moyenneData = data.map(p => ({
-       x: p.x,
-       y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0)+ (p.y4 ?? 0)) / [p.y1, p.y2, p.y3 , p.y4].filter(v => v !== null && v !== undefined).length
-     }));
-   
-     return {
-       ...this.chartCote1Traction,
-       series: [{
-         name: 'Coté 1',
-         data: moyenneData
-       }]
-     };
-   }
+   getChartCote1Traction(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
+    // Générer toutes les combinaisons x-échantillon de 1-1 à 8-4 (32 points)
+    const allCategories: string[] = [];
+    for (let i = 1; i <= 8; i++) {
+      for (let j = 1; j <= 4; j++) {
+        allCategories.push(`${i}-${j}`);
+      }
+    }
+  
+    // Créer un map des données disponibles
+    const dataMap = new Map<string, number>();
+    data.forEach(p => {
+      if (p.y1 != null) dataMap.set(`${p.x}-1`, p.y1);
+      if (p.y2 != null) dataMap.set(`${p.x}-2`, p.y2);
+      if (p.y3 != null) dataMap.set(`${p.x}-3`, p.y3);
+      if (p.y4 != null) dataMap.set(`${p.x}-4`, p.y4);
+    });
+  
+    // Remplir la série avec les points valides et null si pas de données
+    const flatData = allCategories.map(cat => ({
+      x: cat,
+      y: dataMap.has(cat) ? dataMap.get(cat)! : null
+    }));
+  
+    return {
+      ...this.chartCote1Traction,
+      series: [{
+        name: 'Coté 2',
+        data: flatData
+      }],
+      xaxis: {
+        type: 'category',
+        categories: allCategories,
+        labels: {
+          rotate: -45,
+          style: { fontSize: '10px' }
+        },
+       /* title: {
+          text: 'Cycle - Échantillon'
+        }*/
+      },
+      tooltip: {
+        enabled: true,
+        shared: false,
+        intersect: true,
+        x: {
+          formatter: (val: string) => {
+            const [cycle, ech] = val.split('-');
+            return `Cycle: ${cycle} - Échantillon: ${ech}`;
+          }
+        },
+        y: {
+          formatter: (val: number | null) =>
+            val != null ? `${val.toFixed(2)}` : 'Pas de donnée'
+        }
+      }
+    };
+  }
+  
    /******************************* Cote 2 ************************************/
    public chartCote2Hauteur: {
      series: ApexAxisChartSeries;
@@ -504,21 +595,65 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
      }
    };
    
-   getChartCote2Hauteur(data: { x: number; y1: number; y2: number; y3: number ; y4: number}[]) {
-     const moyenneData = data.map(p => ({
-       x: p.x,
-       y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0)+ (p.y4 ?? 0)) / [p.y1, p.y2, p.y3].filter(v => v !== null && v !== undefined).length
-     }));
-   
-     return {
-       ...this.chartCote2Hauteur,
-       series: [{
-         name: 'Coté 2',
-         data: moyenneData
-       }]
-     };
-   }
-   
+   getChartCote2Hauteur(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
+    // Générer toutes les combinaisons x-échantillon de 1-1 à 8-4
+    const allCategories: string[] = [];
+    for (let i = 1; i <= 8; i++) {
+      for (let j = 1; j <= 4; j++) {
+        allCategories.push(`${i}-${j}`);
+      }
+    }
+  
+    // Créer un map des données disponibles
+    const dataMap = new Map<string, number>();
+    data.forEach(p => {
+      if (p.y1 != null) dataMap.set(`${p.x}-1`, p.y1);
+      if (p.y2 != null) dataMap.set(`${p.x}-2`, p.y2);
+      if (p.y3 != null) dataMap.set(`${p.x}-3`, p.y3);
+      if (p.y4 != null) dataMap.set(`${p.x}-4`, p.y4);
+    });
+  
+    // Remplir la série en respectant les 32 points (valeur ou null)
+    const flatData = allCategories.map(cat => ({
+      x: cat,
+      y: dataMap.has(cat) ? dataMap.get(cat)! : null
+    }));
+  
+    return {
+      ...this.chartCote1Hauteur,
+      series: [{
+        name: 'Coté 1',
+        data: flatData
+      }],
+      xaxis: {
+        type: 'category',
+        categories: allCategories,
+        labels: {
+          rotate: -45,
+          style: { fontSize: '10px' }
+        },
+       /* title: {
+          text: 'Cycle - Échantillon'
+        }*/
+      },
+      tooltip: {
+        enabled: true,
+        shared: false,
+        intersect: true,
+        x: {
+          formatter: (val: string) => {
+            const [cycle, ech] = val.split('-');
+            return `Cycle: ${cycle} - Échantillon: ${ech}`;
+          }
+        },
+        y: {
+          formatter: (val: number | null) =>
+            val != null ? `${val.toFixed(2)} mm` : 'Pas de donnée'
+        }
+      }
+    };
+  }
+  
    /************************* Cote c2 traction*******************************/
    public chartCote2Traction: {
      series: ApexAxisChartSeries;
@@ -632,21 +767,65 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
      }
    };
    
-   getChartCote2Traction(data: { x: number; y1: number; y2: number; y3: number ; y4: number}[]) {
-     const moyenneData = data.map(p => ({
-       x: p.x,
-       y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0)+ (p.y4 ?? 0)) / [p.y1, p.y2, p.y3].filter(v => v !== null && v !== undefined).length
-     }));
-   
-     return {
-       ...this.chartCote2Traction,
-       series: [{
-         name: 'Coté 2',
-         data: moyenneData
-       }]
-     };
-   }
-   
+   getChartCote2Traction(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
+    // Générer toutes les combinaisons x-échantillon de 1-1 à 8-4 (32 points)
+    const allCategories: string[] = [];
+    for (let i = 1; i <= 8; i++) {
+      for (let j = 1; j <= 4; j++) {
+        allCategories.push(`${i}-${j}`);
+      }
+    }
+  
+    // Créer un map des données disponibles
+    const dataMap = new Map<string, number>();
+    data.forEach(p => {
+      if (p.y1 != null) dataMap.set(`${p.x}-1`, p.y1);
+      if (p.y2 != null) dataMap.set(`${p.x}-2`, p.y2);
+      if (p.y3 != null) dataMap.set(`${p.x}-3`, p.y3);
+      if (p.y4 != null) dataMap.set(`${p.x}-4`, p.y4);
+    });
+  
+    // Remplir la série avec les points valides et null si pas de données
+    const flatData = allCategories.map(cat => ({
+      x: cat,
+      y: dataMap.has(cat) ? dataMap.get(cat)! : null
+    }));
+  
+    return {
+      ...this.chartCote1Traction,
+      series: [{
+        name: 'Coté 2',
+        data: flatData
+      }],
+      xaxis: {
+        type: 'category',
+        categories: allCategories,
+        labels: {
+          rotate: -45,
+          style: { fontSize: '10px' }
+        },
+       /* title: {
+          text: 'Cycle - Échantillon'
+        }*/
+      },
+      tooltip: {
+        enabled: true,
+        shared: false,
+        intersect: true,
+        x: {
+          formatter: (val: string) => {
+            const [cycle, ech] = val.split('-');
+            return `Cycle: ${cycle} - Échantillon: ${ech}`;
+          }
+        },
+        y: {
+          formatter: (val: number | null) =>
+            val != null ? `${val.toFixed(2)}` : 'Pas de donnée'
+        }
+      }
+    };
+  }
+  
     /*********************** Chart d'Étendue R *******************************/
    
     chargerToutesLesPages(): void {
@@ -779,9 +958,21 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
      onValiderSertissage(id: number) {
         this.service.validerSertissageIDC(id, this.matriculeAgentQualite).subscribe({
                         next: () => {
-                          console.log('Pdek Sertissage  validé avec succès');
-                          this.pistoletsValides.add(id); // Marquer ce pistolet comme validé
-                    
+              console.log('Pdek Sertissage  validé avec succès');
+              this.pistoletsValides.add(id); // Marquer ce pistolet comme validé
+                const sertissage = this.sertissages.find(p => p.id === id);
+                if (sertissage) {
+                  sertissage.matriculeAgentQualite = this.matriculeAgentQualite;
+                }
+
+                // MAJ dans page.sertissages aussi
+                for (let page of this.pages) {
+                  const target = page.sertissages.find(p => p.id === id);
+                  if (target) {
+                    target.matriculeAgentQualite = this.matriculeAgentQualite;
+                  }
+                }
+
                           Swal.fire({
                             title: 'Confirmation !',
                             text: 'Pdek Sertissage validé avec succès.',
@@ -831,10 +1022,22 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
        const sertissage = page.sertissages?.[col];
        return sertissage ? sertissage.userSertissageIDC : null;
      }
+      getQM(page: any, col: number): number | null {
+       const sertissage = page.sertissages?.[col];
+       return sertissage ? sertissage.matriculeAgentQualite : null;
+     }
    
-      naviger(){
+    /*  naviger(){
        localStorage.removeItem('reponseApi')
        this.router.navigate(['/dashboard']);
-     }  
-   
+     } */ 
+       naviger() {
+        localStorage.removeItem('reponseApi');
+        localStorage.removeItem('pdekSertissageIDC');
+        localStorage.removeItem('sertissage');
+        // Trick pour forcer reload
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+          this.router.navigate(['/dashboard']);
+        });
+      }
    }

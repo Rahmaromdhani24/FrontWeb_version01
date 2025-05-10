@@ -1,0 +1,57 @@
+#image{
+    width:250px ;
+    height :220px ;
+    margin-top: -45px;
+}
+.label-shift {
+    margin-left: 10px; 
+    padding-top: 25px;
+
+  }
+
+  .custom-button {
+    background-color: #022958 !important; /* Couleur de fond personnalisée avec !important */
+    color: white !important; /* Couleur du texte avec !important */
+    margin-top: 10px;
+  }
+
+  .or-border:after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 12px;
+    top: 50%;
+    height: 1px;
+    background: var(--mat-sys-outline);
+}
+.or-border:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 12px;
+    top: 50%;
+    height: 1px;
+    background: var(--mat-sys-outline);
+}
+
+.or-border {
+    position: relative;
+    text-align: center;
+    margin-top: -30px;
+}
+mat-error {
+  color: red !important;
+  font-weight: bold;
+}
+.imagePage404{
+    max-width: 100%;
+    min-height: 600px;
+    height: 600px;
+    max-height: 100%;
+    margin-left: 90px;
+}
+#btnRetourPageAccueil {
+    position: relative;
+    top: -8vh;
+    left: -45vw;
+}

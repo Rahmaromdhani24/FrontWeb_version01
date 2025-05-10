@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError  , map} from 'rxjs/operators';
 import { SertissageIDC } from 'src/app/Modeles/SertissageIDC';
 import { GeneralService } from '../Géneral/general.service';
+import { User } from 'src/app/Modeles/User';
 
 @Injectable({
   providedIn: 'root'
@@ -142,7 +143,16 @@ export class SertissageIDCService {
           );
         }
         
-                       
+         private baseUrl = 'http://localhost:8281/operations/SertissageIDC';
+         getUsersByPdek(pdekId: number): Observable<User[]> {
+           const token = localStorage.getItem('token'); // récupère le token depuis le local storage
+       
+           const headers = new HttpHeaders({
+             'Authorization': `Bearer ${token}`
+           });
+       
+           return this.http.get<User[]>(`${this.baseUrl}/users-by-pdek/${pdekId}`, { headers });
+         }                
               genererMessageEtatAllProcess(etat: string): string {
                 switch (etat) {
                   case 'vert':

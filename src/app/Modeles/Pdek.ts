@@ -2,7 +2,6 @@ import { User } from "./User";
 
 export interface PDEK {
     id: number;
-    
     totalPages: number;
     sectionFil: string;
     nombreEchantillons: string;

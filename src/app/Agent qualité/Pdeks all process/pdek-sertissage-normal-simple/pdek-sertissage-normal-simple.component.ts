@@ -76,6 +76,7 @@ export class PdekSertissageNormalSimpleComponent  implements OnInit {
    annee  : string =''
    role : string =''
    idPdek: number 
+   sertissages : SertissageNormal[] ; 
    ngOnInit(): void {
 
     this.reponseApi = JSON.parse(localStorage.getItem("reponseApi")!);
@@ -88,6 +89,7 @@ export class PdekSertissageNormalSimpleComponent  implements OnInit {
       this.numContact = pdekSertissageObj.numeroContacts; 
       this.numOutil = pdekSertissageObj.numeroOutils;
       this.sectionFil = this.extraireValeurNumeriqueSectionFil(pdekSertissageObj.sectionFil);
+      console.log("section de pdek est = "+  this.sectionFil )
     }
     const pdekSertissageNormalJson = localStorage.getItem('sertissage');
     if (pdekSertissageNormalJson) {
@@ -96,6 +98,7 @@ export class PdekSertissageNormalSimpleComponent  implements OnInit {
       this.numOutil = pdekSertissageObj.numOutil;
       this.sectionFil = this.extraireValeurNumeriqueSectionFil(pdekSertissageObj.sectionFil);  
      this.valeurLGDPdek = pdekSertissageObj.lgd; 
+      console.log("section de pdek est = "+  this.sectionFil )
 
     }
     this.plantUser = localStorage.getItem('plant')!;
@@ -134,13 +137,19 @@ generateChartHauteur(hauteurSertissage: number) {
       type: 'line',
       height: 400,
       background: 'transparent',
-      toolbar: { show: false },
-      animations: { enabled: false }
+      animations: {
+        enabled: false,
+        easing: 'linear',
+        speed: 1,
+        animateGradually: { enabled: false },
+        dynamicAnimation: { enabled: false }
+      },
+      toolbar: { show: false }
     },
     xaxis: {
       type: 'numeric',
       min: 1,
-      max: 25,
+      max: 32,
       labels: { show: false },
       axisTicks: { show: false },
       axisBorder: { show: false }
@@ -228,18 +237,58 @@ generateChartHauteur(hauteurSertissage: number) {
     }
   };
 }
-getChartHauteur(data: { x: number; y1: number; y2: number; y3: number; y4: number }[]) {
-  const moyenneData = data.map(p => ({
-    x: p.x,
-    y: ((p.y1 ?? 0) + (p.y2 ?? 0) + (p.y3 ?? 0) + (p.y4 ?? 0)) / [p.y1, p.y2, p.y3, p.y4].filter(v => v !== null && v !== undefined).length
-  }));
+getChartHauteur(data: { x: string; y1: number; y2: number; y3: number; y4: number }[]) {
+  const flatData: { x: string; y: number }[] = [];
+
+  data.forEach(p => {
+    if (p.y1 !== null && p.y1 !== undefined) flatData.push({ x: `${p.x}-1`, y: p.y1 });
+    if (p.y2 !== null && p.y2 !== undefined) flatData.push({ x: `${p.x}-2`, y: p.y2 });
+    if (p.y3 !== null && p.y3 !== undefined) flatData.push({ x: `${p.x}-3`, y: p.y3 });
+    if (p.y4 !== null && p.y4 !== undefined) flatData.push({ x: `${p.x}-4`, y: p.y4 });
+  });
+
+  const baseChart = this.generateChartHauteur(this.hauteurSertissage);
 
   return {
-    ...this.generateChartHauteur(this.hauteurSertissage), // utilisation dynamique
+    ...baseChart,
     series: [{
-      name: 'Hauteur',
-      data: moyenneData
-    }]
+      name: 'Hauteurs successives',
+      data: flatData
+    }],
+      chart: {
+      type: 'line',
+      height: 400,
+      background: 'transparent',
+      animations: {
+        enabled: false,
+        easing: 'linear',
+        speed: 1,
+        animateGradually: { enabled: false },
+        dynamicAnimation: { enabled: false }
+      },
+      toolbar: { show: false }
+    },
+    xaxis: {
+      ...baseChart.xaxis,
+      type: 'category',
+      categories: flatData.map(d => d.x),
+      labels: { rotate: -45 },
+      //title: { text: 'Cycle - Échantillon' }
+    },
+    tooltip: {
+      enabled: true,
+      shared: false,
+      intersect: true,
+      x: {
+        formatter: (val: string) => {
+          const [cycle, ech] = val.split('-');
+          return `Cycle: ${cycle}<br/>Échantillon: ${ech}`;
+        }
+      },
+      y: {
+        formatter: (val: number) => `${val.toFixed(3)} mm`
+      }
+    }
   };
 }
 
@@ -350,7 +399,7 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
   }
 
   
-  onValiderSertissage(id: number) {
+ onValiderSertissage(id: number) {
      this.service.validerSertissageNormal(id, this.matriculeAgentQualite).subscribe({
                      next: () => {
                        this.pistoletsValides.add(id); // Marquer ce pistolet comme validé
@@ -378,6 +427,48 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
                      }
                    });
   }
+   /*  onValiderSertissage(id: number) {
+         this.service.validerSertissageNormal(id, this.matriculeAgentQualite).subscribe({
+                         next: () => {
+               console.log('Pdek Sertissage  validé avec succès');
+               this.pistoletsValides.add(id); // Marquer ce pistolet comme validé
+            /*     const sertissage = this.sertissages.find(p => p.id === id);
+                 if (sertissage) {
+                   sertissage.matriculeAgentQualite = this.matriculeAgentQualite;
+                 }
+ 
+                 // MAJ dans page.sertissages aussi
+                 for (let page of this.pages) {
+                   const target = page.sertissages.find(p => p.id === id);
+                   if (target) {
+                     target.matriculeAgentQualite = this.matriculeAgentQualite;
+                   }
+                 }
+ 
+                           Swal.fire({
+                             title: 'Confirmation !',
+                             text: 'Pdek Sertissage validé avec succès.',
+                             icon: 'success',
+                             confirmButtonText: 'OK',
+                             customClass: {
+                               popup: 'custom-popup',
+                               title: 'custom-title',
+                               confirmButton: 'custom-confirm-button'
+                             }
+                           });
+                         },
+                         error: (err) => {
+                           console.error('Erreur lors de la validation :', err);
+                           Swal.fire({
+                             title: 'Erreur',
+                             text: 'Erreur lors de la validation',
+                             icon: 'error',
+                             confirmButtonText: 'OK'
+                           });
+                         }
+                       });
+      }*/
+    
   getNumContact(page: any, col: number): string | null {
     const sertissage = page.sertissages?.[col];
     return sertissage ? sertissage.numContact : null;
@@ -418,7 +509,11 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
   }
   getOperateur(page: any, col: number): number | null {
     const sertissage = page.sertissages?.[col];
-    return sertissage ? sertissage.userSertissageNormal : null;
+    return sertissage ? sertissage.userSertissageNormal : null;}
+  
+    getQM(page: any, col: number): number | null {
+    const sertissage = page.sertissages?.[col];
+    return sertissage ? sertissage.matriculeAgentQualite : null;
   }
   chargerTraction(numeroOutil: string, numeroContact: string, sectionFil: string): string {
     this.service.getTractionValeur(numeroOutil, numeroContact, sectionFil)
@@ -530,21 +625,51 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
       return this.toleranceHauteurIsolant 
 
   }
-   naviger(){
+  /* naviger(){
     localStorage.removeItem('reponseApi')
     this.router.navigate(['/dashboard']);
-  }  
+  }  */
   decodeHtml(html: string): string {
     const txt = document.createElement('textarea');
     txt.innerHTML = html;
     return txt.value;
   }
-  extraireValeurNumeriqueSectionFil(sectionFil: string): string {
+ /* extraireValeurNumeriqueSectionFil(sectionFil: string): string {
     if (!sectionFil) {
       return "0.00";
     }
     const match = sectionFil.match(/[0-9]+(\.[0-9]+)?/);
     const value = match ? parseFloat(match[0]) : 0;
     return value.toFixed(2); // forcer 2 chiffres après la virgule sous forme de string
+  }*/
+ extraireValeurNumeriqueSectionFil(sectionFil: string): string {
+  if (!sectionFil) {
+    return "0.00";
   }
+
+  const trimmed = sectionFil.trim();
+
+  // Si c'est du type "2x0.35 mm²", on le retourne tel quel
+  if (/^\d+x\d+(\.\d+)?/.test(trimmed)) {
+    const match = trimmed.match(/^\d+x\d+(\.\d+)?/);
+    return match ? match[0] : "0.00";
+  }
+
+  // Sinon on extrait la première valeur numérique seule (ex: "2.5 mm²" => "2.50")
+  const match = trimmed.match(/\d+(\.\d+)?/);
+  const value = match ? parseFloat(match[0]) : 0;
+  return value.toFixed(2);
+}
+
+
+  naviger() {
+    localStorage.removeItem('reponseApi');
+    localStorage.removeItem('pdekSertissage');
+    localStorage.removeItem('sertissage');
+    // Trick pour forcer reload
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/dashboard']);
+    });
+  }
+  
 }
