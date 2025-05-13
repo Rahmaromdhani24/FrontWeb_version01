@@ -29,6 +29,20 @@ import { ErreursParProcessComponent } from './statistiques All process sauf pist
 import { ErreursChefLigneComponent } from './statistiques All process sauf pistolet/erreurs-chef-ligne/erreurs-chef-ligne.component';
 import { AuthGuard } from 'src/app/services/guards/auth.guard';
 import { RoleGuard } from 'src/app/services/guards/role-guard';
+import { ListsAdminComponent } from './Super admin/lists-admin/lists-admin.component';
+import { AddAdminComponent } from './Super admin/add-admin/add-admin.component';
+import { UpdateAdminComponent } from './Super admin/update-admin/update-admin.component';
+import { ListUsersComponent } from './Admin/list-users/list-users.component';
+import { ListOperateursComponent } from './Admin/list-operateurs/list-operateurs.component';
+import { AddUserOperateurComponent } from './Admin/add-user-operateur/add-user-operateur.component';
+import { AddUserComponent } from './Admin/add-user/add-user.component';
+import { UpdateUtilisateurComponent } from './Admin/update-utilisateur/update-utilisateur.component';
+import { UpdateOperateurComponent } from './Admin/update-operateur/update-operateur.component';
+import { ListProjetsComponent } from './Projets/list-projets/list-projets.component';
+import { AddProjetComponent } from './Projets/add-projet/add-projet.component';
+import { UpdateProjetComponent } from './Projets/update-projet/update-projet.component';
+import { AddOutilContactComponent } from './Admin/add-outil-contact/add-outil-contact.component';
+
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -150,19 +164,84 @@ export const UiComponentsRoutes: Routes = [
         canActivate: [AuthGuard, RoleGuard],
         data: { roles: ['CHEF_DE_LIGNE'] }
       },
-     /*
-      {
-        path: 'tooltips',
-        component: AppTooltipsComponent,
+       {
+        path: 'listeAdminstrateursParSuperAdmin',
+        component: ListsAdminComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['SUPER_ADMIN'] }
+      },
+        {
+        path: 'addAdminParSuperAdmin',
+        component: AddAdminComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['SUPER_ADMIN'] }
+      },
+       {
+       path: 'updateProfileAdminParSuperAdmin/:matricule',
+        component: UpdateAdminComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['SUPER_ADMIN'] }
+      },
+     {
+       path: 'users',
+        component: ListUsersComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+         {
+       path: 'addUtilisateur',
+        component: AddUserComponent ,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+       {
+       path: 'updateUtilisateur/:matricule',
+        component: UpdateUtilisateurComponent ,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+       {
+       path: 'listOperateurs',
+        component: ListOperateursComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+         {
+       path: 'addOperateur',
+        component: AddUserOperateurComponent ,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+       {
+       path: 'updateOperateur/:matricule',
+        component: UpdateOperateurComponent ,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
       },
       {
-        path: 'forms',
-        component: AppFormsComponent,
+       path: 'listProjets',
+        component: ListProjetsComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
       },
-      {
-        path: 'tables',
-        component: AppTablesComponent,
-      },*/
+         {
+       path: 'addProjet',
+        component: AddProjetComponent ,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+       {
+       path: 'updateProjet/:id',
+        component: UpdateProjetComponent ,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+       {
+       path: 'addOutilContact',
+        component: AddOutilContactComponent ,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { roles: ['ADMIN'] }
+      },
     ],
   },
 ];

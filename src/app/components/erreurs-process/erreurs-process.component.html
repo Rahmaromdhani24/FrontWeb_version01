@@ -1,4 +1,7 @@
-<mat-card class="cardWithShadow overflow-hidden">
+<mat-card class="cardWithShadow overflow-hidden" *ngIf="role === 'AGENT_QUALITE' || 
+                                                        role === 'CHEF_DE_LIGNE'|| 
+                                                        role ==='AGENT_QUALITE_PISTOLET'||
+                                                        role ==='TECHNICIEN'">
     <mat-card-header class="d-flex align-items-center p-x-24">
         <mat-card-title>Erreurs de Production</mat-card-title>
         <div class="m-l-auto">

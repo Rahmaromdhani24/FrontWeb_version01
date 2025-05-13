@@ -53,7 +53,7 @@ export class AppPdekProcessComponent  implements OnInit{
   @ViewChild('chart') chart: ChartComponent = Object.create(null);
 
   public profitExpanceChart!: Partial<profitExpanceChart> | any;
-
+  role : string ='' ;
   constructor(
     private statsService: StatistiquesService,
     private servicePistolet: StatistiquesPistoletService,
@@ -118,9 +118,10 @@ export class AppPdekProcessComponent  implements OnInit{
   }
 
   ngOnInit(): void {
-    const role = localStorage.getItem('role');
+    const role = localStorage.getItem('role')|| '';
+    this.role = role ; 
     const operation = localStorage.getItem('operation');
-
+    
     if ((role === 'AGENT_QUALITE' || role === 'CHEF_DE_LIGNE') &&
         (operation === 'undefined' || operation === 'Sertissage_IDC' ||
          operation === 'Sertissage_Normal' || operation === 'Soudure' ||

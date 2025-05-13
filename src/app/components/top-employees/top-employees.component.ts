@@ -21,11 +21,13 @@ export class AppTopEmployeesComponent implements OnInit {
   dataSourcePistolet: OperateurErreurPistolet[] = [];
   displayedColumnsPistolet: string[] = ['nomPrenom' ,'matricule', 'plant', 'typePistolet' , 'categoriePistolet', 'nombreErreurs'];
   test : string ='' ; 
+  role : string ='' ; 
   constructor(private service: StatistiquesService ,
               private servicePistolet : StatistiquesPistoletService) {}
 
   ngOnInit(): void {
-    const role = localStorage.getItem('role');
+    const role = localStorage.getItem('role')|| '';
+    this.role = role ; 
     const operation = localStorage.getItem('operation');
 
  if ((role === 'AGENT_QUALITE' || role === 'CHEF_DE_LIGNE') &&

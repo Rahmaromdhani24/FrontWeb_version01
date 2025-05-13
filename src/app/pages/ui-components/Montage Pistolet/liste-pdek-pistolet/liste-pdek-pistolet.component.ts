@@ -86,12 +86,7 @@ displayedColumns: string[] = [
 
   plant: string[] = ['VW', 'BM'];
   categorie: string[] = ['Mécanique', 'Pneumatique'];
-  segment: number[] = [10, 15, 44, 38, 27, 92]; // tu mets les valeurs que tu veux
-  machines: string[] = ['D306', 'D295'];
-  totalPages: number[] = [1, 2];
-// Dans votre composant.ts
-statuses: string[] = ['en cours', 'Valider', 'Rejeter'];
-  // Filtres actuels
+
   currentProcessFilter: string[] = [];
   currentSegmentFilter: string[] = [];
   currentNumeroPistoletFilter: string[] = [];

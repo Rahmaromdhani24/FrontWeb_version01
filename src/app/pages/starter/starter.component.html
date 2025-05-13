@@ -2,9 +2,15 @@
   <div class="col-lg-8">
     <app-pdek-process></app-pdek-process>
   </div>
+   <div class="col-lg-8" *ngIf="role==='SUPER_ADMIN'">
+    <app-stat-super-admin></app-stat-super-admin>
+  </div>
   <div class="col-lg-4">
     <app-effectif-operateurs></app-effectif-operateurs>
     <app-erreurs-process></app-erreurs-process>
+    <div *ngIf="role==='SUPER_ADMIN'">
+    <app-stat-super-admin-pdek></app-stat-super-admin-pdek>
+  </div>
   </div>
 </div>
 

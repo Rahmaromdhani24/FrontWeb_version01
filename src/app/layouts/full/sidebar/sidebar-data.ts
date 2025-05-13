@@ -3,119 +3,58 @@ import { NavItem } from './nav-item/nav-item';
 export const navItems: NavItem[] = [
   {
     navCap: 'Home',
+     roles: ['AGENT_QUALITE_PISTOLET','AGENT_QUALITE'  ,'TECHNICIEN' , 'CHEF_DE_LIGNE' ]
   },
   {
     displayName: 'Dashboard',
     iconName: 'layout-grid-add',
     route: '/dashboard',
-    bgcolor: 'primary'
+    bgcolor: 'primary' ,
+     roles: ['AGENT_QUALITE_PISTOLET','AGENT_QUALITE'  ,'TECHNICIEN' , 'CHEF_DE_LIGNE' ]
   },
   {
     navCap: 'Utilisateurs',
-    roles: ['ADMIN',]
+    roles: ['SUPER_ADMIN']
   },
-  {
-    displayName: 'Opérateurs',
+    {
+    displayName: 'Liste Administrateurs',
     iconName: 'users-group',
+    route: '/ui-components/listeAdminstrateursParSuperAdmin',
+    bgcolor: 'error',
+    roles: ['SUPER_ADMIN'], 	
+
+  },
+ 
+  {
+    displayName: 'Ajout Adminstrateur',
+    iconName: 'user-plus',
+    route :'/ui-components/addAdminParSuperAdmin' , 
     bgcolor: 'secondary',
-    roles: ['ADMIN',], 
-    //chip: true,
-    //chipClass: 'bg-primary text-white',
-    //chipContent: 'PRO',
-    //route: 'apps/blog',
-    children: [
-      {
-        displayName: 'Post',
-        iconName: 'point',
-        bgcolor: 'tranparent',
-        external: true,
-        chip: true,
-        chipClass: 'bg-primary text-white',
-        chipContent: 'PRO',
-        route: 'https://spike-angular-pro-main.netlify.app/apps/blog/post',
-      },
-      {
-        displayName: 'Detail',
-        iconName: 'point',
-        bgcolor: 'tranparent',
-        external: true,
-        chip: true,
-        chipClass: 'bg-primary text-white',
-        chipContent: 'PRO',
-        route:
-          'https://spike-angular-pro-main.netlify.app/apps/blog/detail/Early Black Friday Amazon deals: cheap TVs, headphones, laptops',
-      },
-    ],
-  },
+    roles: ['SUPER_ADMIN'] , 
+ },
+
   {
-    displayName: 'Chefs des lignes',
-    iconName: 'users',
-    bgcolor: 'warning',
-     roles: ['ADMIN',],
-    //chip: true,
-    //chipClass: 'bg-primary text-white',
-    //chipContent: 'PRO',
-    //route: 'apps/blog',
-    children: [
-      {
-        displayName: 'Post',
-        iconName: 'point',
-        bgcolor: 'tranparent',
-        external: true,
-        chip: true,
-        chipClass: 'bg-primary text-white',
-        chipContent: 'PRO',
-        route: 'https://spike-angular-pro-main.netlify.app/apps/blog/post',
-      },
-      {
-        displayName: 'Detail',
-        iconName: 'point',
-        bgcolor: 'tranparent',
-        external: true,
-        chip: true,
-        chipClass: 'bg-primary text-white',
-        chipContent: 'PRO',
-        route:
-          'https://spike-angular-pro-main.netlify.app/apps/blog/detail/Early Black Friday Amazon deals: cheap TVs, headphones, laptops',
-      },
-    ],
+    navCap: 'Utilisateurs',
+    roles: ['ADMIN']
   },
-  
-  {
-    displayName: 'Agents des Qualité',
-    iconName: 'users',
+
+    {
+    displayName: 'Liste utilisateurs',
+    iconName: 'users-group',
+    route: '/ui-components/users',
     bgcolor: 'success',
-    roles: ['ADMIN',],
-    //chip: true,
-    //chipClass: 'bg-primary text-white',
-    //chipContent: 'PRO',
-    //route: 'apps/blog',
-    children: [
-      {
-        displayName: 'Post',
-        iconName: 'point',
-        bgcolor: 'tranparent',
-        external: true,
-        chip: true,
-        chipClass: 'bg-primary text-white',
-        chipContent: 'PRO',
-        route: 'https://spike-angular-pro-main.netlify.app/apps/blog/post',
-      },
-      {
-        displayName: 'Detail',
-        iconName: 'point',
-        bgcolor: 'tranparent',
-        external: true,
-        chip: true,
-        chipClass: 'bg-primary text-white',
-        chipContent: 'PRO',
-        route:
-          'https://spike-angular-pro-main.netlify.app/apps/blog/detail/Early Black Friday Amazon deals: cheap TVs, headphones, laptops',
-      },
-    ],
+    roles: ['ADMIN'], 	
+
   },
-  {
-    displayName: 'Techniciens',
+    {
+    displayName: 'Ajout utilisateur',
+    iconName: 'user-plus',
+    route :'/ui-components/addUtilisateur' , 
+    bgcolor: 'secondary',
+    roles: ['ADMIN'] , 
+ },
+  /*{
+    displayName: 'Ajout utilisateur',
     iconName: 'users',
     bgcolor: 'error',
     roles: ['ADMIN',] ,
@@ -146,10 +85,65 @@ export const navItems: NavItem[] = [
           'https://spike-angular-pro-main.netlify.app/apps/blog/detail/Early Black Friday Amazon deals: cheap TVs, headphones, laptops',
       },
     ],
+  },*/
+
+
+    {
+    navCap: 'Opérateurs',
+    roles: ['ADMIN']
   },
-  
+   {
+    displayName: 'Liste opérateurs',
+    iconName: 'users-group',
+    route: '/ui-components/listOperateurs',
+    bgcolor: 'error',
+    roles: ['ADMIN'], 	
+
+  },
+ 
+  {
+    displayName: 'Ajout opérateur',
+    iconName: 'user-plus',
+    route :'/ui-components/addOperateur' , 
+    bgcolor: 'secondary',
+    roles: ['ADMIN'] , 
+ },
+  {
+    navCap: 'Projet',
+    roles: ['ADMIN']
+  },
+   {
+    displayName: 'Liste projets',
+    iconName: 'list-check',
+    route: '/ui-components/listProjets',
+    bgcolor: 'error',
+    roles: ['ADMIN'], 	
+
+  },
+ 
+  {
+    displayName: 'Ajout projet',
+    iconName: 'user-plus',
+    route :'/ui-components/addProjet' , 
+    bgcolor: 'secondary',
+    roles: ['ADMIN'] , 
+ },
+  {
+    navCap: 'Outils Travail',
+    roles: ['ADMIN']
+  },
+   {
+    displayName: 'Ajout outils contacts',
+    iconName: 'users-group',
+    route: '/ui-components/addOutilContact',
+    bgcolor: 'success',
+    roles: ['ADMIN'], 	
+
+  },
+ 
   {
     navCap: 'PDEK',
+     roles: ['AGENT_QUALITE_PISTOLET','AGENT_QUALITE'  ,'TECHNICIEN' ] , 
   },
   
   /*{
@@ -248,7 +242,7 @@ export const navItems: NavItem[] = [
     iconName: 'list-details',
     route: '/ui-components/listePdekTousProcess',
     bgcolor: 'error',
-    roles: ['ADMIN', 'AGENT_QUALITE' , 'CHEF_DE_LIGNE'], 	
+    roles: [ 'AGENT_QUALITE' , 'CHEF_DE_LIGNE'], 	
 
   },
   {
@@ -256,13 +250,14 @@ export const navItems: NavItem[] = [
     iconName: 'list-details',
     route: '/ui-components/listePdekPistolet',
     bgcolor: 'error',
-    roles: ['ADMIN', 'AGENT_QUALITE_PISTOLET' , 'TECHNICIEN'], 	
+    roles: [ 'AGENT_QUALITE_PISTOLET' , 'TECHNICIEN'], 	
 
   },
 
   
   {
     navCap: 'Plan d actions',
+     roles: ['AGENT_QUALITE_PISTOLET','AGENT_QUALITE'  ,'TECHNICIEN' ] , 
   },
  /*{
     displayName: 'Ajout Plan d action',
@@ -291,7 +286,7 @@ export const navItems: NavItem[] = [
   
   {
     navCap: 'Statistiques',
-    roles: ['AGENT_QUALITE'   ,'CHEF_DE_LIGNE' , 'ADMIN'], 
+    roles: ['AGENT_QUALITE'   ,'CHEF_DE_LIGNE' ], 
   },
   {
     displayName: 'Process',
@@ -313,7 +308,7 @@ export const navItems: NavItem[] = [
     roles: [ 'CHEF_DE_LIGNE', ], 
 
   },
-  {
+  /*{
     displayName: 'Utilisateurs',
     iconName: 'chart-line',
     route: 'https://spike-angular-pro-main.netlify.app/charts/line',
@@ -322,9 +317,9 @@ export const navItems: NavItem[] = [
     //chip: true,
     chipClass: 'bg-primary text-white',
   //  chipContent: 'PRO',
-    roles: ['ADMIN', ], 
+    //roles: ['ADMIN',"Super Administrateur" ], 
 
-  },
+  },*/
   {
     displayName: 'Plant',
     iconName: 'chart-arcs',
@@ -334,7 +329,7 @@ export const navItems: NavItem[] = [
     chip: true,
     chipClass: 'bg-primary text-white',
     chipContent: 'PRO',
-    roles: ['ADMIN'], 
+    roles: [], 
 
   },
   {
@@ -346,7 +341,7 @@ export const navItems: NavItem[] = [
     chip: true,
     chipClass: 'bg-primary text-white',
     chipContent: 'PRO',
-    roles: ['ADMIN'], 
+    roles: [], 
 
   },
   {
@@ -358,32 +353,32 @@ export const navItems: NavItem[] = [
     chip: true,
     chipClass: 'bg-primary text-white',
     chipContent: 'PRO',
-    roles: ['ADMIN'], 
+    roles: [], 
 
   },
   {
     navCap: 'Archives',
-     roles: ['ADMIN', ], 
+     roles: [], 
   },
   {
     displayName: 'Archives',
     iconName: 'archive',
     route: '/ui-components/badge',
     bgcolor: 'warning',
-    roles: ['ADMIN', ], 
+    roles: [ ], 
 
   },
 
   {
     navCap: 'Historiques',
-    roles: ['ADMIN',], 
+    roles: [], 
   },
   {
     displayName: 'Historiques utilisateurs',
     iconName: 'history',
     route: '/ui-components/badge',
     bgcolor: 'warning',
-    roles: ['ADMIN',], 
+    roles: [], 
 
   },
 ];

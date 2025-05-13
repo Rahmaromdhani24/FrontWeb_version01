@@ -92,7 +92,8 @@ export class FullComponent implements OnInit {
       'AGENT_QUALITE_PISTOLET': 'Agent de qualité',
       'CHEF_DE_LIGNE': 'Chef de ligne',
       'TECHNICIEN': 'Technicien',
-      'ADMINISTRATEUR': 'Administrateur'
+      'ADMIN': 'Administrateur' ,
+      'SUPER_ADMIN': 'Super Administrateur'  
     };
     this.role = storedRole ? roleMapping[storedRole] || storedRole : 'Rôle inconnu';
     localStorage.setItem('roleDashboard' , this.role ) ; 

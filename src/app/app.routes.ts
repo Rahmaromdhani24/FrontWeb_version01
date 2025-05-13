@@ -23,7 +23,7 @@ import { AuthGuard } from './services/guards/auth.guard';
 
 export const routes: Routes = [
 
-  
+  { path: "", component: LoginUserComponent }, 
   { path: "login", component: LoginUserComponent }, 
   { path: "pdekPistoletJaune", component: PdekPistoletJauneComponent ,  canActivate: [AuthGuard]}, 
   { path: "pdekPistoletRouge", component: PdekPistoletRougeComponent , canActivate: [AuthGuard]}, 
@@ -79,9 +79,5 @@ export const routes: Routes = [
 
   },
 ];
-/*{path:"" , component:LoginUserComponent },
-  {path:"login" , component:LoginUserComponent },
-  {path:"dashboard_Admin" , component:HomeAdminComponent },
-  {path:"" , redirectTo:"/login",pathMatch:'full'},
-  {path:"**" , component:PageNotFoundComponent} */
+
   

@@ -1,0 +1,23 @@
+  #titreForm{
+    margin-left: 300px;
+    color: #003d89;
+  }
+
+  ::ng-deep .force-panel-down .mat-select-panel {
+  transform-origin: top !important;
+  top: 100% !important;
+  bottom: auto !important; }
+
+  #btnValid{
+    position: relative;
+    left: 30vw;
+  }
+   
+ ::ng-deep .custom-panel {
+  transform-origin: top !important;
+}
+ #styleCard{
+       height: 454px;
+    min-height: 454px;
+    max-height: 100%;
+  }

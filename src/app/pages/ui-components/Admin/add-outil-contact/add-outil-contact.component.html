@@ -1,0 +1,163 @@
+<mat-card class="cardWithShadow theme-card">
+  <mat-card-content class="b-t-1">
+<form #formDirective="ngForm" [formGroup]="outilForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+
+        <!-- Numéro Outil -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Numéro Outil</mat-label>
+            <input matInput formControlName="numeroOutil" required />
+          </mat-form-field>
+        </div>
+
+        <!-- Numéro Contact -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Numéro Contact</mat-label>
+            <input matInput formControlName="numeroContact" required />
+          </mat-form-field>
+        </div>
+
+        <!-- Section Fil -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Section Fil</mat-label>
+            <input matInput formControlName="sectionFil" />
+          </mat-form-field>
+        </div>
+
+        <!-- Hauteur Sertissage -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Hauteur Sertissage</mat-label>
+            <input matInput formControlName="hauteurSertissage" />
+          </mat-form-field>
+        </div>
+
+        <!-- TOLERANCE -->
+        <div class="col-sm-6">
+          <label>Tolérance</label>
+          <div class="d-flex gap-2 align-items-center">
+            <mat-form-field appearance="outline" class="w-25">
+              <mat-select [(value)]="prefixes.tolerance" (selectionChange)="applyPrefix('tolerance')">
+                <mat-option value="">--</mat-option>
+                <mat-option value="±">±</mat-option>
+                <mat-option value="+">+</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-75">
+              <input matInput formControlName="tolerance" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Fréquence Controcircle -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Fréquence Controcircle</mat-label>
+            <input matInput formControlName="frequenceControcircle" />
+          </mat-form-field>
+        </div>
+
+        <!-- Largeur Sertissage -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Largeur Sertissage</mat-label>
+            <input matInput formControlName="largeurSertissage" />
+          </mat-form-field>
+        </div>
+
+        <!-- Hauteur Isolant -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Hauteur Isolant</mat-label>
+            <input matInput formControlName="hauteurIsolant" />
+          </mat-form-field>
+        </div>
+
+        <!-- Largeur Isolant -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Largeur Isolant</mat-label>
+            <input matInput formControlName="largeurIsolant" />
+          </mat-form-field>
+        </div>
+
+        <!-- Traction -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Traction</mat-label>
+            <input matInput formControlName="traction" />
+          </mat-form-field>
+        </div>
+
+        <!-- LGD -->
+        <div class="col-sm-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>LGD</mat-label>
+            <input matInput formControlName="lgd" />
+          </mat-form-field>
+        </div>
+
+        <!-- Tolérance Largeur Sertissage -->
+        <div class="col-sm-6">
+          <label>Tolérance Largeur Sertissage</label>
+          <div class="d-flex gap-2 align-items-center">
+            <mat-form-field appearance="outline" class="w-25">
+              <mat-select [(value)]="prefixes.tolerenceLargeurSertissage" (selectionChange)="applyPrefix('tolerenceLargeurSertissage')">
+                <mat-option value="">--</mat-option>
+                <mat-option value="±">±</mat-option>
+                <mat-option value="+">+</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-75">
+              <input matInput formControlName="tolerenceLargeurSertissage" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Tolérance Largeur Isolant -->
+        <div class="col-sm-6">
+          <label>Tolérance Largeur Isolant</label>
+          <div class="d-flex gap-2 align-items-center">
+            <mat-form-field appearance="outline" class="w-25">
+              <mat-select [(value)]="prefixes.tolerenceLargeurIsolant" (selectionChange)="applyPrefix('tolerenceLargeurIsolant')">
+                <mat-option value="">--</mat-option>
+                <mat-option value="±">±</mat-option>
+                <mat-option value="+">+</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-75">
+              <input matInput formControlName="tolerenceLargeurIsolant" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Tolérance Hauteur Isolant -->
+        <div class="col-sm-6">
+          <label>Tolérance Hauteur Isolant</label>
+          <div class="d-flex gap-2 align-items-center">
+            <mat-form-field appearance="outline" class="w-25">
+              <mat-select [(value)]="prefixes.tolerenceHauteurIsolant" (selectionChange)="applyPrefix('tolerenceHauteurIsolant')">
+                <mat-option value="">--</mat-option>
+                <mat-option value="±">±</mat-option>
+                <mat-option value="+">+</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-75">
+              <input matInput formControlName="tolerenceHauteurIsolant" />
+            </mat-form-field>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-4">
+        <button mat-flat-button color="primary" type="submit" [disabled]="outilForm.invalid">
+          Ajouter Outil
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

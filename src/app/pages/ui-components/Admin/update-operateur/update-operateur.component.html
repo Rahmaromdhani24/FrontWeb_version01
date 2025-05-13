@@ -1,0 +1,225 @@
+<mat-card class="cardWithShadow theme-card" >
+    <mat-card-header>
+      <mat-card-title class="m-b-0" id="titreForm"> Modifier profile  opérateur  </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="b-t-1">
+
+<form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+<div class="row">  
+    <div class="col-sm-4 d-flex align-items-center">
+<mat-label class="f-s-14 f-w-600 d-block m-b-16">Matricule</mat-label>
+</div>
+    <div class="col-sm-8">
+  <mat-form-field appearance="outline" class="w-100">
+    <input matInput
+           type="number"
+           placeholder="12345678"
+           name="matricule"
+           required
+           minlength="8"
+           maxlength="8"
+           pattern="^[0-9]{8}$"
+          matInput formControlName="matricule" />
+          <mat-error *ngIf="adminForm.get('matricule')?.hasError('pattern')">
+                Le matricule doit contenir exactement 8 chiffres.
+           </mat-error>
+
+
+    <mat-icon matPrefix class="op-5">
+      <i-tabler name="numbers" class="icon-20 d-flex"></i-tabler>
+    </mat-icon>
+  </mat-form-field>
+</div>
+</div>
+
+<div class="row">
+    <div class="col-sm-4 d-flex align-items-center">
+         <mat-label class="f-s-14 f-w-600 d-block m-b-16">Nom</mat-label>
+    </div>
+<div class="col-sm-8">
+<mat-form-field appearance="outline" class="w-100">
+  <input matInput
+         placeholder="Nom"
+         formControlName="nom"
+         pattern="^[A-Za-zÀ-ÖØ-öø-ÿ\s’\-]+$"
+         required />
+  <mat-error *ngIf="adminForm.get('nom')?.hasError('pattern')">
+    Le nom ne doit contenir que des lettres (sans chiffres).
+  </mat-error>
+</mat-form-field>
+
+
+</div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-4 d-flex align-items-center">
+         <mat-label class="f-s-14 f-w-600 d-block m-b-16">Prénom</mat-label>
+    </div>
+<div class="col-sm-8">
+<mat-form-field appearance="outline" class="w-100">
+  <input matInput
+         placeholder="Prénom"
+         formControlName="prenom"
+         pattern="^[A-Za-zÀ-ÖØ-öø-ÿ\s’\-]+$"
+         required />
+  <mat-error *ngIf="adminForm.get('prenom')?.hasError('pattern')">
+    Le prénom ne doit contenir que des lettres (sans chiffres).
+  </mat-error>
+</mat-form-field>
+</div>
+</div>
+
+
+
+<div class="row" >
+  <div class="col-sm-4 d-flex align-items-center">
+    <mat-label class="f-s-14 f-w-600 d-block m-b-24" > Type Opération </mat-label>
+  </div>
+  <div class="col-sm-8">
+   <mat-form-field appearance="outline" class="w-100">
+  <mat-select formControlName="typeOperation" placeholder="Choisir type de opération" panelClass="force-panel-down">
+    <mat-option *ngFor="let operation of typeOperations" [value]="operation">
+      {{ formatOperation(operation) }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+  </div>
+</div>
+
+
+<div class="row" >
+  <div class="col-sm-4 d-flex align-items-center">
+    <mat-label class="f-s-14 f-w-600 d-block m-b-24" >Plant</mat-label>
+  </div>
+  <div class="col-sm-8">
+<mat-form-field appearance="outline" class="w-100 m-b-24">
+  <mat-select formControlName="plant" placeholder="Choisir un plant" panelClass="force-panel-down">
+    <mat-option *ngFor="let plant of plants" [value]="plant">
+      {{ plant }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-4 d-flex align-items-center">
+    <mat-label class="f-s-14 f-w-600 d-block m-b-16">Segment</mat-label>
+  </div>
+  <div class="col-sm-8">
+<mat-form-field appearance="outline" class="w-100">
+  <input matInput
+         type="number"
+         placeholder="Placer ici numéro de segment"
+         formControlName="segment"
+         min="1"
+         max="50"
+         required />
+  <mat-error *ngIf="adminForm.get('segment')?.hasError('min') || adminForm.get('segment')?.hasError('max')">
+    Le segment doit être un nombre entre 1 et 50.
+  </mat-error>
+  <mat-icon matPrefix class="op-5">
+    <i-tabler name="numbers" class="icon-20 d-flex"></i-tabler>
+  </mat-icon>
+</mat-form-field>
+
+  </div>
+</div>
+
+<!-- Champ MACHINE -->
+<div class="row">
+  <div class="col-sm-4 d-flex align-items-center">
+    <mat-label class="f-s-14 f-w-600 d-block m-b-16">Machine</mat-label>
+  </div>
+  <div class="col-sm-8">
+    <mat-form-field appearance="outline" class="w-100">
+      <input matInput
+             placeholder="p-12, m-2459"
+             formControlName="machine"
+             type="text"
+             required />
+      <mat-icon matPrefix class="op-5">
+        <i-tabler name="adjustments-cog" class="icon-20 d-flex"></i-tabler>
+      </mat-icon>
+      <mat-error *ngIf="adminForm.get('machine')?.hasError('required')">
+        Le champ machine est requis.
+      </mat-error>
+      <mat-error *ngIf="adminForm.get('machine')?.hasError('pattern')">
+        Le nom de machine est invalide. Seuls lettres, chiffres et tirets sont autorisés.
+      </mat-error>
+    </mat-form-field>
+  </div>
+</div>
+
+<!-- Champ POSTE -->
+<div class="row">
+  <div class="col-sm-4 d-flex align-items-center">
+    <mat-label class="f-s-14 f-w-600 d-block m-b-16">Poste</mat-label>
+  </div>
+  <div class="col-sm-8">
+    <mat-form-field appearance="outline" class="w-100">
+      <input matInput
+             placeholder="ex: A-123"
+             formControlName="poste"
+             type="text"
+             required />
+      <mat-icon matPrefix class="op-5">
+        <i-tabler name="briefcase-2" class="icon-20 d-flex"></i-tabler>
+      </mat-icon>
+      <mat-error *ngIf="adminForm.get('poste')?.hasError('required')">
+        Le champ poste est requis.
+      </mat-error>
+      <mat-error *ngIf="adminForm.get('poste')?.hasError('pattern')">
+        Le nom du poste est invalide. Seuls lettres, chiffres et tirets sont autorisés.
+      </mat-error>
+    </mat-form-field>
+  </div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 d-flex align-items-center">
+         <mat-label class="f-s-14 f-w-600 d-block m-b-16">Genre</mat-label>
+</div>
+<div class="col-sm-8">
+<mat-radio-group formControlName="sexe" aria-label="Select an option" class="m-t-8">
+  <mat-radio-button value="homme" color="primary">Homme</mat-radio-button>
+  <mat-radio-button value="femme" color="primary">Femme</mat-radio-button>
+</mat-radio-group>
+
+</div>
+</div>
+<br>
+
+<div class="row">
+  <div class="col-sm-4 d-flex align-items-center">
+    <mat-label class="f-s-14 f-w-600 d-block m-b-16">Numéro téléphone</mat-label>
+  </div>
+  <div class="col-sm-8">
+    <mat-form-field appearance="outline" class="w-100">
+      <input matInput
+             placeholder="123 4561 123"
+             formControlName="numeroTelephone"
+             type="text" 
+             [pattern]="'^[0-9]{8}$'"
+             required />
+      <mat-icon matPrefix class="op-5">
+        <i-tabler name="phone" class="icon-20 d-flex"></i-tabler>
+      </mat-icon>
+      <mat-error *ngIf="adminForm.get('numeroTelephone')?.hasError('pattern')">
+        Le numéro de téléphone doit être composé de 8 chiffres.
+      </mat-error>
+    </mat-form-field>
+  </div>
+</div>
+
+
+<button mat-flat-button type="submit" [disabled]="!adminForm.valid" id="btnValid">Valider</button>
+
+ </form>
+    </mat-card-content>
+  </mat-card>
+  

@@ -1,0 +1,38 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="d-flex w-100 align-items-center justify-content-between">
+      <mat-card-title>Nombre des administrateurs par Type d'Opération</mat-card-title>
+      <div>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu">
+          <i-tabler name="dots-vertical"></i-tabler>
+        </button>
+        <mat-menu #menu="matMenu" xPosition="before">
+          <button mat-menu-item>
+            <span>Action</span>
+          </button>
+          <button mat-menu-item>
+            <span>Another Action</span>
+          </button>
+          <button mat-menu-item>
+            <span>Something else here</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+
+    <apx-chart
+      [series]="areaChartOptions?.series"
+      [chart]="areaChartOptions?.chart"
+      [xaxis]="areaChartOptions?.xaxis"
+      [yaxis]="areaChartOptions?.yaxis"
+      [stroke]="areaChartOptions?.stroke"
+      [theme]="areaChartOptions?.theme"
+      [tooltip]="areaChartOptions?.tooltip"
+      [dataLabels]="areaChartOptions?.dataLabels"
+      [legend]="areaChartOptions?.legend"
+      [colors]="areaChartOptions?.colors"
+      [markers]="areaChartOptions?.markers"
+      [grid]="areaChartOptions?.grid"
+    ></apx-chart>
+  </mat-card-content>
+</mat-card>

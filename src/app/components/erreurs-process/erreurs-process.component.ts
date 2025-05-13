@@ -53,9 +53,11 @@ export class AppErreursProcessComponent {
   public productsalesChart!: Partial<productsalesChart> | any;
   erreurs: number = 0;
   pourcentageErreurs : number =0 ; 
+  role : string ='' ; 
  
   constructor(private statsService: StatistiquesService , private servicePistolet : StatistiquesPistoletService) { 
-    const role = localStorage.getItem('role');
+    const role = localStorage.getItem('role')||'';
+    this.role=role ; 
     const operation = localStorage.getItem('operation');
 
 if((role ==='AGENT_QUALITE' ||role ==='CHEF_DE_LIGNE')  && (operation==='undefined' ||

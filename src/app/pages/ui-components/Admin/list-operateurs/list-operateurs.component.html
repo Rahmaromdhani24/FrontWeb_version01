@@ -1,0 +1,103 @@
+<div id="styleCard">
+<mat-card class="cardWithShadow theme-card" style="margin-top: -16px;margin-left: 0px;
+                                                   position: sticky;min-width: 994px;">
+    <!-- Filtres alignés sur une seule ligne -->
+    <div class="filter-container">
+      <!-- Barre de recherche -->
+      <mat-form-field appearance="outline" class="search-box">
+        <mat-label>Rechercher</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="🔍 Tout champ">
+      </mat-form-field>
+  
+      <!-- Filtre Type de Process -->
+    <mat-form-field appearance="outline" class="filter-box">
+      <mat-label>Type des Opérationns</mat-label>
+      <mat-select (selectionChange)="applyTypeFilter($event.value)" multiple>
+        <mat-option *ngFor="let operation of typesOptions" [value]="operation">
+          {{ formatOperation(operation) }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  
+    <!-- Filtre plant -->
+    <mat-form-field appearance="outline" class="filter-box">
+    <mat-label>Plant</mat-label>
+    <mat-select (selectionChange)="applyPlantFilter($event.value)" multiple>
+        <mat-option *ngFor="let p of plants" [value]="p">  {{p}}</mat-option>
+    </mat-select>
+    </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+  
+    <!-- Tableau -->
+    <div class="table-responsive">
+      <mat-table [dataSource]="dataSource" matSort>
+        <!-- Colonnes -->
+         <ng-container matColumnDef="matricule">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Matricule</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.matricule}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="nom">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nom Prénom</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.nom}}&nbsp;&nbsp;{{row.prenom}}</mat-cell>
+        </ng-container>
+
+          <ng-container matColumnDef="type">
+          <mat-header-cell *matHeaderCellDef mat-sort-header >&nbsp;&nbsp;&nbsp;&nbsp;
+            Opération</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{formatOperation(row.typeOperation)}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="plant">
+          <mat-header-cell *matHeaderCellDef mat-sort-header >&nbsp;&nbsp;&nbsp;Plant</mat-header-cell>
+          <mat-cell *matCellDef="let row">&nbsp;&nbsp;&nbsp;{{row.plant}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="segment">
+          <mat-header-cell *matHeaderCellDef mat-sort-header >Segment</mat-header-cell>
+          <mat-cell *matCellDef="let row">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{row.segment}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="poste">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;&nbsp;&nbsp;Poste</mat-header-cell>
+          <mat-cell *matCellDef="let row" style="text-align: center;">{{ row.poste }}
+          </mat-cell>
+        </ng-container>               
+
+             <ng-container matColumnDef="machine">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;&nbsp;&nbsp;Machine</mat-header-cell>
+          <mat-cell *matCellDef="let row" style="text-align: center;">{{ row.machine }}
+          </mat-cell>
+        </ng-container>  
+       
+          
+<ng-container matColumnDef="action">
+    <mat-header-cell *matHeaderCellDef>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Actions</mat-header-cell>
+    <mat-cell *matCellDef="let row">
+      <!-- Icône Eye (visualisation) - couleur primaire -->
+      <button mat-icon-button  style="margin-left: 25px;" (click)="viewAdmin(row)">
+        <i class="fas fa-eye fa-sm" id="iconeEye"></i>
+
+      </button>
+
+      <button mat-icon-button  (click)="updateAdmin(row)">
+        <i class="fa-solid fa-pen-to-square" id="iconeUpdate"></i>
+      </button>
+
+        <button mat-icon-button (click)="deleteAdmin(row)">
+          <i class="fa-solid fa-trash" id="iconeDelete"></i>
+      </button>
+   
+    </mat-cell>
+  </ng-container>
+  
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </mat-card>
+</div>

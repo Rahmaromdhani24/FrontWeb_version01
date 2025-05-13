@@ -1,0 +1,48 @@
+<div id="styleCard">
+<mat-card class="cardWithShadow theme-card" >
+    <mat-card-header>
+      <mat-card-title class="m-b-0" id="titreForm"> Ajouter un nouvel projet  </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="b-t-1">
+
+<form [formGroup]="projetForm" (ngSubmit)="onSubmit()">
+<div class="row">  
+    <div class="col-sm-4 d-flex align-items-center">
+<mat-label class="f-s-14 f-w-600 d-block m-b-16">Nom de projet</mat-label>
+</div>
+    <div class="col-sm-8">
+<mat-form-field appearance="outline" class="w-100">
+  <input matInput
+         placeholder="Nom"
+         formControlName="nom"
+         pattern="^[A-Za-zÀ-ÖØ-öø-ÿ\s’\-]+$"
+         required />
+  <mat-error *ngIf="projetForm.get('nom')?.hasError('pattern')">
+    Le nom ne doit contenir que des lettres (sans chiffres).
+  </mat-error>
+</mat-form-field>
+</div>
+</div>
+
+
+<div class="row" >
+  <div class="col-sm-4 d-flex align-items-center">
+    <mat-label class="f-s-14 f-w-600 d-block m-b-24" >Plant</mat-label>
+  </div>
+  <div class="col-sm-8">
+<mat-form-field appearance="outline" class="w-100 m-b-24">
+  <mat-select formControlName="plant" placeholder="Choisir un plant" panelClass="force-panel-down">
+    <mat-option *ngFor="let plant of plants" [value]="plant">
+      {{ plant }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+  </div>
+</div>
+
+<button mat-flat-button type="submit" [disabled]="!projetForm.valid" id="btnValid">Valider</button>
+
+ </form>
+    </mat-card-content>
+  </mat-card>
+</div>

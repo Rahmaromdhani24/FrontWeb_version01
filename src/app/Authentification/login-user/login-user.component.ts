@@ -88,31 +88,6 @@ export class LoginUserComponent implements OnInit {
               break;
           }
         }
-        
-        
-       /* error: (error) => {
-            // Gérer les erreurs de connexion, par exemple une erreur réseau
-            if (error.status === 400 || error.status === 500) {
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Erreur de connexion !" ,
-              });
-            } else {
-              // Si c'est une erreur spécifique liée au matricule incorrect (ou autre logique),
-              // vous pouvez aussi ici personnaliser le message d'erreur.
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Erreur de connexion !" ,
-              });
-              /* Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Cette matricule n'existe pas, Veuillez réessayer !",
-              });
-            }
-          }**/
         });
       } 
     }
@@ -138,7 +113,10 @@ export class LoginUserComponent implements OnInit {
               localStorage.setItem('role', "CHEF_DE_LIGNE");
             }
             else if (user.role === "ADMIN") {
-              localStorage.setItem('role', "Administrateur");
+              localStorage.setItem('role', "ADMIN");
+            }
+             else if (user.role === "SUPER_ADMIN") {
+              localStorage.setItem('role', "SUPER_ADMIN");
             }
             localStorage.setItem('matricule', user.matricule);
             localStorage.setItem('plant', user.plant);

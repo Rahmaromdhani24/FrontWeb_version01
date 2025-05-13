@@ -1,0 +1,80 @@
+<div id="styleCard">
+<mat-card class="cardWithShadow theme-card" style="margin-top: -16px;margin-left: 0px;
+                                                   position: sticky;min-width: 994px;">
+    <!-- Filtres alignés sur une seule ligne -->
+    <div class="filter-container">
+      <!-- Barre de recherche -->
+      <mat-form-field appearance="outline" class="search-box">
+        <mat-label>Rechercher</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="🔍 Tout champ">
+      </mat-form-field>
+
+  
+    <!-- Filtre plant -->
+    <mat-form-field appearance="outline" class="filter-box">
+    <mat-label>Plant</mat-label>
+    <mat-select (selectionChange)="applyPlantFilter($event.value)" multiple>
+        <mat-option *ngFor="let p of plants" [value]="p">  {{p}}</mat-option>
+    </mat-select>
+    </mat-form-field>
+
+     <i class="fa-solid fa-plus" style="font-size: 35px;margin-top: -15px; cursor: pointer;" 
+      (click)="navigerAdd()"></i>
+
+    </div>
+    <mat-divider></mat-divider>
+  
+    <!-- Tableau -->
+    <div class="table-responsive">
+      <mat-table [dataSource]="dataSource" matSort>
+        <!-- Colonnes -->
+
+        <ng-container matColumnDef="nom">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nom projet</mat-header-cell>
+          <mat-cell *matCellDef="let row">&nbsp;&nbsp;{{row.nom}}</mat-cell>
+        </ng-container>
+
+          <ng-container matColumnDef="plant">
+          <mat-header-cell *matHeaderCellDef mat-sort-header >&nbsp;&nbsp;&nbsp;&nbsp;
+          Plant</mat-header-cell>
+          <mat-cell *matCellDef="let row">  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{row.plant}}</mat-cell>
+        </ng-container>
+
+      
+       <ng-container matColumnDef="nbr">
+  <mat-header-cell *matHeaderCellDef mat-sort-header>Nombre PDEK</mat-header-cell>
+  <mat-cell *matCellDef="let row">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    {{ row.nombrePdek === 0 ? '-' : row.nombrePdek }}
+  </mat-cell>
+</ng-container>
+
+   <ng-container matColumnDef="dateCreation">
+          <mat-header-cell *matHeaderCellDef mat-sort-header >&nbsp;&nbsp;&nbsp;&nbsp;
+            Date d'ajout</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.dateCreation}}</mat-cell>
+        </ng-container> 
+<ng-container matColumnDef="action">
+    <mat-header-cell *matHeaderCellDef>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       Actions</mat-header-cell>
+    <mat-cell *matCellDef="let row">
+ 
+
+      <button mat-icon-button  (click)="updateProjet(row)">
+        <i class="fa-solid fa-pen-to-square" id="iconeUpdate"></i>
+      </button>
+
+        <button mat-icon-button (click)="deleteProjet(row)">
+          <i class="fa-solid fa-trash" id="iconeDelete"></i>
+      </button>
+   
+    </mat-cell>
+  </ng-container>
+  
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </mat-card>
+</div>
