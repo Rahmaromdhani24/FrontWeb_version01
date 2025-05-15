@@ -32,24 +32,32 @@ export class LoginUserComponent implements OnInit {
   }
 
   onLogin(): void {
-    if (this.form.valid) {
-      const matricule = this.form.get('matricule')?.value;
-      this.authService.login(matricule).subscribe({
-        next: async (response) => {
-          if (response.token) {   
-            localStorage.setItem('token', response.token);
-            try {
-              await this.recupererInformations(matricule);
-              this.router.navigate(['/dashboard']);
-              /*this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                this.router.navigate(['/dashboard']);
-              });*/
+   if (this.form.valid) {
+    const matricule = this.form.get('matricule')?.value;
+    this.authService.login(matricule).subscribe({
+      next: async (response) => {
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+          try {
+            // Récupérer les informations de l'utilisateur
+            await this.recupererInformations(matricule);
             
-            } catch (error) {
-              console.error('Erreur lors de la récupération des informations', error);
+            // Récupérer le rôle depuis localStorage (qui a été mis à jour dans recupererInformations)
+            const userRole = localStorage.getItem('role');
+
+            // Redirection en fonction du rôle
+            if (userRole === 'ADMIN') {
+              this.router.navigate(['/ui-components/users']);
+            } else if (userRole === 'SUPER_ADMIN') {
+              this.router.navigate(['/ui-components/listeAdminstrateursParSuperAdmin']);
+            } else {
+              this.router.navigate(['/dashboard']);
             }
+          } catch (error) {
+            console.error('Erreur lors de la récupération des informations', error);
           }
-        },
+        }
+      },
         error: (error) => {
           let errorCode: string | undefined;
         
