@@ -83,10 +83,11 @@ export class PdekSertissageNormalComponent  implements OnInit {
       this.numContact = pdekSertissageObj.numeroContacts; 
       this.numOutil = pdekSertissageObj.numeroOutils;
       this.sectionFil = pdekSertissageObj.sectionFil;
+      this.segmentUser = pdekSertissageObj.segment;
     }
 
     this.plantUser = localStorage.getItem('plant')!;
-    this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+    //this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
     this.matriculeAgentQualite = +localStorage.getItem('matricule')!;
 
     this.hauteurSertissage= this.chargerHauteurSertissage( this.numOutil ,  this.numContact ,  this.sectionFil ) ; 
@@ -573,7 +574,7 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
       localStorage.removeItem('reponseApi');
       localStorage.removeItem('pdekSertissage');
       // Trick pour forcer reload
-      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
         this.router.navigate(['/ui-components/listePdekTousProcess']);
       });
     }

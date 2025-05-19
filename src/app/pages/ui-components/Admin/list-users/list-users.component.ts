@@ -58,14 +58,15 @@ displayedColumns: string[] = [
   ];
   plants: string[] = [];
   typesOptions: string[] = [
-    " Soudure", 
+    "Soudure", 
     "Torsadage"  ,
     "Sertissage_IDC" , 
     "Sertissage_Normal" , 
+    "Montage_Pistolet"
   ];
     roleOptions: string[] = [
     "CHEF_DE_LIGNE", 
-    "AGENT_DE_QUALITE"  ,
+    "AGENT_QUALITE"  ,
     "TECHNICIEN" ];
 
   dataSource: MatTableDataSource<Users>;
@@ -134,61 +135,57 @@ applyFilter(event: Event) {
     this.currentTypeFilter = selectedOperation;
     this.applyAllFilters();
   }
-  applyAllFilters() {
-    this.dataSource.filterPredicate = (data: Users, filter: string) => {
-      // Filtre de recherche texte
-const searchMatch = !this.searchFilter ||
-  data.matricule?.toString().toLowerCase().includes(this.searchFilter) ||
-  data.nom?.toLowerCase().includes(this.searchFilter) ||
-  data.prenom?.toLowerCase().includes(this.searchFilter) ||
-  data.plant?.toLowerCase().includes(this.searchFilter) ||
-  data.typeOperation?.toLowerCase().includes(this.searchFilter) ||
-  data.numeroTelephone?.toString().toLowerCase().includes(this.searchFilter) ||
-  data.sexe?.toLowerCase().includes(this.searchFilter) ||
-  data.segment?.toString().toLowerCase().includes(this.searchFilter);
-  data.role?.toString().toLowerCase().includes(this.searchFilter);
+applyAllFilters() {
+  this.dataSource.filterPredicate = (data: Users, filter: string) => {
+    // Recherche texte
+    const searchMatch = !this.searchFilter ||
+      data.matricule?.toString().toLowerCase().includes(this.searchFilter) ||
+      data.nom?.toLowerCase().includes(this.searchFilter) ||
+      data.prenom?.toLowerCase().includes(this.searchFilter) ||
+      data.plant?.toLowerCase().includes(this.searchFilter) ||
+      (data.typeOperation?.toLowerCase().includes(this.searchFilter)) ||
+      data.numeroTelephone?.toString().toLowerCase().includes(this.searchFilter) ||
+      data.sexe?.toLowerCase().includes(this.searchFilter) ||
+      (data.segment !== undefined && data.segment.toString().toLowerCase().includes(this.searchFilter)) ||
+      data.role?.toLowerCase().includes(this.searchFilter);
 
-      // Filtres des listes déroulantes
-      const matriculeMatch = this.currentMatriculeFilter.length === 0 || 
-                         this.currentMatriculeFilter.includes(data.matricule);
-                
-  const plantMatch = this.currentPlantFilter.length === 0 || 
-  this.currentPlantFilter.includes(data.plant);
+    // Filtres déroulants
+    const matriculeMatch = this.currentMatriculeFilter.length === 0 ||
+      this.currentMatriculeFilter.includes(data.matricule);
 
-  const typeMatch = this.currentTypeFilter.length === 0 || 
-  this.currentTypeFilter.map(op => op.toLowerCase())
-    .includes(data.typeOperation.toLowerCase());
+    const plantMatch = this.currentPlantFilter.length === 0 ||
+      this.currentPlantFilter.includes(data.plant);
 
-    const nomMatch = this.currentNomFilter.length === 0 || 
-  this.currentNomFilter.includes(data.nom);
+    const typeMatch = this.currentTypeFilter.length === 0 ||
+      (data.typeOperation !== undefined && 
+       this.currentTypeFilter.map(op => op.toLowerCase()).includes(data.typeOperation.toLowerCase()));
 
-    const prenomMatch = this.currentPrenomFilter.length === 0 || 
-  this.currentPrenomFilter.includes(data.prenom);
+    const nomMatch = this.currentNomFilter.length === 0 ||
+      this.currentNomFilter.includes(data.nom);
 
-  
-    const roleMatch = this.currentRoleFilter.length === 0 || 
-  this.currentRoleFilter.includes(data.role);
+    const prenomMatch = this.currentPrenomFilter.length === 0 ||
+      this.currentPrenomFilter.includes(data.prenom);
 
-      const segmentMatch =
-      this.currentSegmentFilter.length === 0 ||
-      this.currentSegmentFilter.map(Number).includes(data.segment);
-                        
-      const numeroTelephoneMatch =
-      this.currentNumeroTelephoneFilter.length === 0 ||
+    const roleMatch = this.currentRoleFilter.length === 0 ||
+      this.currentRoleFilter.includes(data.role);
+
+    const segmentMatch = this.currentSegmentFilter.length === 0 ||
+      (data.segment !== undefined && 
+       this.currentSegmentFilter.map(Number).includes(data.segment));
+
+    const numeroTelephoneMatch = this.currentNumeroTelephoneFilter.length === 0 ||
       this.currentNumeroTelephoneFilter.map(Number).includes(data.numeroTelephone);
 
-    
-      
-      return searchMatch && matriculeMatch && segmentMatch && plantMatch && 
-           prenomMatch && nomMatch && numeroTelephoneMatch && typeMatch && roleMatch;
-    };
-    
-    this.dataSource.filter = 'trigger';
-    
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    return searchMatch && matriculeMatch && segmentMatch && plantMatch &&
+      prenomMatch && nomMatch && numeroTelephoneMatch && typeMatch && roleMatch;
+  };
+
+  this.dataSource.filter = 'trigger';
+  if (this.dataSource.paginator) {
+    this.dataSource.paginator.firstPage();
   }
+}
+
 
  
 recupererListUtilisateurs() {
@@ -215,9 +212,29 @@ this.serviceAdmin.getAllUsers().subscribe({
   });
 }
 
-formatOperation(label: string): string {
+/*formatOperation(label: string): string {
   return label.replace(/_/g, ' ');
+}*/
+formatOperation(operation?: string): string {
+  if (!operation) {
+    return '-';
+  }
+  switch (operation) {
+    case 'Sertissage_Normal':
+      return 'Sertissage';
+    case 'Sertissage_IDC':
+      return 'Sertissage IDC';
+    case 'Soudure':
+      return 'Soudure';
+       case 'Montage_Pistolet':
+      return 'Montage Pistolet';
+    case 'Torsadage':
+      return 'Torsadage';
+    default:
+      return operation;
+  }
 }
+
 updateAdmin(row: Users) {
   this.router.navigate(['/ui-components/updateUtilisateur', row.matricule]);
 }

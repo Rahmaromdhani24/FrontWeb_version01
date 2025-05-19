@@ -32,6 +32,7 @@
   
     <!-- Tableau -->
     <div class="table-responsive">
+    <ng-container *ngIf="dataSource && dataSource.data && dataSource.data.length > 0; else noData">
       <mat-table [dataSource]="dataSource" matSort>
         <!-- Colonnes -->
          <ng-container matColumnDef="matricule">
@@ -75,24 +76,28 @@
       <!-- Icône Eye (visualisation) - couleur primaire -->
       <button mat-icon-button  style="margin-left: 25px;" (click)="viewAdmin(row)">
         <i class="fas fa-eye fa-sm" id="iconeEye"></i>
-
       </button>
-
       <button mat-icon-button  (click)="updateAdmin(row)">
         <i class="fa-solid fa-pen-to-square" id="iconeUpdate"></i>
       </button>
-
         <button mat-icon-button (click)="deleteAdmin(row)">
           <i class="fa-solid fa-trash" id="iconeDelete"></i>
       </button>
-   
     </mat-cell>
   </ng-container>
   
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
       </mat-table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+   
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator> 
+      </ng-container>
+    <ng-template #noData>
+      <div style="text-align: center; padding: 20px; font-size: 16px; color: gray;">
+        Il n'y a pas de données pour le moment.
+      </div>
+    </ng-template>
     </div>
   </mat-card>
 </div>

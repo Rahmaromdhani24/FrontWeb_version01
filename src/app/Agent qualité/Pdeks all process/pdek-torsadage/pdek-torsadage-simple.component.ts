@@ -94,7 +94,7 @@ export class PdekTorsadageSimpleComponent implements OnInit {
     this.recupererDonneesDeFichierPdekDePageParticulier().subscribe();
     console.log('test valeur x' +this.getValeurX(4, 1))
     this.plantUser = localStorage.getItem('plant')!;
-    this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+    //this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
     this.matriculeAgentQualite= parseInt(localStorage.getItem('matricule') ?? '0');
   }
   
@@ -338,7 +338,7 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
   return this.torsadageService.getTorsadagesParPdekEtPage(this.idPdek, this.numPage).pipe(
     tap((data: Torsadage[]) => {
       this.torsadages = data;
-
+               this.segmentUser =  this.torsadages[0].segment;
       const pdekTorsadageJson = localStorage.getItem('pdekTorsadage');
       if (pdekTorsadageJson) {
       const pdekTorsadage= JSON.parse(pdekTorsadageJson);    
@@ -789,7 +789,7 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
     localStorage.removeItem('pdekTorsadage');
     localStorage.removeItem('torsadage');
     // Trick pour forcer reload
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
       this.router.navigate(['/dashboard']);
     });
   }

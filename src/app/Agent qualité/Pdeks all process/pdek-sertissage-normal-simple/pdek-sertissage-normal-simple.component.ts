@@ -102,7 +102,7 @@ export class PdekSertissageNormalSimpleComponent  implements OnInit {
 
     }
     this.plantUser = localStorage.getItem('plant')!;
-    this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+   // this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
     this.matriculeAgentQualite = +localStorage.getItem('matricule')!;
 
     this.hauteurSertissage= this.chargerHauteurSertissage( this.numOutil ,  this.numContact ,  this.sectionFil ) ; 
@@ -300,6 +300,7 @@ getChartHauteur(data: { x: string; y1: number; y2: number; y3: number; y4: numbe
 
   this.pdekService.getContenuParNumeroPage(this.idPdek, this.numPage).subscribe({
     next: (sertissages: any[]) => {
+          this.segmentUser =  this.sertissages[0].segment;
       const dataChart = sertissages.map((p: any) => ({
         x: p.numCycle,
         y1: p.hauteurSertissageEch1,
@@ -667,7 +668,7 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
     localStorage.removeItem('pdekSertissage');
     localStorage.removeItem('sertissage');
     // Trick pour forcer reload
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
       this.router.navigate(['/dashboard']);
     });
   }

@@ -72,13 +72,12 @@ pages: {
     this.chargerToutesLesPages();
     const pdekTorsadageJson = localStorage.getItem('pdekTorsadage');
   
-   /* if (pdekTorsadageJson) {
+    if (pdekTorsadageJson) {
       const pdekTorsadage= JSON.parse(pdekTorsadageJson);    
-       this.specificationMesure = this.extraireValeurNumerique(pdekTorsadage.specificationMesure);
-       console.log("specificiation mesure :"+  this.specificationMesure) ; 
-    }*/
+       this.segmentUser = pdekTorsadage.segment ; 
+    }
     this.plantUser = localStorage.getItem('plant')!;
-    this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+    //this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
     this.matriculeAgentQualite = +localStorage.getItem('matricule')!;
   }
   
@@ -363,7 +362,6 @@ public chartOptionsEtendue: {
 
       this.pages = contenuPages.map((page: any) => {
         const torsadages = page.contenu;
-
        /* const dataMoyenne = torsadages.map((p: any) => ({
           x: p.numeroCycle,
           y: p.moyenne
@@ -588,7 +586,7 @@ naviger() {
   localStorage.removeItem('reponseApi');
   localStorage.removeItem('pdekTorsadage');
   // Trick pour forcer reload
-  this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+  this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
     this.router.navigate(['/ui-components/listePdekTousProcess']);
   });
 }

@@ -4,9 +4,9 @@ export interface Users {
   prenom: string;
   email: string;
   plant: string;
-  segment: number;
+  segment?: number;
   numeroTelephone: number;
-  typeOperation: string;
+  typeOperation?: string;
   sexe : string ; 
   role : string ; 
 }

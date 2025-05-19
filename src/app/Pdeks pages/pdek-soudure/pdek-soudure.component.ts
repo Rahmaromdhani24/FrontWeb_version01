@@ -78,7 +78,7 @@ pages: {
     if (pdekSoudureJson) {
       const pdekSoudure = JSON.parse(pdekSoudureJson);    
       const sectionFil = this.extraireValeurNumeriqueSectionFil(pdekSoudure.sectionFil);
-  
+     this.segmentUser =pdekSoudure.segment
       this.chargerEtenduMax(sectionFil); // 👈 Appelle modifiée avec la suite ci-dessous
       this.chargerMoyenneMax(sectionFil);
       this.chargerMoyenneMin(sectionFil);
@@ -86,7 +86,7 @@ pages: {
     }
     this.checkAndUpdateGraph() ;
     this.plantUser = localStorage.getItem('plant')!;
-    this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+    //this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
     this.matriculeAgentQualite = +localStorage.getItem('matricule')!;
   }
   
@@ -615,7 +615,7 @@ public chartOptionsEtendue: {
     localStorage.removeItem('reponseApi');
     localStorage.removeItem('pdekSoudure');
     // Trick pour forcer reload
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
       this.router.navigate(['/ui-components/listePdekTousProcess']);
     });
   }

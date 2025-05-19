@@ -45,8 +45,7 @@ typeOperations: string[] = [
  "Soudure", 
  "Torsadage"  ,
   "Sertissage_IDC" ,
-  "Sertissage_Normal" ,
-  "Montage_Pistolet"];
+  "Sertissage_Normal" ];
 
 constructor(private service: AdminServiceService , private fb: FormBuilder , private router : Router) {}
   operateur = {
@@ -64,7 +63,7 @@ constructor(private service: AdminServiceService , private fb: FormBuilder , pri
 ngOnInit(): void {
   this.loadPlants();
     this.adminForm = this.fb.group({
-      matricule: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
+      matricule: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
       nom: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s’\-]+$/)]] , 
       prenom: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s’\-]+$/)]] , 
       typeOperation: ['', Validators.required],
@@ -103,7 +102,7 @@ ngOnInit(): void {
     plant: formData.plant,
     segment: Number(formData.segment),
     genre: formData.genre,
-    numeroTelephone: Number(formData.telephone),
+    numeroTelephone: Number(formData.numeroTelephone),
     typeOperation: formData.typeOperation,
     sexe: formData.genre     , 
     machine: formData.machine     , 

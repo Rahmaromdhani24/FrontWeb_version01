@@ -71,13 +71,13 @@ constructor(private service: SuperAdminService , private fb: FormBuilder ,
 ngOnInit(): void {
   this.loadPlants();
     this.adminForm = this.fb.group({
-      matricule: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
+      matricule: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
       nom: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s’\-]+$/)]] , 
       prenom: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s’\-]+$/)]] , 
       email: ['', [Validators.required, Validators.email]],
-      typeOperation: ['', Validators.required],
+      typeOperation: [''],
       plant: ['', Validators.required],
-      segment: ['', [Validators.required, Validators.min(1), Validators.max(50)]] , 
+      segment: ['', [  Validators.max(50)]] , 
       sexe: ['', Validators.required],
       numeroTelephone: ['', [Validators.required, Validators.pattern(/^[0-9]{8}$/)]] ,
       role: ['', Validators.required],

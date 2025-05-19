@@ -34,11 +34,13 @@
         <mat-option *ngFor="let role of roleOptions" [value]="role">  {{ formatOperation(role)}}</mat-option>
     </mat-select>
     </mat-form-field>
+
     </div>
     <mat-divider></mat-divider>
   
     <!-- Tableau -->
     <div class="table-responsive">
+     <ng-container *ngIf="dataSource && dataSource.data && dataSource.data.length > 0; else noData" >
       <mat-table [dataSource]="dataSource" matSort>
         <!-- Colonnes -->
          <ng-container matColumnDef="matricule">
@@ -54,7 +56,9 @@
           <ng-container matColumnDef="type">
           <mat-header-cell *matHeaderCellDef mat-sort-header >&nbsp;&nbsp;&nbsp;&nbsp;
             Opération</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{formatOperation(row.typeOperation)}}</mat-cell>
+          <mat-cell *matCellDef="let row">
+            {{ formatOperation(row.typeOperation)  }}
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="plant">
@@ -64,7 +68,8 @@
 
         <ng-container matColumnDef="segment">
           <mat-header-cell *matHeaderCellDef mat-sort-header >Segment</mat-header-cell>
-          <mat-cell *matCellDef="let row">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{row.segment}}</mat-cell>
+          <mat-cell *matCellDef="let row">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{ row.segment && row.segment !== 0 ? row.segment : '-' }}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="numeroTelephone">
@@ -98,7 +103,14 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
       </mat-table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+     
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator> 
+      </ng-container>
+    <ng-template #noData>
+      <div style="text-align: center; padding: 20px; font-size: 16px; color: gray;">
+        Il n'y a pas de données pour le moment.
+      </div>
+    </ng-template>
     </div>
   </mat-card>
 </div>

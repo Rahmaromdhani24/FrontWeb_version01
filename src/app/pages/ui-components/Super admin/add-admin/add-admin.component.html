@@ -13,16 +13,16 @@
   <mat-form-field appearance="outline" class="w-100">
     <input matInput
            type="number"
-           placeholder="12345678"
+           placeholder="12345"
            name="matricule"
            required
            min=0 
-           minlength="8"
-           maxlength="8"
-           pattern="^[0-9]{8}$"
+           minlength="5"
+           maxlength="5"
+           pattern="^[0-9]{5}$"
           matInput formControlName="matricule" />
           <mat-error *ngIf="adminForm.get('matricule')?.hasError('pattern')">
-                Le matricule doit contenir exactement 8 chiffres.
+                Le matricule doit contenir exactement 5 chiffres.
            </mat-error>
 
 
@@ -103,7 +103,7 @@
   </div>
   <div class="col-sm-8">
    <mat-form-field appearance="outline" class="w-100">
-  <mat-select formControlName="typeAdmin" placeholder="Choisir type de administrateur" panelClass="force-panel-down">
+  <mat-select formControlName="typeAdmin" placeholder="Choisir type de administrateur"   panelClass="force-panel-down">
     <mat-option *ngFor="let operation of typeAdmin" [value]="operation">
       {{ formatOperation(operation) }}
     </mat-option>

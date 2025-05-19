@@ -25,7 +25,27 @@ export class InformationsUserComponent {
     @Inject(MAT_DIALOG_DATA) public data: { operators: Users[] }
   ) {}
 
-  formatOperation(label: string): string {
+ /* formatOperation(label: string): string {
   return label.replace(/_/g, ' ');
+}*/
+
+formatOperation(operation?: string): string {
+  if (!operation) {
+    return '-';
+  }
+  switch (operation) {
+    case 'SERTISSAGE':
+      return 'Sertissage';
+    case 'SERTISSAGE_IDC':
+      return 'Sertissage IDC';
+    case 'SOUDURE':
+      return 'Soudure';
+       case 'Montage_Pistolet':
+      return 'Montage Pistolet';
+    case 'TORSADAGE':
+      return 'Torsadage';
+    default:
+      return operation;
+  }
 }
 }

@@ -85,7 +85,7 @@ export class PdekSoudureSimpleComponent implements OnInit ,AfterViewInit  {
     this.recupererDonneesDeFichierPdekDePageParticulier().subscribe();
   
     this.plantUser = localStorage.getItem('plant')!;
-    this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+   // this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
     this.matriculeAgentQualite= parseInt(localStorage.getItem('matricule') ?? '0');
   
   }
@@ -345,7 +345,7 @@ public chartOptionsMoyenne: {
       tap((data: Soudure[]) => {
         this.soudures = data;
         console.log('soudures récupérés :', data);
-  
+         this.segmentUser =  this.soudures[0].segment;
         this.seriesDataMoyenne = data.map(p => ({
           x: p.numeroCycle.toString(), // 👈 Important ! doit correspondre à category type string
           y: p.moyenne
@@ -818,7 +818,7 @@ public chartOptionsMoyenne: {
     naviger() {
       localStorage.removeItem('reponseApi');
       localStorage.removeItem('soudure');
-      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
         this.router.navigate(['/dashboard']);
       });
     }

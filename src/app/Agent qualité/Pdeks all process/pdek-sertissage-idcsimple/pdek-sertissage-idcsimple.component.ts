@@ -97,6 +97,7 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
     this.machine = pdekSertissage.numeroMachine
     const date = new Date(pdekSertissage.date);
     this.annee=  date.getFullYear()+"";
+     this.segmentUser = pdekSertissage.segment
     } 
     this.idPdek = this.reponseApi.pdekId;
     this.numPage = this.reponseApi.pageNumber;
@@ -104,7 +105,7 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
        const pdekSertissageIDCJson = localStorage.getItem('pdekSertissageIDC') || '{}';
    
        this.plantUser = localStorage.getItem('plant')!;
-       this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+       //this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
        this.matriculeAgentQualite = +localStorage.getItem('matricule')!;
      }
      
@@ -831,6 +832,7 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
     chargerToutesLesPages(): void {
       this.pdekService.getContenuParNumeroPage(this.idPdek, this.numPage).subscribe({
         next: (sertissages: any[]) => {
+                   // this.segmentUser =  this.sertissages[0].segment;
           console.log('Les sertissages récupérés : ' + JSON.stringify(sertissages, null, 2));
           const dataCote1 = sertissages.map((p: any) => ({
              x: p.numCycle,
@@ -1036,7 +1038,7 @@ export class PdekSertissageIDCSimpleComponent  implements OnInit {
         localStorage.removeItem('pdekSertissageIDC');
         localStorage.removeItem('sertissage');
         // Trick pour forcer reload
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
           this.router.navigate(['/dashboard']);
         });
       }

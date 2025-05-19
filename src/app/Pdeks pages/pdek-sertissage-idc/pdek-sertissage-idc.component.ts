@@ -55,7 +55,7 @@ export class PdekSertissageIDCComponent  implements OnInit {
    anneePDEK : number = 0 ;
    numeroCourant : number ; 
    plantUser : string ; 
-   segmentUser : number  ; 
+   segmentUser : string  ; 
    pistoletsValides: Set<number> = new Set();  // Pour stocker les IDs validés
    matriculeAgentQualite : number ; 
    pdekId : number ; 
@@ -69,9 +69,9 @@ export class PdekSertissageIDCComponent  implements OnInit {
     this.pdekId = +this.route.snapshot.paramMap.get('id')!;
     this.chargerToutesLesPages();
     const pdekSertissageIDCJson = localStorage.getItem('pdekSertissageIDC') || '{}';
-
+     const pdekSertissageIDC = JSON.parse(pdekSertissageIDCJson);
     this.plantUser = localStorage.getItem('plant')!;
-    this.segmentUser = parseInt(localStorage.getItem('segment') ?? '0');
+    this.segmentUser = pdekSertissageIDC.segment;
     this.matriculeAgentQualite = +localStorage.getItem('matricule')!;
   }
   
@@ -800,6 +800,7 @@ getChartCote2Traction(data: { x: number; y1: number; y2: number; y3: number; y4:
  chargerToutesLesPages(): void {
   this.pdekService.getContenuParPage(this.pdekId).subscribe({
     next: (contenuPages) => {
+
       console.log('Contenu récupéré du backend :', contenuPages);
 
       this.pages = contenuPages.map((page: any) => {
@@ -1000,7 +1001,7 @@ getChartCote2Traction(data: { x: number; y1: number; y2: number; y3: number; y4:
       localStorage.removeItem('reponseApi');
       localStorage.removeItem('pdekSertissageIDC');
       // Trick pour forcer reload
-      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
         this.router.navigate(['/ui-components/listePdekTousProcess']);
       });
     }

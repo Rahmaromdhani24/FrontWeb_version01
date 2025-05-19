@@ -32,5 +32,6 @@ export interface SertissageIDC{
     numPage : number ; 
     zone : string ; 
     heureCreation  : string ;
+    segment : number ; 
 
 }  

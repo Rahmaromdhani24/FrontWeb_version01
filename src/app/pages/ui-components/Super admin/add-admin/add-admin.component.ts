@@ -59,7 +59,7 @@ constructor(private service: SuperAdminService , private fb: FormBuilder , priva
 ngOnInit(): void {
   this.loadPlants();
     this.adminForm = this.fb.group({
-      matricule: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
+      matricule: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
       nom: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s’\-]+$/)]] , 
       prenom: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s’\-]+$/)]] , 
       email: ['', [Validators.required, Validators.email]],

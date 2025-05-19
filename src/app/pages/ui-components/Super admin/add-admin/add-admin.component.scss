@@ -5,8 +5,10 @@
 
   ::ng-deep .force-panel-down .mat-select-panel {
   transform-origin: top !important;
-  top: 100% !important;
-  bottom: auto !important; }
+  margin-top: 4px !important;
+  margin-bottom: 0 !important;
+}
+
 
   #btnValid{
     position: relative;

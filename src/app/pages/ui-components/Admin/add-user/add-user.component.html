@@ -13,16 +13,16 @@
   <mat-form-field appearance="outline" class="w-100">
     <input matInput
            type="number"
-           placeholder="12345678"
+           placeholder="12345"
            name="matricule"
            required
            min=0 
-           minlength="8"
-           maxlength="8"
-           pattern="^[0-9]{8}$"
+           minlength="5"
+           maxlength="5"
+           pattern="^[0-9]{5}$"
           matInput formControlName="matricule" />
           <mat-error *ngIf="adminForm.get('matricule')?.hasError('pattern')">
-                Le matricule doit contenir exactement 8 chiffres.
+                Le matricule doit contenir exactement 5 chiffres.
            </mat-error>
     <mat-icon matPrefix class="op-5">
       <i-tabler name="numbers" class="icon-20 d-flex"></i-tabler>
@@ -151,11 +151,9 @@
          type="number"
          placeholder="Placer ici numéro de segment"
          formControlName="segment"
-         min="1"
-         max="50"
-         required />
+         max="50" />
   <mat-error *ngIf="adminForm.get('segment')?.hasError('min') || adminForm.get('segment')?.hasError('max')">
-    Le segment doit être un nombre entre 1 et 50.
+    Le segment doit être un nombre au maximum 50.
   </mat-error>
   <mat-icon matPrefix class="op-5">
     <i-tabler name="numbers" class="icon-20 d-flex"></i-tabler>
