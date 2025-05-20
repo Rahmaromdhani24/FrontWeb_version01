@@ -7,6 +7,7 @@ import { AppEffectifOperateursComponent } from 'src/app/components/effectif-oper
 import { AppPdekProcessComponent } from 'src/app/components/pdek-process/pdek-process.component';
 import { StatSuperAdminPDEKComponent } from 'src/app/components/stat-super-admin-pdek/stat-super-admin-pdek.component';
 import { StatSuperAdminComponent } from 'src/app/components/stat-super-admin/stat-super-admin.component';
+import { PdekProcessPistoletComponent } from 'src/app/components/pdek-process-pistolet/pdek-process-pistolet.component';
 
 
 
@@ -20,7 +21,7 @@ import { StatSuperAdminComponent } from 'src/app/components/stat-super-admin/sta
     AppTopEmployeesComponent,
     StatSuperAdminPDEKComponent , 
     StatSuperAdminComponent , 
-
+    PdekProcessPistoletComponent,
 
   ],
   templateUrl: './starter.component.html',

@@ -1,10 +1,14 @@
 <div class="row">
-  <div class="col-lg-8">
+  <div class="col-lg-8" *ngIf="role==='AGENT_QUALITE' || role ==='CHEF_DE_LIGNE'">
     <app-pdek-process></app-pdek-process>
   </div>
    <div class="col-lg-8" *ngIf="role==='SUPER_ADMIN'">
     <app-stat-super-admin></app-stat-super-admin>
   </div>
+   <div class="col-lg-8" *ngIf="role==='AGENT_QUALITE_PISTOLET' || role ==='TECHNICIEN'">
+    <app-pdek-process-pistolet></app-pdek-process-pistolet>
+  </div>
+
   <div class="col-lg-4">
     <app-effectif-operateurs></app-effectif-operateurs>
     <app-erreurs-process></app-erreurs-process>
