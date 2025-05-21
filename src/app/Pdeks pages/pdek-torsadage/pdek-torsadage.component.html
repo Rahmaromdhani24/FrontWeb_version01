@@ -273,15 +273,15 @@
           <td>{{ torsadage.quantiteTotale }}</td>
           <td>{{ torsadage.numerofil }}</td>
           <!--td>{{ torsadage.decision }}</td-->
-          <td>
+          <td class="blanc-background1" >
              <button (click)="onValiderTorsadage(torsadage.id)" 
-                    *ngIf="torsadage.decision === 0 && !pistoletsValides.has(torsadage.id)
+                    *ngIf="torsadage.decision === 0 &&  torsadage.rempliePlanAction === 0 && !pistoletsValides.has(torsadage.id)
                      && roleUser==='AGENT_QUALITE'" 
                     class="custom-check-button">
               <i class="fa fa-check"></i>
             </button>
-           <span *ngIf="roleUser==='CHEF_DE_LIGNE' && torsadage.decision === 0 "> N/V</span>
-
+           <span *ngIf="roleUser==='CHEF_DE_LIGNE' && torsadage.decision === 0 && torsadage.rempliePlanAction === 1 "> N/V</span>
+           <span *ngIf="roleUser==='AGENT_QUALITE' && torsadage.decision === 0 && torsadage.rempliePlanAction === 1"> N/V</span>
             <span *ngIf="torsadage.decision === 1 || pistoletsValides.has(torsadage.id)">Confirmé</span>
           </td>
         </ng-container>

@@ -100,7 +100,7 @@ export class LoginUserComponent implements OnInit {
       } 
     }
    
-    recupererInformations(matricule: number): Promise<void> {
+   /* recupererInformations(matricule: number): Promise<void> {
       return new Promise((resolve, reject) => {
         this.authService.getUser(matricule).subscribe({
           next: (user) => {
@@ -139,7 +139,46 @@ export class LoginUserComponent implements OnInit {
           }
         });
       });
-    }
+    }*/
+   recupererInformations(matricule: number): Promise<void> {
+  return new Promise((resolve, reject) => {
+    this.authService.getUser(matricule).subscribe({
+      next: (user) => {
+        this.admin = user;
+
+        // Adapter le rôle selon la logique métier
+        if (user.role === "AGENT_QUALITE" && user.operation === "Montage_Pistolet") {
+          user.role = "AGENT_QUALITE_PISTOLET";
+        } else if (user.role === "TECHNICIEN") {
+          user.role = "TECHNICIEN";
+        } else if (user.role === "CHEF_DE_LIGNE") {
+          user.role = "CHEF_DE_LIGNE";
+        } else if (user.role === "ADMIN") {
+          user.role = "ADMIN";
+        } else if (user.role === "SUPER_ADMIN") {
+          user.role = "SUPER_ADMIN";
+        } else if (user.role === "AGENT_QUALITE" && (user.operation === null || user.operation === undefined)) {
+          user.role = "AGENT_QUALITE";
+        }
+
+        // Sauvegarder l'utilisateur complet avec le rôle modifié
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('role', user.role);
+        localStorage.setItem('matricule', user.matricule);
+        localStorage.setItem('plant', user.plant);
+        localStorage.setItem('segment', user.segment);
+        localStorage.setItem('operation', user.operation);
+
+        resolve();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des informations utilisateur.');
+        reject(err);
+      }
+    });
+  });
+}
+
     
 }
 

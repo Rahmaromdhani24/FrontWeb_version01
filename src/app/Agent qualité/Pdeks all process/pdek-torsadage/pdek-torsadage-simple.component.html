@@ -262,7 +262,7 @@
           <td>{{ torsadages[i].numCommande }}</td>
           <td>{{ torsadages[i].quantiteTotale }}</td>
           <td>{{ torsadages[i].numerofil }}</td>
-          <td>
+          <td class="blanc-background1">
             <ng-container *ngIf="(getDecision(torsadages[i].numeroCycle) === 1 
                                   && getRempliePlanAction(torsadages[i].numeroCycle) === 1) 
                                   || torsadagesValides.has(torsadages[i].id); 
@@ -272,9 +272,8 @@
               <button 
                 (click)="onValiderTorsadage(torsadages[i].id)" 
                 *ngIf="!torsadagesValides.has(torsadages[i].numeroCycle) 
-                      && getDecision(torsadages[i].numeroCycle) === 0 
-                      && getRempliePlanAction(torsadages[i].numeroCycle) === 0
-                      && role === 'AGENT_QUALITE'" 
+                      && role === 'AGENT_QUALITE' &&  torsadages[i].rempliePlanAction === 0 
+                      &&  torsadages[i].decision === 0"
                 class="custom-check-button">
                 <i class="fa fa-check"></i>
               </button>
@@ -282,7 +281,8 @@
             <ng-template #pasValide>
               <span>Invalide</span>
             </ng-template>
-             <span *ngIf="role==='CHEF_DE_LIGNE' && torsadages[i].decision === 0 "> N/V</span>
+             <span *ngIf="role==='CHEF_DE_LIGNE' && torsadages[i].decision === 0  &&  torsadages[i].rempliePlanAction === 1 "> N/V</span>
+             <span *ngIf="role==='AGENT_QUALITE' && torsadages[i].decision === 0  &&  torsadages[i].rempliePlanAction === 1 "> N/V</span>
              <span *ngIf="torsadages[i].decision === 1 || torsadagesValides.has(torsadages[i].id)">Confirmé</span>
           </td>
         </ng-container>

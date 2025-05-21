@@ -1,4 +1,4 @@
-import { Component  , OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component  , OnInit} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
@@ -51,7 +51,8 @@ export class AddPlanActionTorsadageComponent implements OnInit {
  constructor(private router: Router , private serviceChefLigne : ChefLigneService , 
               private serviceSoudure: SoudureService ,
               private serviceTorsadage: TorsadageService ,
-              public  general :GeneralService ) {}
+              public  general :GeneralService ,
+              private cdr: ChangeDetectorRef ) {}
     
   myForm : FormGroup = new FormGroup({
   descriptionProbleme: new FormControl(null, Validators.required),
@@ -121,15 +122,27 @@ submitForm() {
               this.general.nbrNotifications=0 ; 
               this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
               this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
-              this.general.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite() ;  
+              this.general.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite() ;
+             this.cdr.detectChanges();  
             }
             if( this.role =="CHEF_DE_LIGNE"){
-                this.general.donnees = [];
+               /* this.general.donnees = [];
                 this.general.nbrNotifications=0 ; 
                 this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
                 this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
+                this.cdr.detectChanges();*/
+                  this.general.donnees = [];
+
+      // ⬇️ On s'abonne une seule fois ici
+      this.general.nbrNotifications$.subscribe(val => {
+        this.general.nbrNotifications = val;
+        this.cdr.detectChanges(); // utile seulement si la détection ne se fait pas automatiquement
+      });
+       this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
+      // Récupérer les notifications et les données associées
+      this.general.recupererNombreNotificationsTousProcessSaufPistoletChefLigne();
            }
-              this.router.navigate(['/dashboard']);
+             this.router.navigate(['/dashboard']);
             }
           });
         },

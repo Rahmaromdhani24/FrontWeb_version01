@@ -1,4 +1,4 @@
-import { Component  , OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component  , OnInit} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
@@ -56,7 +56,8 @@ export class AddPlanActionSertissageIDCComponent implements OnInit {
               private serviceTorsadage: TorsadageService ,
               private serviceSertissageIDC : SertissageIDCService ,
               private serviceSertissageNormal : SertissageNormalService ,
-              public  general :GeneralService ) {}
+              public  general :GeneralService ,
+              private cdr: ChangeDetectorRef ) {}
     
   myForm : FormGroup = new FormGroup({
   descriptionProbleme: new FormControl(null, Validators.required),
@@ -120,14 +121,21 @@ submitForm() {
            // this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ; 
            // this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ; 
             //this.general.nbrNotifications --;     
-            this.general.donnees = [];
+           /* this.general.donnees = [];
             this.general.nbrNotifications=0 ; 
             this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
             this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
             this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesChefDeLigne();
             this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesChefDeLigne();
-            this.general.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;
-            this.router.navigate(['/dashboard']);
+            this.general.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;*/
+               this.general.nbrNotifications$.subscribe(val => {
+               this.general.nbrNotifications = val;
+               this.cdr.detectChanges(); // utile seulement si la détection ne se fait pas automatiquement
+                });
+              this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesChefDeLigne();
+              // Récupérer les notifications et les données associées
+               this.general.recupererNombreNotificationsTousProcessSaufPistoletChefLigne();
+              this.router.navigate(['/dashboard']);
           }
         });
       },

@@ -71,18 +71,17 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
       
   }
 
-  recupererNombreNotificationsPistolet(){
-    this.servicePistolet.getNombreNotifications().subscribe({
-      next: (count) => {
-        this.serviceGeneral.nbrNotifications = count;
-
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des notifications :', err);
-      }
-    });
-  }
-
+recupererNombreNotificationsPistolet() {
+  this.servicePistolet.getNombreNotifications().subscribe({
+    next: (count) => {
+      this.serviceGeneral.setNombreNotifications(count); // ✅ MAJ via le BehaviorSubject
+      console.log('Nombre de notifications Pistolet :', count);
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des notifications :', err);
+    }
+  });
+}
  
     voirPistolet(p : Pistolet ) {
       const jsonPistolet = JSON.stringify(p);

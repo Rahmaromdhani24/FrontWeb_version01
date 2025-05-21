@@ -1,4 +1,4 @@
-import { Component  , OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component  , OnInit} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
@@ -48,7 +48,8 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
   public serviceSoudure : SoudureService ,  public  serviceGeneral : GeneralService ,
   public serviceTorsadage : TorsadageService   ,
   public serviceSertissageIDC : SertissageIDCService  ,
-  public serviceSertissageNormal : SertissageNormalService ){}
+  public serviceSertissageNormal : SertissageNormalService , 
+  private cdr: ChangeDetectorRef  ){}
 
   matriculeAgentQualite : number ; 
   pistolets: Pistolet[] = [];
@@ -59,13 +60,15 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
   fullname  : string  | null ; 
   roleDashboard : string  | null ; 
   pistoletsValides: Set<number> = new Set();
+  operationUser  = localStorage.getItem('operation') || '';
 
   ngOnInit(): void {
    this.role= localStorage.getItem('role') ;
    this.roleDashboard = localStorage.getItem('roleDashboard') ;
    this.fullname =  localStorage.getItem('fullName') ;
    this.plant=   localStorage.getItem('plant') ;
-   if( this.role =="AGENT_QUALITE"){
+
+   /*if( this.role =="AGENT_QUALITE"){
     this.serviceGeneral.donnees = [];
     this.serviceGeneral.nbrNotifications=0 ; 
     this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
@@ -85,6 +88,53 @@ constructor(private router : Router , private servicePistolet : PistoletGeneralS
   }
   this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
       
+  }*/
+  if (this.role === 'AGENT_QUALITE') {
+  this.serviceGeneral.donnees = [];
+  // S'abonner UNE SEULE FOIS au BehaviorSubject
+  this.serviceGeneral.nbrNotifications$.subscribe(val => {
+    console.log("Nombre de notifications mis à jour :", val);
+  });
+
+  // Lancer les appels
+  this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite();
+  this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite();
+  this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesAgentQualite();
+  this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesAgentQualite();
+  this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
+}
+
+      if (this.role === 'CHEF_DE_LIGNE') {
+      this.serviceGeneral.donnees = [];
+
+      // ⬇️ On s'abonne une seule fois ici
+      this.serviceGeneral.nbrNotifications$.subscribe(val => {
+        this.serviceGeneral.nbrNotifications = val;
+        this.cdr.detectChanges(); // utile seulement si la détection ne se fait pas automatiquement
+      });
+
+      // Récupérer les notifications et les données associées
+      this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne();
+
+      switch (this.operationUser) {
+        case 'Soudure':
+          this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne();
+          break;
+        case 'Torsadage':
+          this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne();
+          break;
+        case 'Sertissage_IDC':
+          this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesChefDeLigne();
+          break;
+        case 'Sertissage_Normal':
+          this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesChefDeLigne();
+          break;
+      }
+    }
+
+    this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
+   
+    
   }
 
   voirPdek(p: any) {

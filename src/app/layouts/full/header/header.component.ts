@@ -118,63 +118,76 @@ private destroy$ = new Subject<void>();
    console.log('operation:', this.operationUser); // Sertissage IDC, etc.
    this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
    console.log('role:', this.role);
+   this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
 
    if (this.operationUser1 === 'undefined') {
      this.operationUser1 = null;
    }
-    if( this.role =="AGENT_QUALITE_PISTOLET"){
-      this.nom_process ="Montage Pistolet";  
-      this.servicePistolet.recupererListePistoletsNonValidesAgentQualite() ;
-      this.recupererNombreNotificationsPistolet() ;  
-    
+   if (this.role === 'AGENT_QUALITE_PISTOLET') {
+  this.nom_process = "Montage Pistolet";
+  // S'abonner une seule fois
+  this.serviceGeneral.nbrNotifications$.subscribe(val => {
+    console.log("Nombre de notifications Pistolet mis à jour :", val);
+  });
+  // Appels aux services
+  this.servicePistolet.recupererListePistoletsNonValidesAgentQualite();
+  this.recupererNombreNotificationsPistolet(); // ✅ Appel correct ici
+}
+
+if (this.role === "TECHNICIEN") {
+  this.nom_process = "Montage Pistolet";
+  this.serviceGeneral.nbrNotifications$.subscribe(val => {
+    console.log("Notifications Technicien (reactif) :", val);
+  });
+  this.serviceGeneral.donnees = [];
+  this.servicePistolet.recupererListePistoletsNonValidesTechniciens();
+  this.recupererNombreNotificationsTechnicien();
+}
+
+
+  if (this.role === 'AGENT_QUALITE') {
+  this.serviceGeneral.donnees = [];
+  // S'abonner UNE SEULE FOIS au BehaviorSubject
+  this.serviceGeneral.nbrNotifications$.subscribe(val => {
+    console.log("Nombre de notifications mis à jour :", val);
+  });
+
+  // Lancer les appels
+  this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite();
+  this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite();
+  this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesAgentQualite();
+  this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesAgentQualite();
+  this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite();
+}
+
+      if (this.role === 'CHEF_DE_LIGNE') {
+      this.serviceGeneral.donnees = [];
+
+      // ⬇️ On s'abonne une seule fois ici
+      this.serviceGeneral.nbrNotifications$.subscribe(val => {
+        this.serviceGeneral.nbrNotifications = val;
+        this.cdr.detectChanges(); // utile seulement si la détection ne se fait pas automatiquement
+      });
+
+      // Récupérer les notifications et les données associées
+      this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne();
+
+      switch (this.operationUser) {
+        case 'Soudure':
+          this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne();
+          break;
+        case 'Torsadage':
+          this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne();
+          break;
+        case 'Sertissage_IDC':
+          this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesChefDeLigne();
+          break;
+        case 'Sertissage_Normal':
+          this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesChefDeLigne();
+          break;
+      }
     }
 
-    if( this.role =="TECHNICIEN"){
-      this.serviceGeneral.donnees = [];
-      this.serviceGeneral.nbrNotifications=0 ; 
-      this.nom_process ="Montage Pistolet";     
-      this.servicePistolet.recupererListePistoletsNonValidesTechniciens() ;
-      this.recupererNombreNotificationsTechnicien() ; 
-    }
-    if( this.role =="AGENT_QUALITE"){
-      this.serviceGeneral.donnees = [];
-      this.serviceGeneral.nbrNotifications=0 ; 
-      this.serviceSoudure.recupererListeSouudresNonValidesAgentQualite() ;
-      this.serviceTorsadage.recupererListeTorsadagesesNonValidesAgentQualite() ;
-      this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesAgentQualite() ;
-      this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesAgentQualite() ;
-      this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletAgentQualite() ;  
-    }
-    if( this.role =="CHEF_DE_LIGNE"){
-        this.serviceGeneral.donnees = [];
-        this.serviceGeneral.nbrNotifications=0 ; 
-        if(this.operationUser =="Soudure"){
-          this.serviceSoudure.recupererListeSouudresNonValidesChefDeLigne() ;
-          this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
-           interval(10000).pipe(takeUntil(this.destroy$)).subscribe(() => {
-       this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
-  });
-        }
-        if(this.operationUser =="Torsadage"){
-          this.serviceTorsadage.recupererListeTorsadagesesNonValidesChefDeLigne() ;
-          this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
-          interval(10000).pipe(takeUntil(this.destroy$)).subscribe(() => {
-       this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;  });
-        }
-        if(this.operationUser =="Sertissage_IDC"){
-        this.serviceSertissageIDC.recupererListeSertissagesIDCNonValidesChefDeLigne();
-        this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
-           interval(10000).pipe(takeUntil(this.destroy$)).subscribe(() => {
-       this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;  });
-        }
-        if(this.operationUser =="Sertissage_Normal"){
-        this.serviceSertissageNormal.recupererListeSertissagesIDCNonValidesChefDeLigne();
-        this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ; 
-         interval(10000).pipe(takeUntil(this.destroy$)).subscribe(() => {
-       this.serviceGeneral.recupererNombreNotificationsTousProcessSaufPistoletChefLigne() ;  });
-        }
-          
-    }
     this.matriculeAgentQualite= localStorage.getItem('matricule') as unknown as number ;
    
     
@@ -190,7 +203,7 @@ private destroy$ = new Subject<void>();
       return '/assets/images/profile/user-1.jpg'; 
     }
   }
-  recupererNombreNotificationsPistolet(){
+  /*recupererNombreNotificationsPistolet(){
     this.servicePistolet.getNombreNotifications().subscribe({
       next: (count) => {
         this.serviceGeneral.nbrNotifications = count;
@@ -200,11 +213,22 @@ private destroy$ = new Subject<void>();
         console.error('Erreur lors de la récupération des notifications :', err);
       }
     });
-  }
+  }*/
+recupererNombreNotificationsPistolet() {
+  this.servicePistolet.getNombreNotifications().subscribe({
+    next: (count) => {
+      this.serviceGeneral.setNombreNotifications(count); // ✅ MAJ via le BehaviorSubject
+      console.log('Nombre de notifications Pistolet :', count);
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des notifications :', err);
+    }
+  });
+}
 
 
 
-  recupererNombreNotificationsTechnicien(){
+ /* recupererNombreNotificationsTechnicien(){
     this.servicePistolet.getNombreNotificationsTechniciens().subscribe({
       next: (count) => {
         this.serviceGeneral.nbrNotifications = count;
@@ -214,7 +238,18 @@ private destroy$ = new Subject<void>();
         console.error('Erreur lors de la récupération des notifications :', err);
       }
     });
-  }
+  }*/
+recupererNombreNotificationsTechnicien() {
+  this.servicePistolet.getNombreNotificationsTechniciens().subscribe({
+    next: (count) => {
+      this.serviceGeneral.setNombreNotifications(count); // ✅ met à jour le BehaviorSubject
+      console.log("Notifications technicien Pistolet :", count);
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des notifications :', err);
+    }
+  });
+}
 
 
   get pistoletsNonValides() {

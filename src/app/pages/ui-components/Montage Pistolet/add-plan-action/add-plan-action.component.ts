@@ -112,11 +112,19 @@ submitForm() {
           }
         }).then((result) => {
           if (result.isConfirmed) {
-            this.servicePistoletGeneral.recupererListePistoletsNonValidesTechniciens() ;
+            /*this.servicePistoletGeneral.recupererListePistoletsNonValidesTechniciens() ;
             this.recupererNombreNotificationsTechnicien() ; 
-            this.general.nbrNotifications --;
+            this.general.nbrNotifications --;*/
          
-            this.router.navigate(['/dashboard']);
+        this.general.nbrNotifications$.subscribe(val => {
+          console.log("Notifications Technicien (reactif) :", val);
+        });
+        this.general.donnees = [];
+        this.servicePistoletGeneral.recupererListePistoletsNonValidesTechniciens();
+        this.recupererNombreNotificationsTechnicien();
+            
+
+            //this.router.navigate(['/dashboard']);
           }
         });
       },
@@ -132,11 +140,22 @@ submitForm() {
     });
   }
 }
-recupererNombreNotificationsTechnicien(){
+/*recupererNombreNotificationsTechnicien(){
   this.servicePistoletGeneral.getNombreNotificationsTechniciens().subscribe({
     next: (count) => {
       this.general.nbrNotifications = count;
 
+    },
+    error: (err) => {
+      console.error('Erreur lors de la récupération des notifications :', err);
+    }
+  });
+}*/
+recupererNombreNotificationsTechnicien() {
+  this.servicePistoletGeneral.getNombreNotificationsTechniciens().subscribe({
+    next: (count) => {
+      this.general.setNombreNotifications(count); // ✅ met à jour le BehaviorSubject
+      console.log("Notifications technicien Pistolet :", count);
     },
     error: (err) => {
       console.error('Erreur lors de la récupération des notifications :', err);

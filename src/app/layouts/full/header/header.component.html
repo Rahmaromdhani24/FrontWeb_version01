@@ -5,7 +5,7 @@
     <i-tabler name="menu-2" class="icon-20 d-flex"></i-tabler>
   </button>
 
-  <!-- Icône notifications -->
+  <!-- Icône notifications 
   <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Notifications">
     <i-tabler 
     class="d-flex" 
@@ -15,7 +15,16 @@
     [matBadgeHidden]="serviceGeneral.nbrNotifications === 0">
   </i-tabler>
     </button>
-
+-->
+<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Notifications">
+  <i-tabler
+    class="d-flex"
+    name="bell"
+    [matBadge]="(serviceGeneral.nbrNotifications$ | async) ?? 0"
+    matBadgeColor="primary"
+    [matBadgeHidden]="(serviceGeneral.nbrNotifications$ | async) === 0">
+  </i-tabler>
+</button>
 
   <!-- Menu déroulant notifications -->
   <mat-menu #menu="matMenu" panelClass="custom-notif-menu">
