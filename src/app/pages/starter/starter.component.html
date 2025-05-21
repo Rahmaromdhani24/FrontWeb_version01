@@ -8,16 +8,24 @@
    <div class="col-lg-8" *ngIf="role==='AGENT_QUALITE_PISTOLET' || role ==='TECHNICIEN'">
     <app-pdek-process-pistolet></app-pdek-process-pistolet>
   </div>
-
   <div class="col-lg-4">
+     <div  *ngIf="role==='TECHNICIEN' || role ==='AGENT_QUALITE_PISTOLET'">
+        <app-nbr-pdek-sans-plan-action-pistolet></app-nbr-pdek-sans-plan-action-pistolet>
+    </div>
+     <div *ngIf="role==='AGENT_QUALITE' || role ==='CHEF_DE_LIGNE'">
     <app-effectif-operateurs></app-effectif-operateurs>
+    </div>
+  <div *ngIf="role==='AGENT_QUALITE' || role ==='CHEF_DE_LIGNE'">
     <app-erreurs-process></app-erreurs-process>
+  </div>
+     <div  *ngIf="role==='TECHNICIEN' || role ==='AGENT_QUALITE_PISTOLET'">
+        <app-erreurs-process-pistolet></app-erreurs-process-pistolet>
+    </div>
     <div *ngIf="role==='SUPER_ADMIN'">
     <app-stat-super-admin-pdek></app-stat-super-admin-pdek>
   </div>
   </div>
 </div>
-
 <app-top-employees></app-top-employees>
 <!--div class="row">
   <div class="col-lg-4">

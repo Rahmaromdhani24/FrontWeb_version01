@@ -22,6 +22,7 @@ import {
 } from 'ng-apexcharts';
 import { StatistiquesService } from 'src/app/services/Statistiques/statistiques.service';
 import { GeneralService } from 'src/app/services/Géneral/general.service';
+import { PistoletGeneralService } from 'src/app/services/Agent Qualité Montage Pistolet/pistolet-general.service';
 
 export interface productsalesChart {
   series: ApexAxisChartSeries;
@@ -38,22 +39,18 @@ export interface productsalesChart {
   marker: ApexMarkers;
 }
 @Component({
-  selector: 'app-effectif-operateurs',
+  selector: 'app-nbr-pdek-sans-plan-action-pistolet',
   imports: [MaterialModule, TablerIconsModule, MatButtonModule, NgApexchartsModule],
-  templateUrl: './effectif-operateurs.component.html',
-  styleUrl: './effectif-operateurs.component.scss',
-
+  templateUrl: './nbr-pdek-sans-plan-action-pistolet.component.html',
+  styleUrl: './nbr-pdek-sans-plan-action-pistolet.component.scss'
 })
-export class AppEffectifOperateursComponent {
-
-  @ViewChild('chart') chart: ChartComponent = Object.create(null);
+export class NbrPdekSansPlanActionPistoletComponent {
+ @ViewChild('chart') chart: ChartComponent = Object.create(null);
   public productsalesChart!: Partial<productsalesChart> | any;
-
   total: number = 0;
   pourcentageAugmentation: number = 0;
-
-  constructor(public statsService: GeneralService) { 
-  this.statsService.recupererNombreNotificationsTousProcessSaufPistoletChefLigneStat().subscribe(totalNotif => {
+  constructor(public statsService: PistoletGeneralService) { 
+  this.statsService.getNombreNotificationsTechniciens().subscribe(totalNotif => {
   this.total = totalNotif;
 });
  // private tryInitializeChart(): void {
@@ -100,4 +97,5 @@ export class AppEffectifOperateursComponent {
          };
   }
   }
+
 

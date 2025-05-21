@@ -7,7 +7,8 @@ import { TorsadageService } from '../Agent Qualite Operation Torsadage/torsadage
 import { SoudureService } from '../Agent Qualité Operation Soudure/soudure.service';
 import { SertissageIDCService } from '../Agent Qualite Operation Sertissage/sertissage-idc.service';
 import { SertissageNormalService } from '../Agent Qualite Operation Sertissage/sertissage-normal.service';
-
+import { combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -38,7 +39,6 @@ decrementNombreNotifications() {
   this._nbrNotifications.next(Math.max(0, current - 1)); // évite valeurs négatives
 }
 
-
   get operationUser() {
     return localStorage.getItem('operation') || '';
   }
@@ -59,10 +59,8 @@ decrementNombreNotifications() {
         Authorization: `Bearer ${token}`
       }
     });
-  }
-  
+  } 
  
-
 saveToken(token: string) {
   localStorage.setItem('token', token);
 }
@@ -124,6 +122,20 @@ recupererNombreNotificationsTousProcessSaufPistoletAgentQualite() {
         break;
     }
   }
+
+  
+recupererNombreNotificationsTousProcessSaufPistoletChefLigneStat(): Observable<number> {
+  return combineLatest([
+    this.serviceSoudure.getNombreNotificationsChefDeLigne(),
+    this.serviceTorsadage.getNombreNotificationsChefDeLigne(),
+    this.serviceSertissageIDC.getNombreNotificationsChefDeLigne(),
+    this.serviceSertissageNormal.getNombreNotificationsChefDeLigne()
+  ]).pipe(
+    map(([soudure, torsadage, idc, normal]) => soudure + torsadage + idc + normal)
+  );
+}
+
+
 }
 
     

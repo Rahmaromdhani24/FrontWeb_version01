@@ -1,7 +1,4 @@
-<mat-card class="cardWithShadow overflow-hidden" *ngIf="role === 'AGENT_QUALITE' || 
-                                                        role === 'CHEF_DE_LIGNE'|| 
-                                                        role ==='AGENT_QUALITE_PISTOLET'||
-                                                        role ==='TECHNICIEN'">
+<mat-card class="cardWithShadow overflow-hidden" >
     <mat-card-header class="d-flex align-items-center p-x-24">
         <mat-card-title>Erreurs de Production</mat-card-title>
         <div class="m-l-auto">
@@ -23,7 +20,7 @@
             <button mat-mini-fab class="bg-light-success text-success shadow-none icon-27">
                 <i-tabler name="arrow-up-right" class="icon-20 d-block"></i-tabler>
             </button>
-            <div class="f-w-600 f-s-14 m-l-12" style="min-width: 80px;">+ {{pourcentageErreurs}}1%</div>
+            <div class="f-w-600 f-s-14 m-l-12" style="min-width: 80px;">+ {{pourcentageErreurs}}%</div>
             <br>
             <div class="m-l-4 f-s-14" id="styleAnnee">Semaine précédente</div>
         </div>

@@ -8,6 +8,8 @@ import { AppPdekProcessComponent } from 'src/app/components/pdek-process/pdek-pr
 import { StatSuperAdminPDEKComponent } from 'src/app/components/stat-super-admin-pdek/stat-super-admin-pdek.component';
 import { StatSuperAdminComponent } from 'src/app/components/stat-super-admin/stat-super-admin.component';
 import { PdekProcessPistoletComponent } from 'src/app/components/pdek-process-pistolet/pdek-process-pistolet.component';
+import { NbrPdekSansPlanActionPistoletComponent } from 'src/app/components/nbr-pdek-sans-plan-action-pistolet/nbr-pdek-sans-plan-action-pistolet.component';
+import { ErreursProcessPistoletComponent } from 'src/app/components/erreurs-process-pistolet/erreurs-process-pistolet.component';
 
 
 
@@ -22,6 +24,8 @@ import { PdekProcessPistoletComponent } from 'src/app/components/pdek-process-pi
     StatSuperAdminPDEKComponent , 
     StatSuperAdminComponent , 
     PdekProcessPistoletComponent,
+    NbrPdekSansPlanActionPistoletComponent ,
+    ErreursProcessPistoletComponent
 
   ],
   templateUrl: './starter.component.html',

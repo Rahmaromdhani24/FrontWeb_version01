@@ -51,9 +51,9 @@ displayedColumns: string[] = [
     'matricule' ,
     'nom' ,
     'type', 
-    'plant',  
+     'role' ,
+    'plant', 
     'segment',
-    'numeroTelephone' ,
     'action'
   ];
   plants: string[] = [];
@@ -212,9 +212,11 @@ this.serviceAdmin.getAllUsers().subscribe({
   });
 }
 
-/*formatOperation(label: string): string {
-  return label.replace(/_/g, ' ');
-}*/
+formatRole(label: string): string {
+  const formatted = label.replace(/_/g, ' ').toLowerCase();
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
 formatOperation(operation?: string): string {
   if (!operation) {
     return '-';

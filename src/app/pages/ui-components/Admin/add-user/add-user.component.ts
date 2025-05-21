@@ -158,7 +158,9 @@ loadPlants() {
 }
 
 formatOperation(label: string): string {
-  return label.replace(/_/g, ' '); }
+  //return label.replace(/_/g, ' '); 
 
+   const formatted = label.replace(/_/g, ' ').toLowerCase();
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);}
 
 }

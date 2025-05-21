@@ -61,6 +61,12 @@
           </mat-cell>
         </ng-container>
 
+           <ng-container matColumnDef="role">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;&nbsp;&nbsp;Role </mat-header-cell>
+          <mat-cell *matCellDef="let row" style="text-align: center;">{{ formatRole(row.role) }}
+          </mat-cell>
+        </ng-container>   
+
         <ng-container matColumnDef="plant">
           <mat-header-cell *matHeaderCellDef mat-sort-header >&nbsp;&nbsp;&nbsp;Plant</mat-header-cell>
           <mat-cell *matCellDef="let row">&nbsp;&nbsp;&nbsp;{{row.plant}}</mat-cell>
@@ -72,11 +78,7 @@
             {{ row.segment && row.segment !== 0 ? row.segment : '-' }}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="numeroTelephone">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>&nbsp;&nbsp;&nbsp;&nbsp;Numéro </mat-header-cell>
-          <mat-cell *matCellDef="let row" style="text-align: center;">{{ row.numeroTelephone }}
-          </mat-cell>
-        </ng-container>               
+                 
 
 
 <ng-container matColumnDef="action">
