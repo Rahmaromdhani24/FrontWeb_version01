@@ -23,6 +23,7 @@ import { User } from 'src/app/Modeles/User';
 import { OperateurDetailsPlanActionModalComponent } from '../operateur-details-plan-action-modal/operateur-details-plan-action-modal.component';
 import { PlanActionPdfService } from 'src/app/services/PDF/Plan d\'action/plan-action-pdf.service';
 import { PdekResultat } from 'src/app/Modeles/PdekResultat';
+import { SuperAdminService } from 'src/app/services/Super Admin/super-admin.service';
 
 interface Operateur {
   id: number;
@@ -78,12 +79,13 @@ displayedColumns: string[] = [
   searchFilter: string = '';
   plans : PlanActionDTO[]; // 
   currentPlantFilter: string[] = [];
-  plant: string[] = ['VW', 'BM'];
+  plants: string[] = [];
+
   userAddPlanAction : User ;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   
-  constructor(private router: Router , private dialog: MatDialog  ,
+  constructor(private router: Router , private dialog: MatDialog  , private serviceSuperAdmin: SuperAdminService , 
               private planActionService: PlanActionGeneralService ,
               private planActionPdfService : PlanActionPdfService ,
               private pdekService : PdekService , private authService: GeneralService) {
@@ -91,6 +93,7 @@ displayedColumns: string[] = [
   }
   ngOnInit() {
     this.recupereListPlanAction();
+    this.loadPlants();
   }
 
   applyFilter(event: Event) {
@@ -279,5 +282,11 @@ viewFilePDEK(row: PlanActionDTO)  {
 viewPlanAction(id: number){
   console.log('id de plan action' +id) ; 
   this.planActionPdfService.openPDFInNewWindow(id);
+}
+loadPlants() {
+  this.serviceSuperAdmin.getPlants().subscribe({
+    next: (data) => this.plants = data,
+    error: (err) => console.error('Erreur API', err)
+  });
 }
 }

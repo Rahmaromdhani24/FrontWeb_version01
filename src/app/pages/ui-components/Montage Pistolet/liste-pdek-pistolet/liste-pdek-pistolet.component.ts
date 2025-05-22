@@ -21,6 +21,7 @@ import { PdekResultat } from 'src/app/Modeles/PdekResultat';
 import { PlanActionGeneralService } from 'src/app/services/Plan d\'action/plan-action-general.service';
 import { PlanActionDTO } from 'src/app/Modeles/PlanActionDTO';
 import { Router } from '@angular/router';
+import { SuperAdminService } from 'src/app/services/Super Admin/super-admin.service';
 interface Operateur {
   id: number;
   nom: string;
@@ -94,16 +95,17 @@ displayedColumns: string[] = [
   currentStatusFilter: string[] = [];
   searchFilter: string = '';
   planAction: PlanActionDTO  | null = null ;
-
+  plants: string[] = [];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   
-  constructor(private dialog: MatDialog , private pistoletJauneService: PistoletJauneService
-            , private planActionPdfService : PlanActionPdfService , private  pistoletService :PistoletGeneralService
+  constructor(private dialog: MatDialog  , private serviceSuperAdmin: SuperAdminService , 
+             private planActionPdfService : PlanActionPdfService , private  pistoletService :PistoletGeneralService
             , private planActionService: PlanActionGeneralService ,private  router : Router) {
   }
   ngOnInit() {
     this.recupererListPdek();
+    this.loadPlants();
   }
 
 
@@ -289,6 +291,13 @@ verifierPlanAction(pdekId: number): void {
     error: (err) => {
       console.error('Erreur lors de la vérification :', err);
     }
+  });
+}
+
+loadPlants() {
+  this.serviceSuperAdmin.getPlants().subscribe({
+    next: (data) => this.plants = data,
+    error: (err) => console.error('Erreur API', err)
   });
 }
 }

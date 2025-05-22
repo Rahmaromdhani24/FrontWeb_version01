@@ -23,6 +23,7 @@ import { User } from 'src/app/Modeles/User';
 import { PlanActionPdfService } from 'src/app/services/PDF/Plan d\'action/plan-action-pdf.service';
 import { PdekResultat } from 'src/app/Modeles/PdekResultat';
 import { OperateurDetailsPlanActionModalComponent } from '../../Montage Pistolet/operateur-details-plan-action-modal/operateur-details-plan-action-modal.component';
+import { SuperAdminService } from 'src/app/services/Super Admin/super-admin.service';
 
 interface Operateur {
   id: number;
@@ -68,7 +69,7 @@ displayedColumns: string[] = [
 
   plansActionsData : PlanActionDTO[] = [];
   processTypes: string[] = ['Torsadage', 'Sertissage normal', 'Sertissage idc' ,'Soudure'];
-  plant: string[] = ['VW', 'BM'];
+  plants: string[] = [];
 
   currentProcessFilter: string[] = [];
   currentSegmentFilter: string[] = [];
@@ -85,12 +86,13 @@ displayedColumns: string[] = [
   
   constructor(private router: Router , private dialog: MatDialog  ,
               private planActionService: PlanActionGeneralService ,
-              private planActionPdfService : PlanActionPdfService ,
+              private planActionPdfService : PlanActionPdfService ,private serviceSuperAdmin: SuperAdminService ,
               private pdekService : PdekService , private authService: GeneralService) {
     this.dataSource = new MatTableDataSource();
   }
   ngOnInit() {
     this.recupereListPlanAction();
+    this.loadPlants() ; 
   }
 
   applyFilter(event: Event) {
@@ -319,5 +321,11 @@ formatOperation(value: string): string {
 viewPlanAction(id: number){
   console.log('id de plan action' +id) ; 
   this.planActionPdfService.openPDFInNewWindow(id);
+}
+loadPlants() {
+  this.serviceSuperAdmin.getPlants().subscribe({
+    next: (data) => this.plants = data,
+    error: (err) => console.error('Erreur API', err)
+  });
 }
 }

@@ -21,8 +21,8 @@
       <mat-form-field appearance="outline" class="filter-box">
         <mat-label>Plant</mat-label>
         <mat-select (selectionChange)="applyPlantFilter($event.value)" multiple>
-          <mat-option *ngFor="let p of plant" [value]="p">{{p}}</mat-option>
-        </mat-select>
+         <mat-option *ngFor="let plant of plants" [value]="plant">  {{ plant }} </mat-option>
+          </mat-select>
       </mat-form-field>
 
         </div>

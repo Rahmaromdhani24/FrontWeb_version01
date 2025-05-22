@@ -31,6 +31,7 @@ import { PdekService } from 'src/app/services/PDEK service/pdek.service';
 import { PdekAvecPlans } from 'src/app/Modeles/PdekAvecPlans';
 import { from } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { SuperAdminService } from 'src/app/services/Super Admin/super-admin.service';
 
 @Component({
   selector: 'app-lists-pdek-tous-process',
@@ -73,8 +74,7 @@ displayedColumns: string[] = [
   // Options des filtres
   pdeks : PdekAvecPlans[] = [];
   processTypes: string[] = ['Torsadage', 'Sertissage normal', 'Sertissage idc' ,'Soudure'];
-  plant: string[] = ['VW', 'BM'];
-  // Filtres actuels
+  plants: string[] = [];  // Filtres actuels
   currentProcessFilter: string[] = [];
   currentSegmentFilter: string[] = [];
   currentNumeroPistoletFilter: string[] = [];
@@ -95,10 +95,12 @@ displayedColumns: string[] = [
               private serviceTorsadage : TorsadageService , 
               private serviceSertissageIDC : SertissageIDCService , 
               private serviceSertissage : SertissageNormalService , 
-              private pdekService : PdekService ) {
+              private pdekService : PdekService ,
+             private serviceSuperAdmin: SuperAdminService) {
   }
   ngOnInit() {
     this.recupererListPdek();
+    this.loadPlants();
   }
 
 
@@ -368,6 +370,12 @@ verifierPlanAction(pdekId: number): void {
     error: (err) => {
       console.error('Erreur lors de la vérification :', err);
     }
+  });
+}
+loadPlants() {
+  this.serviceSuperAdmin.getPlants().subscribe({
+    next: (data) => this.plants = data,
+    error: (err) => console.error('Erreur API', err)
   });
 }
 }
