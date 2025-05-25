@@ -2,7 +2,7 @@
     <span id="loader" class="loader"></span>
   </div>
   <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
-    <div class="pdf-container" *ngFor="let page of pages">
+    <div class="pdf-container" *ngFor="let page of pages" #contenu>
       <!-- En-tête -->
     <div class="header">
       <!-- Titre principal -->
@@ -234,8 +234,11 @@
       <span id="code5"> B = Reprise de la même épissure</span>
       <span id="code6"> S =  Contrôle supplémentaire</span>
       </div>
-       </div>
-       <button mat-flat-button color="primary" class="m-r-8" type="submit" 
+      <br>
+       <button mat-flat-button color="primary" class="m-r-8 no-print" type="submit" 
        id="retourBtn" (click)="naviger()">Retour à la liste des PDEKs</button>
+            <button mat-flat-button class="m-r-8 bouton-vert no-print" type="submit" 
+             id="retourBtn1" (click)="imprimerPDEK(contenu)">Imprimer</button>
+       </div>     
     </div>
   

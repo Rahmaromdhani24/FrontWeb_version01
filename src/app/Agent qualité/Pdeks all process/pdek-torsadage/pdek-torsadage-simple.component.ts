@@ -771,6 +771,10 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
     const torsadage = this.torsadages.find(p => p.numeroCycle === numCourant);
     return torsadage ? torsadage.userTorsadage : null;
   }
+    getMatriculeQM(numCourant: number): number | null {
+    const torsadage = this.torsadages.find(p => p.numeroCycle === numCourant);
+    return torsadage ? torsadage.matriculeAgentQualite : null;
+  }
   getQuantiteAtteint(numCourant: number): number | null {
     const torsadage = this.torsadages.find(p => p.numeroCycle === numCourant);
     return torsadage ? torsadage.quantiteAtteint : null;
@@ -793,5 +797,14 @@ recupererDonneesDeFichierPdekDePageParticulier(): Observable<Torsadage[]> {
       this.router.navigate(['/dashboard']);
     });
   }
-  
+  imprimerPDEK() {
+  const printContents = document.querySelector('.pdf-container')?.innerHTML;
+  const originalContents = document.body.innerHTML;
+
+  document.body.innerHTML = printContents || '';
+  window.print();
+  document.body.innerHTML = originalContents;
+  location.reload(); // Recharge la page pour retrouver l’état initia
+}
+
 }

@@ -842,4 +842,5 @@ const printContents = document.querySelector('.pdf-container')?.innerHTML;
   location.reload(); // Recharge la page pour retrouver l’état initia
 }
 
+
  }

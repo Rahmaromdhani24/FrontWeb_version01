@@ -3,7 +3,7 @@
   </div>
 
   <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
-    <div class="pdf-container" *ngFor="let page of pages ; let pageIndex = index">
+    <div class="pdf-container" *ngFor="let page of pages ; let pageIndex = index" #contenu>
       <!-- En-tête -->
     <div class="header">
       <!-- Titre principal -->
@@ -281,11 +281,12 @@
             <span id="code3"> R = Réparation ou réglage Outil/Machine </span>
             <span id="code4"> L = Fin de commande</span>
             <span id="code5"> A = Discontinuité du au fin matière </span>
-            </div>
-             </div>
-
-    <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
-    (click)="naviger()">Retour à la liste des PDEKs</button>
-
+      </div>
+      <br>
+       <button mat-flat-button color="primary" class="m-r-8 no-print" type="submit" 
+       id="retourBtn" (click)="naviger()">Retour à la liste des PDEKs</button>
+            <button mat-flat-button class="m-r-8 bouton-vert no-print" type="submit" 
+             id="retourBtn1" (click)="imprimerPDEK(contenu)">Imprimer</button>
+       </div>     
     </div>
-   
+  

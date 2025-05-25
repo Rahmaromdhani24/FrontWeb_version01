@@ -583,4 +583,14 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
     txt.innerHTML = html;
     return txt.value;
   }
+
+    imprimerPDEK(element: HTMLElement) {
+  const printContents = element.innerHTML;
+  const originalContents = document.body.innerHTML;
+  document.body.innerHTML = printContents;
+  window.print();
+  document.body.innerHTML = originalContents;
+  // Optionnel : recharge la page pour revenir à l'état initial
+ location.reload();
+}
 }

@@ -283,7 +283,7 @@
      <br>
     
    <div>
-              <br>
+             
             <span id="titreCode"> Code de Controle : </span>
             <span id="code1"> S = Démarrage du cycle </span>
             <span id="code2"> M = Changement matière  </span>
@@ -291,7 +291,10 @@
             <span id="code4"> L = Fin de commande</span>
             <span id="code5"> A = Discontinuité du au fin matière </span>
             </div>
-  <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
-                 (click)="naviger()">Retour</button>   
              </div>
+             <button mat-flat-button color="primary" class="m-r-8 no-print" type="submit" id="retourBtn" 
+                 (click)="naviger()">Retour</button>   
+
+                          <button mat-flat-button class="m-r-8 bouton-vert no-print" type="submit" 
+             id="retourBtn1" (click)="imprimerPDEK()">Imprimer</button>
         

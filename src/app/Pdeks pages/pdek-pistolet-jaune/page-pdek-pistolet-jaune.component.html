@@ -3,6 +3,7 @@
   </div>
   <div class="pdf-scroll-wrapper" *ngIf="!showLoader">
     <div class="pdf-container" *ngFor="let page of pages">
+       <div #contenu>
       <!-- En-tête -->
     <div class="header">
       <!-- Titre principal -->
@@ -207,5 +208,8 @@
        </div>
        <button mat-flat-button color="primary" class="m-r-8" type="submit" id="retourBtn" 
        (click)="naviger()">Retour à la liste des PDEKs</button>
+         <button mat-flat-button class="m-r-8 bouton-vert no-print" type="submit" 
+             id="retourBtn1" (click)="imprimerPDEK(contenu)">Imprimer</button>
+          
     </div>
   

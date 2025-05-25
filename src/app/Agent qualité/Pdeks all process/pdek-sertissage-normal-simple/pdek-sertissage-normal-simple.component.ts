@@ -89,6 +89,7 @@ export class PdekSertissageNormalSimpleComponent  implements OnInit {
       this.numContact = pdekSertissageObj.numeroContacts; 
       this.numOutil = pdekSertissageObj.numeroOutils;
       this.sectionFil = this.extraireValeurNumeriqueSectionFil(pdekSertissageObj.sectionFil);
+      this.segmentUser = pdekSertissageObj.segment;
       console.log("section de pdek est = "+  this.sectionFil )
     }
     const pdekSertissageNormalJson = localStorage.getItem('sertissage');
@@ -98,6 +99,7 @@ export class PdekSertissageNormalSimpleComponent  implements OnInit {
       this.numOutil = pdekSertissageObj.numOutil;
       this.sectionFil = this.extraireValeurNumeriqueSectionFil(pdekSertissageObj.sectionFil);  
      this.valeurLGDPdek = pdekSertissageObj.lgd; 
+       this.segmentUser = pdekSertissageObj.segment;
       console.log("section de pdek est = "+  this.sectionFil )
 
     }
@@ -300,7 +302,6 @@ getChartHauteur(data: { x: string; y1: number; y2: number; y3: number; y4: numbe
 
   this.pdekService.getContenuParNumeroPage(this.idPdek, this.numPage).subscribe({
     next: (sertissages: any[]) => {
-          this.segmentUser =  this.sertissages[0].segment;
       const dataChart = sertissages.map((p: any) => ({
         x: p.numCycle,
         y1: p.hauteurSertissageEch1,
@@ -673,4 +674,14 @@ getHauteurSertissage(page: any, row: number, col: number): number | null {
     });
   }
   
+  imprimerPDEK() {
+const printContents = document.querySelector('.pdf-container')?.innerHTML;
+  const originalContents = document.body.innerHTML;
+
+  document.body.innerHTML = printContents || '';
+  window.print();
+  document.body.innerHTML = originalContents;
+  location.reload(); // Recharge la page pour retrouver l’état initia
+}
+
 }

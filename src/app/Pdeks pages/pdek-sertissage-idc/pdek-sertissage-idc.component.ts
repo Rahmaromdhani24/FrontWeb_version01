@@ -1005,4 +1005,13 @@ getChartCote2Traction(data: { x: number; y1: number; y2: number; y3: number; y4:
         this.router.navigate(['/ui-components/listePdekTousProcess']);
       });
     }
+      imprimerPDEK(element: HTMLElement) {
+  const printContents = element.innerHTML;
+  const originalContents = document.body.innerHTML;
+  document.body.innerHTML = printContents;
+  window.print();
+  document.body.innerHTML = originalContents;
+  // Optionnel : recharge la page pour revenir à l'état initial
+ location.reload();
+}
 }

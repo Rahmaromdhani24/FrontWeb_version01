@@ -264,8 +264,15 @@
   
   #retourBtn{
     margin-left: 600px;
-  
   }
+      #retourBtn1{
+        margin-left: 690px;
+    margin-top: -65px;
+  }
+  .bouton-vert {
+  background-color: #35a139 !important; /* vert Material Design */
+  color: white !important;
+}
   .styleSpecidication{
     color: rgb(5, 5, 5);font-weight: bold;
   }
@@ -531,4 +538,64 @@
   font-family: auto;
   color: black;
   padding: 14px;
+}
+
+/*************************************************************************************/
+@media print {
+  @page {
+    size: 290mm 270mm;
+    //margin: 5mm;
+    margin: 2mm ; 
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: visible !important;
+    font-style: normal;
+    font-size: 10px;
+  }
+
+  .container, .print-wrapper {
+    width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  #idBorderTableau,
+  .courbes,
+  .side-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid !important;
+    border-collapse: collapse;
+  }
+
+  #idBorderTableau td,
+  #idBorderTableau th,
+  .side-table td,
+  .side-table th {
+    word-break: break-word;
+    word-wrap: break-word;
+    white-space: normal;
+    padding: 4px !important;
+    min-width: 60px;
+    border: 1px solid #000;
+    font-size: 10px;
+  }
+
+  .side-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+
+  .no-print {
+    display: none !important;
+  }
 }
